@@ -43,14 +43,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error);
-        return;
-      }
+      if (error) throw error;
       set({ user: null, isAdmin: false });
-      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
+      throw error;
     }
   },
 }));

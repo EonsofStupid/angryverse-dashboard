@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useToast } from "@/components/ui/use-toast";
+import { DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
@@ -36,8 +38,13 @@ export const UserMenu = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      setUser(null);
       setOpen(false);
+      window.location.href = '/';
+      
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
@@ -64,6 +71,9 @@ export const UserMenu = () => {
         </Button>
       </SheetTrigger>
       <SheetContent className="w-[300px] sm:w-[400px] glass">
+        <VisuallyHidden>
+          <DialogTitle>User Menu</DialogTitle>
+        </VisuallyHidden>
         <div className="flex flex-col gap-4 mt-8">
           {!user ? (
             <Auth
