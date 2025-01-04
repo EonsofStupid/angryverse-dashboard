@@ -30,30 +30,35 @@ export const Hero = () => {
         </div>
       </div>
       
-      {/* Data Stream */}
+      {/* Retro Data Stream */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute top-0 right-0 w-1 h-screen bg-cyber-cyan/20"
+          className="absolute top-0 right-0 w-[15%] h-full"
           style={{
-            boxShadow: '0 0 20px theme("colors.cyber.cyan.DEFAULT")',
-          }}
-        />
-        <div 
-          className="absolute top-0 right-0 w-[30%] h-full"
-          style={{
-            background: 'linear-gradient(90deg, transparent, rgba(0, 255, 245, 0.1))',
+            background: 'linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.05))',
+            boxShadow: 'inset -20px 0 30px rgba(57, 255, 20, 0.1)',
           }}
         >
           <div 
-            className="absolute top-0 right-4 text-cyber-cyan font-mono text-xs opacity-70 whitespace-nowrap transform -rotate-90 origin-right"
+            className="absolute top-0 right-4 text-cyber-green font-mono text-2xl opacity-80 whitespace-nowrap"
             style={{
-              animation: 'dataStream 8s linear infinite',
-              textShadow: '0 0 5px theme("colors.cyber.cyan.DEFAULT")',
+              animation: 'dataStream 12s linear infinite',
+              textShadow: '0 0 10px rgba(57, 255, 20, 0.8)',
+              fontFamily: 'monospace',
             }}
           >
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div key={i} className="my-8">
-                SECTOR_{(i * 247).toString(16).toUpperCase()}_ENCRYPTED
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div 
+                key={i} 
+                className="my-8 transform hover:scale-110 transition-transform"
+                style={{
+                  animationDelay: `${i * 0.2}s`,
+                  opacity: Math.random() * 0.5 + 0.5,
+                }}
+              >
+                {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒'][
+                  Math.floor(Math.random() * 14)
+                ]}
               </div>
             ))}
           </div>
@@ -153,10 +158,10 @@ export const Hero = () => {
 
           @keyframes dataStream {
             from {
-              transform: translateY(-100%) rotate(-90deg);
+              transform: translateY(-100%);
             }
             to {
-              transform: translateY(100%) rotate(-90deg);
+              transform: translateY(100%);
             }
           }
         `}
