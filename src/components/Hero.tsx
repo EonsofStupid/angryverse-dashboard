@@ -51,16 +51,18 @@ export const Hero = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes moveLeft {
-          from {
-            transform: translateX(100%);
+      <style>
+        {`
+          @keyframes moveLeft {
+            from {
+              transform: translateX(100%);
+            }
+            to {
+              transform: translateX(-100%);
+            }
           }
-          to {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </section>
   );
 };
