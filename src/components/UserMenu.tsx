@@ -14,7 +14,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, setUser, checkAdminStatus } = useAuthStore();
+  const { user, isAdmin, setUser, checkAdminStatus, signOut } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
 
@@ -37,23 +37,13 @@ export const UserMenu = () => {
   }, [setUser, checkAdminStatus]);
 
   const handleSignOut = async () => {
-    console.log("Attempting to sign out...");
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Sign out error:", error);
-        throw error;
-      }
-      
-      console.log("Successfully signed out");
-      setUser(null);
+      await signOut();
       setOpen(false);
-      
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
       });
-      
       window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
