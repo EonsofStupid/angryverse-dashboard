@@ -30,28 +30,36 @@ export const Hero = () => {
         </div>
       </div>
       
-      {/* Binary stream */}
+      {/* Data Stream */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute top-0 right-0 w-[30%] h-full opacity-20 font-mono text-cyber-pink"
+          className="absolute top-0 right-0 w-1 h-screen bg-cyber-cyan/20"
           style={{
-            animation: 'scrollBinaryUp 15s linear infinite',
-            whiteSpace: 'pre-wrap',
-            lineHeight: '1.2em',
-            fontSize: '1.5em',
-            fontWeight: 'bold'
+            boxShadow: '0 0 20px theme("colors.cyber.cyan.DEFAULT")',
+          }}
+        />
+        <div 
+          className="absolute top-0 right-0 w-[30%] h-full"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(0, 255, 245, 0.1))',
           }}
         >
-          {Array.from({ length: 100 }).map((_, i) => (
-            <div key={i} className="my-1">
-              {Array.from({ length: 8 }).map(() => 
-                Math.random() > 0.5 ? '1' : '0'
-              ).join(' ')}
-            </div>
-          ))}
+          <div 
+            className="absolute top-0 right-4 text-cyber-cyan font-mono text-xs opacity-70 whitespace-nowrap transform -rotate-90 origin-right"
+            style={{
+              animation: 'dataStream 8s linear infinite',
+              textShadow: '0 0 5px theme("colors.cyber.cyan.DEFAULT")',
+            }}
+          >
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div key={i} className="my-8">
+                SECTOR_{(i * 247).toString(16).toUpperCase()}_ENCRYPTED
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      
+
       {/* Glowing horizontal lines */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -143,12 +151,12 @@ export const Hero = () => {
             }
           }
 
-          @keyframes scrollBinaryUp {
+          @keyframes dataStream {
             from {
-              transform: translateY(100%);
+              transform: translateY(-100%) rotate(-90deg);
             }
             to {
-              transform: translateY(-100%);
+              transform: translateY(100%) rotate(-90deg);
             }
           }
         `}
