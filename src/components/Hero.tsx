@@ -35,15 +35,15 @@ export const Hero = () => {
         <div 
           className="absolute top-0 right-0 w-[15%] h-full"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.05))',
-            boxShadow: 'inset -20px 0 30px rgba(57, 255, 20, 0.1), 0 0 50px rgba(139, 92, 246, 0.3)',
+            background: 'linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.03))',
+            boxShadow: 'inset -20px 0 30px rgba(57, 255, 20, 0.05), 0 0 50px rgba(139, 92, 246, 0.2)',
           }}
         >
           <div 
-            className="absolute top-0 right-4 text-cyber-green font-mono text-4xl opacity-90 whitespace-nowrap"
+            className="absolute top-0 right-4 text-cyber-green font-mono text-5xl opacity-70 whitespace-nowrap"
             style={{
               animation: 'dataStream 15s linear infinite',
-              textShadow: '0 0 15px rgba(57, 255, 20, 0.8), 0 0 30px rgba(139, 92, 246, 0.5)',
+              textShadow: '0 0 15px rgba(57, 255, 20, 0.6), 0 0 30px rgba(139, 92, 246, 0.3)',
               fontFamily: 'monospace',
             }}
           >
@@ -53,14 +53,14 @@ export const Hero = () => {
                 className="my-12 transform hover:scale-125 transition-transform duration-300"
                 style={{
                   animationDelay: `${i * 0.3}s`,
-                  opacity: Math.random() * 0.5 + 0.5,
+                  opacity: Math.random() * 0.3 + 0.2,
                 }}
               >
                 {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][
                   Math.floor(Math.random() * 20)
                 ]}
                 <div 
-                  className="absolute left-0 w-full h-1 bg-gradient-to-r from-cyber-purple/30 to-transparent"
+                  className="absolute left-0 w-full h-1 bg-gradient-to-r from-cyber-purple/20 to-transparent"
                   style={{
                     transform: 'translateY(-50%)',
                     animation: 'pulse 2s ease-in-out infinite',
@@ -73,12 +73,12 @@ export const Hero = () => {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={`orb-${i}`}
-              className="absolute w-3 h-3 rounded-full bg-cyber-purple/30"
+              className="absolute w-4 h-4 rounded-full bg-cyber-purple/20"
               style={{
                 right: `${Math.random() * 80 + 10}%`,
                 top: `${(i * 20)}%`,
                 animation: `float ${5 + i}s ease-in-out infinite`,
-                boxShadow: '0 0 20px rgba(139, 92, 246, 0.5)',
+                boxShadow: '0 0 20px rgba(139, 92, 246, 0.3)',
               }}
             />
           ))}
@@ -165,13 +165,13 @@ export const Hero = () => {
           }
 
           @keyframes dataStream {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
           }
 
           @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.4; }
           }
 
           @keyframes float {
