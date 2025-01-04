@@ -25,14 +25,7 @@ export const UserManagement = () => {
     queryFn: async () => {
       const { data: userRoles, error } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          user:user_id (
-            id,
-            email
-          )
-        `);
+        .select('*, auth_user:user_id(email)');
 
       if (error) {
         console.error('Error fetching users:', error);
@@ -41,7 +34,7 @@ export const UserManagement = () => {
 
       return (userRoles || []).map(user => ({
         id: user.user_id,
-        email: user.user?.email || 'No email',
+        email: user.auth_user?.email || 'No email',
         role: user.role as UserRole,
         status: 'active' as UserStatus
       }));
