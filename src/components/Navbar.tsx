@@ -1,15 +1,21 @@
 import { Search, Bell, Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { UserMenu } from "./UserMenu";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
+  const { isAdmin } = useAuthStore();
+
   return (
     <nav className="fixed top-0 w-full z-50 glass backdrop-blur-lg">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center space-x-8">
-          <h1 className="text-2xl font-cyber font-bold text-gradient animate-glow">
-            AngryGaming
-          </h1>
+          <Link to="/">
+            <h1 className="text-2xl font-cyber font-bold text-gradient animate-glow">
+              AngryGaming
+            </h1>
+          </Link>
           <div className="hidden md:flex space-x-6">
             <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
               Dashboard
@@ -20,6 +26,13 @@ export const Navbar = () => {
             <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
               Analytics
             </Button>
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                  Admin
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
         <div className="flex items-center space-x-4">
