@@ -53,10 +53,24 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         cyber: {
-          pink: "#ff2a6d",
-          cyan: "#00fff5",
+          dark: "#1a1f2c",
+          pink: {
+            DEFAULT: "#ff2a6d",
+            hover: "#ff1a8c"
+          },
+          cyan: {
+            DEFAULT: "#00fff5",
+            hover: "#00e6e6"
+          },
           purple: "#9d4edd",
-          dark: "#1a1a2e",
+          green: {
+            DEFAULT: "#39ff14",
+            hover: "#33ff00"
+          },
+          yellow: {
+            DEFAULT: "#ffd700",
+            hover: "#ffed4a"
+          }
         },
       },
       borderRadius: {
