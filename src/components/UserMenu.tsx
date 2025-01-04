@@ -8,26 +8,27 @@ import { Settings, LogIn, LogOut, Database, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { useToast } from "@/components/ui/use-toast";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, setUser, setIsAdmin, signOut } = useAuthStore();
+  const { user, isAdmin, setUser, checkAdminStatus, signOut } = useAuthStore();
   const { theme } = useThemeStore();
+  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
         if (session?.user) {
-          // Here you would check if the user is an admin
-          // For now, we'll just set it to false
-          setIsAdmin(false);
+          await checkAdminStatus(session.user.id);
+          console.log("Checked admin status for user:", session.user.id);
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [setUser, setIsAdmin]);
+  }, [setUser, checkAdminStatus]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -68,13 +69,19 @@ export const UserMenu = () => {
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-medium">{user.email}</span>
+                  {isAdmin && <span className="text-sm text-muted-foreground">Admin</span>}
                 </div>
               </div>
               
               <Button
                 variant="ghost"
                 className="justify-start gap-2"
-                onClick={() => {/* Navigate to settings */}}
+                onClick={() => {
+                  toast({
+                    title: "Settings",
+                    description: "Settings page coming soon!",
+                  });
+                }}
               >
                 <Settings className="h-5 w-5" />
                 Settings
@@ -84,7 +91,10 @@ export const UserMenu = () => {
                 <Button
                   variant="ghost"
                   className="justify-start gap-2"
-                  onClick={() => {/* Navigate to admin dashboard */}}
+                  onClick={() => {
+                    window.location.href = '/admin';
+                    setOpen(false);
+                  }}
                 >
                   <Database className="h-5 w-5" />
                   Admin Dashboard
