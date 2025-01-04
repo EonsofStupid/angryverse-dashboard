@@ -27,7 +27,7 @@ export const UserManagement = () => {
         .from('user_roles')
         .select(`
           *,
-          profiles (
+          profiles:user_id(
             username
           )
         `);
