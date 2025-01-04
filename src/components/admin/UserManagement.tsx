@@ -8,11 +8,12 @@ import { toast } from "sonner";
 import { Shield, Ban, UserX } from "lucide-react";
 
 type UserStatus = 'active' | 'suspended' | 'banned';
+type UserRole = 'user' | 'admin';
 
 interface UserWithRole {
   id: string;
   email: string;
-  role: string;
+  role: UserRole;
   status: UserStatus;
 }
 
@@ -22,20 +23,23 @@ export const UserManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      const { data: users, error } = await supabase
+      const { data: userRoles, error } = await supabase
         .from('user_roles')
         .select(`
           user_id,
           role,
-          profiles:profiles(email)
-        `)
-        .order('created_at', { ascending: false });
+          profiles!inner (
+            id,
+            username
+          )
+        `);
 
       if (error) throw error;
-      return users.map(user => ({
+
+      return userRoles.map(user => ({
         id: user.user_id,
-        email: user.profiles?.email || 'No email',
-        role: user.role,
+        email: user.profiles?.username || 'No username',
+        role: user.role as UserRole,
         status: 'active' as UserStatus // You'll need to add a status field to your database
       }));
     }
@@ -52,7 +56,7 @@ export const UserManagement = () => {
     }
   };
 
-  const handleUpdateUserRole = async (userId: string, newRole: string) => {
+  const handleUpdateUserRole = async (userId: string, newRole: UserRole) => {
     try {
       const { error } = await supabase
         .from('user_roles')
