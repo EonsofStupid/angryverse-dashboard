@@ -15,7 +15,8 @@ export const Hero = () => {
             content: "'<div>...</div><span>...</span><code>...</code>'",
             whiteSpace: 'pre-wrap',
             lineHeight: '1.5em',
-            fontSize: '0.8em'
+            fontSize: '0.8em',
+            zIndex: 1
           }}
         >
           {Array.from({ length: 50 }).map((_, i) => (
@@ -37,6 +38,7 @@ export const Hero = () => {
           style={{
             background: 'linear-gradient(90deg, transparent, rgba(255, 192, 203, 0.05))',
             boxShadow: 'inset -20px 0 30px rgba(255, 192, 203, 0.06)',
+            zIndex: 2
           }}
         >
           {/* Create two identical streams for seamless scrolling */}
@@ -48,18 +50,21 @@ export const Hero = () => {
                 animation: 'dataStream 20s linear infinite',
                 animationDelay: `${streamIndex * -10}s`,
                 transform: `translateY(${streamIndex * -100}%)`,
+                zIndex: 3
               }}
             >
               {Array.from({ length: 40 }).map((_, i) => (
                 <div 
                   key={i} 
-                  className="my-12 transform hover:scale-125 transition-transform duration-300"
+                  className="my-16 transform hover:scale-125 transition-transform duration-300"
                   style={{
                     animationDelay: `${i * 0.3}s`,
                     opacity: 0.2,
-                    color: `hsl(${340 - (i * 4)}, 100%, 80%)`, // Transitions from pink to cyan
+                    color: `hsl(${340 - (i * 4)}, 100%, 80%)`,
                     textShadow: '0 0 15px currentColor',
-                    transform: 'scale(1.2)', // Making elements 20% larger
+                    transform: 'scale(1.2)',
+                    position: 'relative',
+                    zIndex: 4
                   }}
                 >
                   {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][
@@ -71,6 +76,7 @@ export const Hero = () => {
                       background: `linear-gradient(to right, hsla(${340 - (i * 4)}, 100%, 80%, 0.1), transparent)`,
                       transform: 'translateY(-50%)',
                       animation: 'pulse 2s ease-in-out infinite',
+                      zIndex: -1
                     }}
                   />
                 </div>
@@ -84,12 +90,13 @@ export const Hero = () => {
               key={`orb-${i}`}
               className="absolute w-5 h-5 rounded-full"
               style={{
-                right: `${Math.random() * 80 + 10}%`,
+                right: `${Math.random() * 60 + 20}%`,
                 top: `${(i * 20)}%`,
                 animation: `float ${5 + i}s ease-in-out infinite`,
                 background: `hsla(${340 - (i * 20)}, 100%, 80%, 0.15)`,
                 boxShadow: `0 0 20px hsla(${340 - (i * 20)}, 100%, 80%, 0.2)`,
-                transform: 'scale(1.2)', // Making orbs 20% larger
+                transform: 'scale(1.2)',
+                zIndex: 5
               }}
             />
           ))}
@@ -98,7 +105,7 @@ export const Hero = () => {
 
       {/* Glowing horizontal lines */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-20" style={{ zIndex: 0 }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
@@ -115,7 +122,7 @@ export const Hero = () => {
 
       {/* Vertical glowing lines */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-20" style={{ zIndex: 0 }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
