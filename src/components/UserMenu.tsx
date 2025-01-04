@@ -19,6 +19,10 @@ export const UserMenu = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (event === 'SIGNED_OUT') {
+          setUser(null);
+          return;
+        }
         setUser(session?.user ?? null);
         if (session?.user) {
           await checkAdminStatus(session.user.id);
@@ -29,6 +33,24 @@ export const UserMenu = () => {
 
     return () => subscription.unsubscribe();
   }, [setUser, checkAdminStatus]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setOpen(false);
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -104,10 +126,7 @@ export const UserMenu = () => {
               <Button
                 variant="ghost"
                 className="justify-start gap-2"
-                onClick={() => {
-                  signOut();
-                  setOpen(false);
-                }}
+                onClick={handleSignOut}
               >
                 <LogOut className="h-5 w-5" />
                 Log Out
