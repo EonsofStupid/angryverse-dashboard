@@ -23,11 +23,15 @@ export const UserManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
+      // First get user_roles with their associated profiles
       const { data: userRoles, error } = await supabase
         .from('user_roles')
-        .select('*, profiles!user_roles_user_id_fkey(username)');
+        .select('*, user_id, profiles!user_roles_user_id_fkey(username)');
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+      }
 
       return userRoles.map(user => ({
         id: user.user_id,
