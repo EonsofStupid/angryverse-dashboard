@@ -1,33 +1,33 @@
-import { Twitch, Youtube, Facebook, Instagram } from "lucide-react";
+import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
 
 const features = [
   {
-    title: "Twitch Integration",
-    description: "Manage your streams and chat engagement",
-    icon: Twitch,
-    color: "text-[#9146FF]",
-    gradient: "from-[#9146FF]/20 to-cyber-purple/20",
+    title: "Guides",
+    description: "Detailed guides on pop culture topics",
+    icon: BookOpen,
+    color: "text-[#FF6B6B]",
+    gradient: "from-[#FF6B6B]/20 to-cyber-pink/20",
   },
   {
-    title: "YouTube Management",
-    description: "Upload and schedule your video content",
-    icon: Youtube,
-    color: "text-[#FF0000]",
-    gradient: "from-[#FF0000]/20 to-cyber-pink/20",
+    title: "Updates",
+    description: "Latest news and personal updates",
+    icon: Rss,
+    color: "text-[#4ECDC4]",
+    gradient: "from-[#4ECDC4]/20 to-cyber-cyan/20",
   },
   {
-    title: "Facebook Posts",
-    description: "Create and schedule your social updates",
-    icon: Facebook,
-    color: "text-[#1877F2]",
-    gradient: "from-[#1877F2]/20 to-cyber-cyan/20",
+    title: "Blog",
+    description: "In-depth articles and opinions",
+    icon: Newspaper,
+    color: "text-[#FFE66D]",
+    gradient: "from-[#FFE66D]/20 to-cyber-purple/20",
   },
   {
-    title: "Instagram Stories",
-    description: "Design and publish engaging stories",
-    icon: Instagram,
-    color: "text-[#E4405F]",
-    gradient: "from-[#E4405F]/20 to-cyber-pink/20",
+    title: "Videos",
+    description: "Video content and highlights",
+    icon: Video,
+    color: "text-[#FF8484]",
+    gradient: "from-[#FF8484]/20 to-cyber-pink/20",
   },
 ];
 
@@ -36,7 +36,7 @@ export const Features = () => {
     <section className="py-20 relative">
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-3xl md:text-4xl font-cyber font-bold text-center mb-12">
-          All Your <span className="text-gradient animate-glow">Content</span> in One Place
+          Latest <span className="text-gradient animate-glow">Content</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature) => (

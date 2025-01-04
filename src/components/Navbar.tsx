@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
-  const { isAdmin } = useAuthStore();
+  const { isAdmin, user } = useAuthStore();
 
   return (
     <nav className="fixed top-0 w-full z-50 glass backdrop-blur-lg">
@@ -17,21 +17,36 @@ export const Navbar = () => {
             </h1>
           </Link>
           <div className="hidden md:flex space-x-6">
-            <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
-              Dashboard
-            </Button>
-            <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
-              Content
-            </Button>
-            <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
-              Analytics
-            </Button>
-            {isAdmin && (
-              <Link to="/admin">
+            {user ? (
+              <>
+                <Link to="/portal">
+                  <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                    Portal
+                  </Button>
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                      Admin
+                    </Button>
+                  </Link>
+                )}
+              </>
+            ) : (
+              <>
                 <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
-                  Admin
+                  Guides
                 </Button>
-              </Link>
+                <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                  Updates
+                </Button>
+                <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                  Blog
+                </Button>
+                <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                  Videos
+                </Button>
+              </>
             )}
           </div>
         </div>
