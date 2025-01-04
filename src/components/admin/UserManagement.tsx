@@ -25,14 +25,7 @@ export const UserManagement = () => {
     queryFn: async () => {
       const { data: userRoles, error } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          profiles!inner (
-            id,
-            username
-          )
-        `);
+        .select('*, profiles!user_roles_user_id_fkey(username)');
 
       if (error) throw error;
 
