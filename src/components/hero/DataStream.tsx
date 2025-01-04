@@ -14,13 +14,13 @@ export const DataStream = () => {
         <div 
           className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
           style={{
-            animation: 'dataStream 30s linear infinite', // Slowed down animation
+            animation: 'dataStream 30s linear infinite',
             zIndex: 3
           }}
         >
           {Array.from({ length: 40 }).map((_, i) => {
-            const progress = i / 40; // Calculate progress (0 to 1)
-            const hue = 340 - (progress * 160); // Transition from pink (340) to cyan (180)
+            const progress = i / 40;
+            const hue = 340 - (progress * 160);
             
             return (
               <div 
@@ -51,7 +51,6 @@ export const DataStream = () => {
           })}
         </div>
 
-        {/* Floating orbs with proper spacing and transitions */}
         {Array.from({ length: 5 }).map((_, i) => {
           const progress = i / 5;
           const hue = 340 - (progress * 160);
