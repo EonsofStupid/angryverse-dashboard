@@ -17,6 +17,16 @@ interface UserWithRole {
   status: UserStatus;
 }
 
+interface ProfileResponse {
+  username: string | null;
+}
+
+interface UserRoleResponse {
+  user_id: string;
+  role: UserRole;
+  profiles: ProfileResponse;
+}
+
 export const UserManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
 
@@ -26,8 +36,9 @@ export const UserManagement = () => {
       const { data: userRoles, error } = await supabase
         .from('user_roles')
         .select(`
-          *,
-          profiles:user_id(
+          user_id,
+          role,
+          profiles (
             username
           )
         `);
@@ -37,7 +48,7 @@ export const UserManagement = () => {
         throw error;
       }
 
-      return userRoles.map(user => ({
+      return (userRoles as UserRoleResponse[]).map(user => ({
         id: user.user_id,
         email: user.profiles?.username || 'No username',
         role: user.role as UserRole,
