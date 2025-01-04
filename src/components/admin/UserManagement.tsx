@@ -17,6 +17,14 @@ interface User {
   status: UserStatus;
 }
 
+interface UserRoleWithAuth {
+  user_id: string;
+  role: UserRole;
+  auth_user: {
+    email: string;
+  } | null;
+}
+
 export const UserManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
 
@@ -25,7 +33,7 @@ export const UserManagement = () => {
     queryFn: async () => {
       const { data: userRoles, error } = await supabase
         .from('user_roles')
-        .select('*, auth_user:user_id(email)');
+        .select('*, auth_user:user_id(email)') as { data: UserRoleWithAuth[] | null, error: any };
 
       if (error) {
         console.error('Error fetching users:', error);
