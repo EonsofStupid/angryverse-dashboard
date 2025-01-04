@@ -23,10 +23,14 @@ export const UserManagement = () => {
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      // First get user_roles with their associated profiles
       const { data: userRoles, error } = await supabase
         .from('user_roles')
-        .select('*, user_id, profiles!user_roles_user_id_fkey(username)');
+        .select(`
+          *,
+          profiles (
+            username
+          )
+        `);
 
       if (error) {
         console.error('Error fetching users:', error);
@@ -37,7 +41,7 @@ export const UserManagement = () => {
         id: user.user_id,
         email: user.profiles?.username || 'No username',
         role: user.role as UserRole,
-        status: 'active' as UserStatus // You'll need to add a status field to your database
+        status: 'active' as UserStatus
       }));
     }
   });
