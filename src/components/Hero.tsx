@@ -6,7 +6,31 @@ export const Hero = () => {
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-r from-cyber-pink/5 via-cyber-cyan/5 to-cyber-purple/5 animate-pulse" />
       
-      {/* Glowing lines */}
+      {/* Vertical scrolling code */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 left-0 w-[30%] h-full opacity-10 font-mono text-cyber-cyan"
+          style={{
+            animation: 'scrollCode 20s linear infinite',
+            content: "'<div>...</div><span>...</span><code>...</code>'",
+            whiteSpace: 'pre-wrap',
+            lineHeight: '1.5em',
+            fontSize: '0.8em'
+          }}
+        >
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div key={i} className="my-2">
+              {`const Component${i} = () => {
+                return <div className="cyber">
+                  <h${i % 6 + 1}>Cyber Element</h${i % 6 + 1}>
+                </div>
+              }`}
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Glowing horizontal lines */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -17,6 +41,23 @@ export const Hero = () => {
                 top: `${20 * i}%`,
                 animationDelay: `${i * 0.5}s`,
                 animation: 'moveLeft 15s linear infinite'
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Vertical glowing lines */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-px h-full bg-gradient-to-b from-transparent via-cyber-pink to-transparent"
+              style={{
+                left: `${20 * i}%`,
+                animationDelay: `${i * 0.5}s`,
+                animation: 'moveUp 20s linear infinite'
               }}
             />
           ))}
@@ -59,6 +100,24 @@ export const Hero = () => {
             }
             to {
               transform: translateX(-100%);
+            }
+          }
+          
+          @keyframes moveUp {
+            from {
+              transform: translateY(100%);
+            }
+            to {
+              transform: translateY(-100%);
+            }
+          }
+          
+          @keyframes scrollCode {
+            from {
+              transform: translateY(0);
+            }
+            to {
+              transform: translateY(-50%);
             }
           }
         `}
