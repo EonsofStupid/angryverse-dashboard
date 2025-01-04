@@ -4,13 +4,12 @@ export const ScrollingCode = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
-        className="absolute top-0 left-0 w-[30%] h-full opacity-10 font-mono"
+        className="absolute top-0 right-0 w-[30%] h-full opacity-20 font-mono"
         style={{
           animation: 'scrollCode 20s linear infinite',
-          content: "'<div>...</div><span>...</span><code>...</code>'",
           whiteSpace: 'pre-wrap',
           lineHeight: '1.5em',
-          fontSize: '0.8em',
+          fontSize: '1em',
           zIndex: 1
         }}
       >
@@ -21,10 +20,11 @@ export const ScrollingCode = () => {
           return (
             <div 
               key={i} 
-              className="my-2"
+              className="my-3"
               style={{
                 color: `hsl(${hue}, 100%, 80%)`,
-                transition: 'color 0.5s ease'
+                transition: 'color 0.5s ease',
+                transform: 'scale(1.2)'
               }}
             >
               {`const Component${i} = () => {
