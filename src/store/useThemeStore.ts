@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark';
 
 interface ThemeState {
   theme: Theme;
@@ -8,6 +8,6 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme: 'system',
+  theme: 'dark',
   setTheme: (theme) => set({ theme }),
 }));
