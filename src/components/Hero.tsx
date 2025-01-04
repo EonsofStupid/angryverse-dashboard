@@ -30,6 +30,28 @@ export const Hero = () => {
         </div>
       </div>
       
+      {/* Binary stream */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 right-0 w-[30%] h-full opacity-20 font-mono text-cyber-pink"
+          style={{
+            animation: 'scrollBinaryUp 15s linear infinite',
+            whiteSpace: 'pre-wrap',
+            lineHeight: '1.2em',
+            fontSize: '1.5em',
+            fontWeight: 'bold'
+          }}
+        >
+          {Array.from({ length: 100 }).map((_, i) => (
+            <div key={i} className="my-1">
+              {Array.from({ length: 8 }).map(() => 
+                Math.random() > 0.5 ? '1' : '0'
+              ).join(' ')}
+            </div>
+          ))}
+        </div>
+      </div>
+      
       {/* Glowing horizontal lines */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -118,6 +140,15 @@ export const Hero = () => {
             }
             to {
               transform: translateY(-50%);
+            }
+          }
+
+          @keyframes scrollBinaryUp {
+            from {
+              transform: translateY(100%);
+            }
+            to {
+              transform: translateY(-100%);
             }
           }
         `}
