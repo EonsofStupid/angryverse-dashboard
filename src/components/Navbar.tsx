@@ -1,5 +1,6 @@
 import { Search, Bell, Menu } from "lucide-react";
 import { Button } from "./ui/button";
+import { UserMenu } from "./UserMenu";
 
 export const Navbar = () => {
   return (
@@ -28,6 +29,7 @@ export const Navbar = () => {
           <Button variant="ghost" size="icon" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
             <Bell className="h-5 w-5" />
           </Button>
+          <UserMenu />
           <Button variant="ghost" size="icon" className="md:hidden hover-glow text-gray-300 hover:text-white transition-colors duration-500">
             <Menu className="h-5 w-5" />
           </Button>
