@@ -10,21 +10,11 @@ import { Shield, Ban, UserX } from "lucide-react";
 type UserStatus = 'active' | 'suspended' | 'banned';
 type UserRole = 'user' | 'admin';
 
-interface UserWithRole {
+interface User {
   id: string;
   email: string;
   role: UserRole;
   status: UserStatus;
-}
-
-interface ProfileResponse {
-  username: string | null;
-}
-
-interface UserRoleResponse {
-  user_id: string;
-  role: UserRole;
-  profiles: ProfileResponse;
 }
 
 export const UserManagement = () => {
@@ -38,8 +28,9 @@ export const UserManagement = () => {
         .select(`
           user_id,
           role,
-          profiles (
-            username
+          user:user_id (
+            id,
+            email
           )
         `);
 
@@ -48,9 +39,9 @@ export const UserManagement = () => {
         throw error;
       }
 
-      return (userRoles as UserRoleResponse[]).map(user => ({
+      return (userRoles || []).map(user => ({
         id: user.user_id,
-        email: user.profiles?.username || 'No username',
+        email: user.user?.email || 'No email',
         role: user.role as UserRole,
         status: 'active' as UserStatus
       }));
