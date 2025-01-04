@@ -30,26 +30,24 @@ export const Hero = () => {
         </div>
       </div>
       
-      {/* Enhanced Retro Data Stream */}
+      {/* Enhanced Retro Data Stream with color transition */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
           className="absolute top-0 right-0 w-[15%] h-full"
           style={{
-            background: 'linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.02))',
-            boxShadow: 'inset -20px 0 30px rgba(57, 255, 20, 0.03), 0 0 50px rgba(139, 92, 246, 0.15)',
+            background: 'linear-gradient(90deg, transparent, rgba(255, 192, 203, 0.05))',
+            boxShadow: 'inset -20px 0 30px rgba(255, 192, 203, 0.06)',
           }}
         >
           {/* Create two identical streams for seamless scrolling */}
           {[0, 1].map((streamIndex) => (
             <div 
               key={streamIndex}
-              className="absolute top-0 right-4 text-cyber-green font-mono text-5xl opacity-50 whitespace-nowrap"
+              className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
               style={{
                 animation: 'dataStream 20s linear infinite',
-                animationDelay: `${streamIndex * -10}s`, // Offset the second stream
-                textShadow: '0 0 15px rgba(57, 255, 20, 0.4), 0 0 30px rgba(139, 92, 246, 0.2)',
-                fontFamily: 'monospace',
-                transform: `translateY(${streamIndex * -100}%)`, // Position the second stream
+                animationDelay: `${streamIndex * -10}s`,
+                transform: `translateY(${streamIndex * -100}%)`,
               }}
             >
               {Array.from({ length: 40 }).map((_, i) => (
@@ -58,15 +56,19 @@ export const Hero = () => {
                   className="my-12 transform hover:scale-125 transition-transform duration-300"
                   style={{
                     animationDelay: `${i * 0.3}s`,
-                    opacity: Math.random() * 0.2 + 0.1, // More transparent
+                    opacity: 0.2,
+                    color: `hsl(${340 - (i * 4)}, 100%, 80%)`, // Transitions from pink to cyan
+                    textShadow: '0 0 15px currentColor',
+                    transform: 'scale(1.2)', // Making elements 20% larger
                   }}
                 >
                   {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][
                     Math.floor(Math.random() * 20)
                   ]}
                   <div 
-                    className="absolute left-0 w-full h-1 bg-gradient-to-r from-cyber-purple/10 to-transparent"
+                    className="absolute left-0 w-full h-1"
                     style={{
+                      background: `linear-gradient(to right, hsla(${340 - (i * 4)}, 100%, 80%, 0.1), transparent)`,
                       transform: 'translateY(-50%)',
                       animation: 'pulse 2s ease-in-out infinite',
                     }}
@@ -76,16 +78,18 @@ export const Hero = () => {
             </div>
           ))}
           
-          {/* Floating orbs */}
+          {/* Floating orbs with color transition */}
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={`orb-${i}`}
-              className="absolute w-4 h-4 rounded-full bg-cyber-purple/15"
+              className="absolute w-5 h-5 rounded-full"
               style={{
                 right: `${Math.random() * 80 + 10}%`,
                 top: `${(i * 20)}%`,
                 animation: `float ${5 + i}s ease-in-out infinite`,
-                boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)',
+                background: `hsla(${340 - (i * 20)}, 100%, 80%, 0.15)`,
+                boxShadow: `0 0 20px hsla(${340 - (i * 20)}, 100%, 80%, 0.2)`,
+                transform: 'scale(1.2)', // Making orbs 20% larger
               }}
             />
           ))}
@@ -182,8 +186,8 @@ export const Hero = () => {
           }
 
           @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            50% { transform: translateY(-20px) translateX(-10px); }
+            0%, 100% { transform: translateY(0) translateX(0) scale(1.2); }
+            50% { transform: translateY(-20px) translateX(-10px) scale(1.2); }
           }
         `}
       </style>
