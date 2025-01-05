@@ -85,15 +85,16 @@ export const PortalContent = () => {
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6">Social Media Management</h2>
       
-      {/* Social Media Connections */}
       <SocialConnections />
 
       <Tabs defaultValue="composer" className="mt-8">
         <TabsList className="mb-4">
           <TabsTrigger value="composer">Create Post</TabsTrigger>
           <TabsTrigger value="youtube">YouTube</TabsTrigger>
-          <TabsTrigger value="twitter">Twitter/X</TabsTrigger>
           <TabsTrigger value="facebook">Facebook</TabsTrigger>
+          <TabsTrigger value="facebook_video">Facebook Video</TabsTrigger>
+          <TabsTrigger value="twitch">Twitch</TabsTrigger>
+          <TabsTrigger value="tiktok">TikTok</TabsTrigger>
           <TabsTrigger value="instagram">Instagram</TabsTrigger>
           <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
         </TabsList>
@@ -117,12 +118,20 @@ export const PortalContent = () => {
           <PlatformContent platform="youtube" />
         </TabsContent>
 
-        <TabsContent value="twitter">
-          <PlatformContent platform="twitter" />
-        </TabsContent>
-
         <TabsContent value="facebook">
           <PlatformContent platform="facebook" />
+        </TabsContent>
+
+        <TabsContent value="facebook_video">
+          <PlatformContent platform="facebook_video" />
+        </TabsContent>
+
+        <TabsContent value="twitch">
+          <PlatformContent platform="twitch" />
+        </TabsContent>
+
+        <TabsContent value="tiktok">
+          <PlatformContent platform="tiktok" />
         </TabsContent>
 
         <TabsContent value="instagram">
