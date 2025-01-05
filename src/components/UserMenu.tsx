@@ -23,6 +23,7 @@ export const UserMenu = () => {
       async (event, session) => {
         console.log("Auth state changed:", event);
         if (event === 'SIGNED_OUT') {
+          console.log('Auth state detected sign out');
           setUser(null);
           return;
         }
@@ -37,8 +38,10 @@ export const UserMenu = () => {
   }, [setUser, checkAdminStatus]);
 
   const handleSignOut = async () => {
+    console.log('Handling sign out click...');
     try {
       await signOut();
+      console.log('Sign out successful, closing menu...');
       setOpen(false);
       toast({
         title: "Signed out",
