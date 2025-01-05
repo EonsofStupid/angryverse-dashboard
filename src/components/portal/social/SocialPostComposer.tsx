@@ -8,11 +8,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Facebook, Instagram, Twitter, Linkedin, Youtube, Image as ImageIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const SocialPostComposer = () => {
   const [content, setContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
 
   const { data: connections, isLoading: isLoadingConnections } = useQuery({
     queryKey: ["social-connections"],
@@ -29,10 +31,15 @@ export const SocialPostComposer = () => {
 
   const createPostMutation = useMutation({
     mutationFn: async ({ content, platforms }: { content: string; platforms: string[] }) => {
+      if (!user) throw new Error("User not authenticated");
+
       // First create the main social post
       const { data: socialPost, error: socialPostError } = await supabase
         .from("social_posts")
-        .insert([{ content }])
+        .insert([{ 
+          content,
+          user_id: user.id 
+        }])
         .select()
         .single();
 
