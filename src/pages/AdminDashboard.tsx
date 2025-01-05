@@ -6,6 +6,10 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { Settings } from "@/components/admin/Settings";
 import { DashboardOverview } from "@/components/admin/DashboardOverview";
+import { PostsManagement } from "@/components/admin/content/PostsManagement";
+import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
+import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
+import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = () => {
@@ -36,12 +40,32 @@ const AdminDashboard = () => {
       <Tabs defaultValue="dashboard" className="w-full">
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="posts">Posts</TabsTrigger>
+          <TabsTrigger value="media">Media</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="comments">Comments</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard">
           <DashboardOverview />
+        </TabsContent>
+        
+        <TabsContent value="posts">
+          <PostsManagement />
+        </TabsContent>
+        
+        <TabsContent value="media">
+          <MediaLibrary />
+        </TabsContent>
+        
+        <TabsContent value="categories">
+          <CategoriesManagement />
+        </TabsContent>
+        
+        <TabsContent value="comments">
+          <CommentsManagement />
         </TabsContent>
         
         <TabsContent value="users">
