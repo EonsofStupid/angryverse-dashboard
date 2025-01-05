@@ -20,6 +20,18 @@ export const UserMenu = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Add auth state change listener
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      setOpen(false);
+      navigate('/');
+      toast({
+        title: "Welcome!",
+        description: "You have successfully signed in.",
+      });
+    }
+  });
+
   const handleSignOut = async () => {
     try {
       setOpen(false);
@@ -73,6 +85,8 @@ export const UserMenu = () => {
                 },
               }}
               theme={theme === "dark" ? "dark" : "light"}
+              providers={[]}
+              redirectTo={window.location.origin}
             />
           ) : (
             <>
