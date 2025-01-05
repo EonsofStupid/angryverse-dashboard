@@ -15,7 +15,7 @@ import { UserProfile } from "./auth/UserProfile";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, setUser, checkAdminStatus } = useAuthStore();
+  const { user, setUser, isAdmin, checkAdminStatus } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -34,9 +34,10 @@ export const UserMenu = () => {
           break;
         case 'SIGNED_IN':
           if (session) {
-            setOpen(false);
+            console.log("User signed in:", session.user);
             setUser(session.user);
             await checkAdminStatus(session.user.id);
+            setOpen(false);
             navigate('/');
             toast({
               title: "Welcome back!",
@@ -45,6 +46,7 @@ export const UserMenu = () => {
           }
           break;
         case 'SIGNED_OUT':
+          console.log("User signed out");
           setUser(null);
           toast({
             title: "Signed out",
@@ -53,9 +55,13 @@ export const UserMenu = () => {
           break;
         case 'TOKEN_REFRESHED':
           console.log("Token refreshed successfully");
+          if (session?.user) {
+            await checkAdminStatus(session.user.id);
+          }
           break;
         case 'USER_UPDATED':
           if (session?.user) {
+            console.log("User updated:", session.user);
             setUser(session.user);
             await checkAdminStatus(session.user.id);
           }
@@ -69,10 +75,25 @@ export const UserMenu = () => {
       }
     });
 
+    // Check initial session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        console.log("Found existing session:", session.user);
+        setUser(session.user);
+        await checkAdminStatus(session.user.id);
+      }
+    };
+    
+    checkSession();
+
     return () => {
       subscription.unsubscribe();
     };
   }, [navigate, toast, setUser, checkAdminStatus]);
+
+  console.log("Current user:", user);
+  console.log("Is admin:", isAdmin);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
