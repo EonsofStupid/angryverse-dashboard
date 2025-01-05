@@ -34,6 +34,14 @@ export const platformConfigs: PlatformConfig[] = [
     supportsVideo: true
   },
   {
+    id: "rumble",
+    platform: "rumble",
+    displayName: "Rumble",
+    icon: "Video",
+    color: "text-orange-600",
+    supportsVideo: true
+  },
+  {
     id: "tiktok",
     platform: "tiktok",
     displayName: "TikTok",
@@ -42,11 +50,19 @@ export const platformConfigs: PlatformConfig[] = [
     supportsVideo: true
   },
   {
-    id: "rumble",
-    platform: "rumble",
-    displayName: "Rumble",
-    icon: "Video",
-    color: "text-orange-600",
-    supportsVideo: true
+    id: "instagram",
+    platform: "instagram",
+    displayName: "Instagram",
+    icon: "Instagram",
+    color: "text-pink-500",
+    supportsVideo: false
+  },
+  {
+    id: "linkedin",
+    platform: "linkedin",
+    displayName: "LinkedIn",
+    icon: "Linkedin",
+    color: "text-blue-500",
+    supportsVideo: false
   }
 ];

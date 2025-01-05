@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlatformContent } from "./social/PlatformContent";
+import { platformConfigs } from "./social/platforms/platformConfigs";
 
 export const PortalContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -88,16 +89,13 @@ export const PortalContent = () => {
       <SocialConnections />
 
       <Tabs defaultValue="composer" className="mt-8">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 flex flex-wrap gap-2">
           <TabsTrigger value="composer">Create Post</TabsTrigger>
-          <TabsTrigger value="youtube">YouTube</TabsTrigger>
-          <TabsTrigger value="facebook">Facebook</TabsTrigger>
-          <TabsTrigger value="facebook_video">Facebook Video</TabsTrigger>
-          <TabsTrigger value="twitch">Twitch</TabsTrigger>
-          <TabsTrigger value="rumble">Rumble</TabsTrigger>
-          <TabsTrigger value="tiktok">TikTok</TabsTrigger>
-          <TabsTrigger value="instagram">Instagram</TabsTrigger>
-          <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
+          {platformConfigs.map((platform) => (
+            <TabsTrigger key={platform.id} value={platform.id}>
+              {platform.displayName}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <TabsContent value="composer">
@@ -115,37 +113,11 @@ export const PortalContent = () => {
           />
         </TabsContent>
 
-        <TabsContent value="youtube">
-          <PlatformContent platform="youtube" />
-        </TabsContent>
-
-        <TabsContent value="facebook">
-          <PlatformContent platform="facebook" />
-        </TabsContent>
-
-        <TabsContent value="facebook_video">
-          <PlatformContent platform="facebook_video" />
-        </TabsContent>
-
-        <TabsContent value="twitch">
-          <PlatformContent platform="twitch" />
-        </TabsContent>
-
-        <TabsContent value="rumble">
-          <PlatformContent platform="rumble" />
-        </TabsContent>
-
-        <TabsContent value="tiktok">
-          <PlatformContent platform="tiktok" />
-        </TabsContent>
-
-        <TabsContent value="instagram">
-          <PlatformContent platform="instagram" />
-        </TabsContent>
-
-        <TabsContent value="linkedin">
-          <PlatformContent platform="linkedin" />
-        </TabsContent>
+        {platformConfigs.map((platform) => (
+          <TabsContent key={platform.id} value={platform.id}>
+            <PlatformContent platform={platform.id} />
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
