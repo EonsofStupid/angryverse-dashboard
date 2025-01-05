@@ -25,33 +25,34 @@ export const UserMenu = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
       
-      if (event === 'SIGNED_IN' && session) {
-        setOpen(false);
-        navigate('/');
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-        });
-      } else if (event === 'SIGNED_OUT') {
-        toast({
-          title: "Signed out",
-          description: "You have been successfully signed out.",
-        });
-      } else if (event === 'USER_UPDATED') {
-        toast({
-          title: "Profile updated",
-          description: "Your profile has been successfully updated.",
-        });
-      } else if (event === 'USER_DELETED') {
-        toast({
-          title: "Account deleted",
-          description: "Your account has been successfully deleted.",
-        });
-      } else if (event === 'PASSWORD_RECOVERY') {
-        toast({
-          title: "Password recovery",
-          description: "Please check your email to reset your password.",
-        });
+      switch (event) {
+        case 'SIGNED_IN':
+          if (session) {
+            setOpen(false);
+            navigate('/');
+            toast({
+              title: "Welcome back!",
+              description: "You have successfully signed in.",
+            });
+          }
+          break;
+        case 'SIGNED_OUT':
+          toast({
+            title: "Signed out",
+            description: "You have been successfully signed out.",
+          });
+          break;
+        case 'TOKEN_REFRESHED':
+          console.log("Token refreshed successfully");
+          break;
+        case 'PASSWORD_RECOVERY':
+          toast({
+            title: "Password recovery",
+            description: "Please check your email to reset your password.",
+          });
+          break;
+        default:
+          console.log("Unhandled auth event:", event);
       }
     });
 
@@ -113,14 +114,6 @@ export const UserMenu = () => {
               theme={theme === "dark" ? "dark" : "light"}
               providers={[]}
               redirectTo={window.location.origin}
-              onError={(error) => {
-                console.error("Auth error:", error);
-                toast({
-                  title: "Authentication Error",
-                  description: error.message,
-                  variant: "destructive",
-                });
-              }}
             />
           ) : (
             <>
