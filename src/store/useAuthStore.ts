@@ -48,10 +48,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Clear the store state
       set({ user: null, isAdmin: false });
       
-      return Promise.resolve();
+      // Force reload the page to clear any cached state
+      window.location.href = '/';
     } catch (error) {
       console.error('Error in signOut:', error);
-      return Promise.reject(error);
+      throw error;
     }
   },
 }));

@@ -21,6 +21,8 @@ export const UserMenu = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session);
+        
         if (event === 'SIGNED_OUT') {
           setUser(null);
           return;
@@ -38,13 +40,13 @@ export const UserMenu = () => {
 
   const handleSignOut = async () => {
     try {
+      console.log('Attempting to sign out...');
       await signOut();
       setOpen(false);
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
       });
-      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
