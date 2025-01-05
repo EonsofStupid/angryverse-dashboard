@@ -35,10 +35,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         return;
       }
 
-      console.log('User role data:', data);
-      set({ isAdmin: data?.role === 'admin' });
+      console.log('User role data received:', data);
+      const isAdmin = data?.role === 'admin';
+      console.log('Setting isAdmin to:', isAdmin);
+      set({ isAdmin });
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error('Error in checkAdminStatus:', error);
       set({ isAdmin: false });
     }
   },
