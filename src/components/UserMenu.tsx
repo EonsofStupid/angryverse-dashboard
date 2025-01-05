@@ -21,24 +21,42 @@ export const UserMenu = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session);
+      if (session?.user) {
+        console.log('Found existing session, setting user:', session.user);
+        setUser(session.user);
+        checkAdminStatus(session.user.id);
+      }
+    });
+
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session);
+        console.log('Auth state changed:', event);
+        console.log('Session data:', session);
         
         if (event === 'SIGNED_OUT') {
+          console.log('User signed out, clearing state');
           setUser(null);
           navigate('/');
           return;
         }
         
-        if (session?.user) {
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in, setting user:', session.user);
           setUser(session.user);
+          console.log('Checking admin status for user:', session.user.id);
           await checkAdminStatus(session.user.id);
         }
       }
     );
 
     return () => {
+      console.log('Cleaning up auth listener');
       subscription.unsubscribe();
     };
   }, [setUser, checkAdminStatus, navigate]);
@@ -63,7 +81,8 @@ export const UserMenu = () => {
     }
   };
 
-  console.log('Current user isAdmin status:', isAdmin);
+  console.log('Current user:', user);
+  console.log('Current isAdmin status:', isAdmin);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

@@ -13,54 +13,52 @@ interface AuthState {
   signOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAdmin: false,
   isLoading: true,
-  setUser: (user) => set({ user }),
-  setIsAdmin: (isAdmin) => set({ isAdmin }),
+  setUser: (user) => {
+    console.log('Setting user in store:', user);
+    set({ user });
+  },
+  setIsAdmin: (isAdmin) => {
+    console.log('Setting isAdmin in store:', isAdmin);
+    set({ isAdmin });
+  },
   setIsLoading: (isLoading) => set({ isLoading }),
   checkAdminStatus: async (userId) => {
     try {
       console.log('=== Starting Admin Status Check ===');
       console.log('Checking admin status for userId:', userId);
-
-      // First, let's verify the user_roles table structure
-      const { data: tableInfo, error: tableError } = await supabase
-        .from('user_roles')
-        .select('*')
-        .limit(1);
       
-      console.log('Table structure check:', { tableInfo, tableError });
+      if (!userId) {
+        console.log('No userId provided, setting isAdmin to false');
+        set({ isAdmin: false });
+        return;
+      }
 
-      // Now query for this specific user's role
       const { data, error } = await supabase
         .from('user_roles')
-        .select('*')
-        .eq('user_id', userId);
+        .select('role')
+        .eq('user_id', userId)
+        .single();
 
-      console.log('Raw query response:', { data, error });
+      console.log('Query response:', { data, error });
 
       if (error) {
-        console.error('Database query error:', error);
+        console.error('Error checking admin status:', error);
         set({ isAdmin: false });
-        console.log('Setting isAdmin to false due to error');
         return;
       }
 
-      if (!data || data.length === 0) {
-        console.log('No role data found for user');
+      if (!data) {
+        console.log('No role data found, setting isAdmin to false');
         set({ isAdmin: false });
-        console.log('Setting isAdmin to false due to no data');
         return;
       }
 
-      console.log('Role data found:', data);
-      const userRole = data[0];
-      console.log('User role object:', userRole);
-      
-      const isAdmin = userRole.role === 'admin';
-      console.log('Role value:', userRole.role);
+      const isAdmin = data.role === 'admin';
+      console.log('Role from database:', data.role);
       console.log('Calculated isAdmin status:', isAdmin);
       
       set({ isAdmin });
@@ -69,7 +67,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (err) {
       console.error('Unexpected error in checkAdminStatus:', err);
       set({ isAdmin: false });
-      console.log('Setting isAdmin to false due to unexpected error');
     }
   },
   signOut: async () => {
