@@ -1,5 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { create } from 'zustand';
 
 export type UserRole = 'admin' | 'user';
 
