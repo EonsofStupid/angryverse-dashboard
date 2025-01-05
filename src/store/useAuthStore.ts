@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { checkUserRole, UserRole } from '@/utils/roles';
 
 interface AuthState {
   user: User | null;
@@ -13,7 +14,7 @@ interface AuthState {
   signOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAdmin: false,
   isLoading: true,
@@ -33,27 +34,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   checkAdminStatus: async (userId) => {
     try {
       console.log('Checking admin status for user:', userId);
-      
-      const { data: userRoles, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error checking admin status:', error);
-        set({ isAdmin: false });
-        return;
-      }
-
-      console.log('User roles data:', userRoles);
-      
-      const isAdmin = userRoles?.role === 'admin';
-      console.log('Is admin?', isAdmin);
-      
+      const isAdmin = await checkUserRole(userId, 'admin');
+      console.log('Admin status result:', isAdmin);
       set({ isAdmin });
     } catch (err) {
-      console.error('Unexpected error in checkAdminStatus:', err);
+      console.error('Error checking admin status:', err);
       set({ isAdmin: false });
     }
   },
