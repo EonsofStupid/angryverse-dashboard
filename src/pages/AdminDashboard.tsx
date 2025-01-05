@@ -5,18 +5,30 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Navbar } from "@/components/Navbar";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { Settings } from "@/components/admin/Settings";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = () => {
-  const { isAdmin } = useAuthStore();
+  const { user, isAdmin } = useAuthStore();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
+    if (!user) {
+      navigate("/");
+      return;
+    }
+
     if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access the admin dashboard.",
+        variant: "destructive",
+      });
       navigate("/");
     }
-  }, [isAdmin, navigate]);
+  }, [user, isAdmin, navigate, toast]);
 
-  if (!isAdmin) return null;
+  if (!user || !isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-background">
