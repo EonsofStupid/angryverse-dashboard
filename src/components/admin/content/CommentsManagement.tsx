@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Comment } from "@/types/database";
+import { Comment } from "@/types/comment";
 
 export const CommentsManagement = () => {
   const { toast } = useToast();
@@ -25,7 +25,9 @@ export const CommentsManagement = () => {
         .from('comments')
         .select(`
           *,
-          profiles:author_id (username)
+          profiles:author_id (
+            username
+          )
         `)
         .order('created_at', { ascending: false });
 
@@ -38,7 +40,7 @@ export const CommentsManagement = () => {
         return [];
       }
 
-      return data;
+      return data as Comment[];
     },
   });
 

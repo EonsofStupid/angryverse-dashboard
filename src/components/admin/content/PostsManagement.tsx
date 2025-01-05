@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Post } from "@/types/database";
+import { Post } from "@/types/post";
 
 export const PostsManagement = () => {
   const { toast } = useToast();
@@ -25,7 +25,9 @@ export const PostsManagement = () => {
         .from('posts')
         .select(`
           *,
-          profiles:author_id (username)
+          profiles:author_id (
+            username
+          )
         `)
         .order('created_at', { ascending: false });
 
@@ -38,7 +40,7 @@ export const PostsManagement = () => {
         return [];
       }
 
-      return data;
+      return data as Post[];
     },
   });
 
