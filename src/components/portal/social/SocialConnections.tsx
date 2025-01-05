@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Facebook, Instagram, Twitter, Linkedin, Youtube, Video } from "lucide-react";
 import { SocialConnection } from "@/types/social";
 import { useState } from "react";
 import { ConnectionWizard } from "./ConnectionWizard";
@@ -45,6 +45,12 @@ export const SocialConnections = () => {
       title: "Facebook",
     },
     {
+      platform: "facebook_video",
+      icon: Video,
+      color: "text-blue-600",
+      title: "Facebook Video",
+    },
+    {
       platform: "instagram",
       icon: Instagram,
       color: "text-pink-600",
@@ -67,6 +73,24 @@ export const SocialConnections = () => {
       icon: Youtube,
       color: "text-red-600",
       title: "YouTube",
+    },
+    {
+      platform: "twitch",
+      icon: Video,
+      color: "text-purple-600",
+      title: "Twitch",
+    },
+    {
+      platform: "rumble",
+      icon: Video,
+      color: "text-orange-600",
+      title: "Rumble",
+    },
+    {
+      platform: "tiktok",
+      icon: Video,
+      color: "text-pink-600",
+      title: "TikTok",
     },
   ];
 
