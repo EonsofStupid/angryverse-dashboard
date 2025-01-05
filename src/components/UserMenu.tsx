@@ -21,19 +21,21 @@ export const UserMenu = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Setting up auth state listener...');
-    
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const initializeAuth = async () => {
+      console.log('Initializing auth...');
+      
+      const { data: { session } } = await supabase.auth.getSession();
       console.log('Initial session check:', session);
+      
       if (session?.user) {
         console.log('Found existing session, setting user:', session.user);
         setUser(session.user);
-        checkAdminStatus(session.user.id);
+        await checkAdminStatus(session.user.id);
       }
-    });
+    };
 
-    // Listen for auth changes
+    initializeAuth();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event);

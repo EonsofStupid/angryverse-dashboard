@@ -47,18 +47,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (error) {
         console.error('Error checking admin status:', error);
-        set({ isAdmin: false });
-        return;
+        if (error.code === 'PGRST116') {
+          // No rows returned - user is not an admin
+          console.log('No role found for user, setting isAdmin to false');
+          set({ isAdmin: false });
+          return;
+        }
+        throw error;
       }
 
-      if (!data) {
-        console.log('No role data found, setting isAdmin to false');
-        set({ isAdmin: false });
-        return;
-      }
-
-      const isAdmin = data.role === 'admin';
-      console.log('Role from database:', data.role);
+      const isAdmin = data?.role === 'admin';
+      console.log('Role from database:', data?.role);
       console.log('Calculated isAdmin status:', isAdmin);
       
       set({ isAdmin });
