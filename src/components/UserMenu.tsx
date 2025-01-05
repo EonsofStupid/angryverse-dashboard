@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useToast } from "@/hooks/use-toast";
-import { DialogTitle } from "@/components/ui/dialog";
+import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +45,7 @@ export const UserMenu = () => {
 
   const handleSignOut = async () => {
     try {
-      setOpen(false); // Close the menu first
+      setOpen(false);
       console.log('Handling sign out click...');
       await signOut();
       navigate('/');
@@ -63,7 +63,7 @@ export const UserMenu = () => {
     }
   };
 
-  console.log('Current user isAdmin status:', isAdmin); // Add this log to debug
+  console.log('Current user isAdmin status:', isAdmin);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -79,6 +79,9 @@ export const UserMenu = () => {
       <SheetContent className="w-[300px] sm:w-[400px] glass">
         <VisuallyHidden>
           <DialogTitle>User Menu</DialogTitle>
+          <DialogDescription>
+            Access your account settings and manage your profile
+          </DialogDescription>
         </VisuallyHidden>
         <div className="flex flex-col gap-4 mt-8">
           {!user ? (
