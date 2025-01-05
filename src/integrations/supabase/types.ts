@@ -95,6 +95,47 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_posts: {
+        Row: {
+          created_at: string | null
+          engagement_metrics: Json | null
+          id: string
+          platform: string
+          platform_post_id: string | null
+          posted_at: string | null
+          social_post_id: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          engagement_metrics?: Json | null
+          id?: string
+          platform: string
+          platform_post_id?: string | null
+          posted_at?: string | null
+          social_post_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          engagement_metrics?: Json | null
+          id?: string
+          platform?: string
+          platform_post_id?: string | null
+          posted_at?: string | null
+          social_post_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_posts_social_post_id_fkey"
+            columns: ["social_post_id"]
+            isOneToOne: false
+            referencedRelation: "social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string | null
@@ -175,6 +216,91 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      social_connections: {
+        Row: {
+          access_token: string | null
+          connected_at: string | null
+          id: string
+          platform: string
+          platform_user_id: string | null
+          platform_username: string | null
+          refresh_token: string | null
+          status: string | null
+          token_expires_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          connected_at?: string | null
+          id?: string
+          platform: string
+          platform_user_id?: string | null
+          platform_username?: string | null
+          refresh_token?: string | null
+          status?: string | null
+          token_expires_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          connected_at?: string | null
+          id?: string
+          platform?: string
+          platform_user_id?: string | null
+          platform_username?: string | null
+          refresh_token?: string | null
+          status?: string | null
+          token_expires_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          media_urls: string[] | null
+          scheduled_for: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          media_urls?: string[] | null
+          scheduled_for?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          media_urls?: string[] | null
+          scheduled_for?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

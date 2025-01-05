@@ -6,21 +6,45 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { SocialPostComposer } from "./social/SocialPostComposer";
 
 export const PortalContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
+  const { data: socialConnections } = useQuery({
+    queryKey: ["social-connections"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("social_connections")
+        .select("*")
+        .eq("status", "active");
+
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
   const { data: posts, isLoading } = useQuery({
     queryKey: ["portal-posts", searchQuery, sortColumn, sortDirection],
     queryFn: async () => {
       let query = supabase
-        .from("posts")
-        .select("id, title, content, status, created_at, profiles!inner(username)");
+        .from("social_posts")
+        .select(`
+          id,
+          content,
+          created_at,
+          platform_posts (
+            platform,
+            status,
+            posted_at,
+            engagement_metrics
+          )
+        `);
 
       if (searchQuery) {
-        query = query.ilike("title", `%${searchQuery}%`);
+        query = query.ilike("content", `%${searchQuery}%`);
       }
 
       if (sortColumn) {
@@ -39,10 +63,9 @@ export const PortalContent = () => {
   });
 
   const columns = [
-    { key: "title", label: "Title" },
-    { key: "status", label: "Status" },
+    { key: "content", label: "Content" },
     { key: "created_at", label: "Created At" },
-    { key: "profiles.username", label: "Author" },
+    { key: "platform_posts", label: "Platforms" },
   ];
 
   const handleSearch = (query: string) => {
@@ -60,7 +83,7 @@ export const PortalContent = () => {
 
   const handleDelete = async (ids: string[]) => {
     const { error } = await supabase
-      .from("posts")
+      .from("social_posts")
       .delete()
       .in("id", ids);
 
@@ -72,13 +95,13 @@ export const PortalContent = () => {
   };
 
   const handleSocialConnect = (platform: string) => {
+    // This will be implemented in the next phase with OAuth integration
     toast.info(`Connecting to ${platform}...`);
-    // Here you would implement the actual social media connection logic
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">Your Portal</h2>
+      <h2 className="text-2xl font-bold mb-6">Social Media Management</h2>
       
       {/* Social Media Connections */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -95,7 +118,10 @@ export const PortalContent = () => {
               className="w-full"
               onClick={() => handleSocialConnect('Facebook')}
             >
-              Connect Facebook
+              {socialConnections?.some(c => c.platform === 'facebook')
+                ? "Connected"
+                : "Connect Facebook"
+              }
             </Button>
           </CardContent>
         </Card>
@@ -113,7 +139,10 @@ export const PortalContent = () => {
               className="w-full"
               onClick={() => handleSocialConnect('Instagram')}
             >
-              Connect Instagram
+              {socialConnections?.some(c => c.platform === 'instagram')
+                ? "Connected"
+                : "Connect Instagram"
+              }
             </Button>
           </CardContent>
         </Card>
@@ -131,7 +160,10 @@ export const PortalContent = () => {
               className="w-full"
               onClick={() => handleSocialConnect('Twitter')}
             >
-              Connect Twitter
+              {socialConnections?.some(c => c.platform === 'twitter')
+                ? "Connected"
+                : "Connect Twitter"
+              }
             </Button>
           </CardContent>
         </Card>
@@ -149,7 +181,10 @@ export const PortalContent = () => {
               className="w-full"
               onClick={() => handleSocialConnect('LinkedIn')}
             >
-              Connect LinkedIn
+              {socialConnections?.some(c => c.platform === 'linkedin')
+                ? "Connected"
+                : "Connect LinkedIn"
+              }
             </Button>
           </CardContent>
         </Card>
@@ -167,14 +202,22 @@ export const PortalContent = () => {
               className="w-full"
               onClick={() => handleSocialConnect('YouTube')}
             >
-              Connect YouTube
+              {socialConnections?.some(c => c.platform === 'youtube')
+                ? "Connected"
+                : "Connect YouTube"
+              }
             </Button>
           </CardContent>
         </Card>
       </div>
 
+      {/* Post Composer */}
+      <div className="mb-8">
+        <SocialPostComposer />
+      </div>
+
       {/* Content Management Section */}
-      <h3 className="text-xl font-semibold mb-4">Your Content</h3>
+      <h3 className="text-xl font-semibold mb-4">Your Posts</h3>
       <DataTable
         columns={columns}
         data={posts || []}
