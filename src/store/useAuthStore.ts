@@ -22,10 +22,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   setIsLoading: (isLoading) => set({ isLoading }),
   checkAdminStatus: async (userId) => {
     try {
-      console.log('Checking admin status for user:', userId);
+      console.log('Starting admin status check for user:', userId);
       const { data, error } = await supabase
         .from('user_roles')
-        .select('role')
+        .select('*')
         .eq('user_id', userId)
         .single();
 
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       console.log('User role data received:', data);
       const isAdmin = data?.role === 'admin';
-      console.log('Setting isAdmin to:', isAdmin);
+      console.log('Setting isAdmin to:', isAdmin, 'based on role:', data?.role);
       set({ isAdmin });
     } catch (error) {
       console.error('Error in checkAdminStatus:', error);
