@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,32 +20,58 @@ export const UserMenu = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Add auth state change listener
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session) {
-      setOpen(false);
-      navigate('/');
-      toast({
-        title: "Welcome!",
-        description: "You have successfully signed in.",
-      });
-    }
-  });
+  useEffect(() => {
+    // Add auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session);
+      
+      if (event === 'SIGNED_IN' && session) {
+        setOpen(false);
+        navigate('/');
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+      } else if (event === 'SIGNED_OUT') {
+        toast({
+          title: "Signed out",
+          description: "You have been successfully signed out.",
+        });
+      } else if (event === 'USER_UPDATED') {
+        toast({
+          title: "Profile updated",
+          description: "Your profile has been successfully updated.",
+        });
+      } else if (event === 'USER_DELETED') {
+        toast({
+          title: "Account deleted",
+          description: "Your account has been successfully deleted.",
+        });
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast({
+          title: "Password recovery",
+          description: "Please check your email to reset your password.",
+        });
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate, toast]);
 
   const handleSignOut = async () => {
     try {
       setOpen(false);
       await signOut();
       navigate("/");
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
+      // Toast notification is handled by the auth state change listener
     } catch (error) {
       console.error("Error signing out:", error);
       toast({
         title: "Error",
-        description: "Failed to sign out. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to sign out. Please try again.",
         variant: "destructive",
       });
     }
@@ -87,6 +113,14 @@ export const UserMenu = () => {
               theme={theme === "dark" ? "dark" : "light"}
               providers={[]}
               redirectTo={window.location.origin}
+              onError={(error) => {
+                console.error("Auth error:", error);
+                toast({
+                  title: "Authentication Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              }}
             />
           ) : (
             <>
