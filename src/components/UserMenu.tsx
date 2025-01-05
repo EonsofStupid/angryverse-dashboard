@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -15,57 +15,14 @@ import { useNavigate } from "react-router-dom";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, setUser, checkAdminStatus, signOut } = useAuthStore();
+  const { user, isAdmin, signOut } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      console.log("Initializing auth...");
-
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log("Initial session check:", session);
-
-      if (session?.user) {
-        console.log("Found existing session, setting user:", session.user);
-        setUser(session.user);
-        await checkAdminStatus(session.user.id);
-      }
-    };
-
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Auth state changed:", event);
-        console.log("Session data:", session);
-
-        if (event === "SIGNED_OUT") {
-          console.log("User signed out, clearing state");
-          setUser(null);
-          navigate("/");
-          return;
-        }
-
-        if (event === "SIGNED_IN" && session?.user) {
-          console.log("User signed in, setting user:", session.user);
-          setUser(session.user);
-          await checkAdminStatus(session.user.id);
-        }
-      }
-    );
-
-    return () => {
-      console.log("Cleaning up auth listener");
-      subscription.unsubscribe();
-    };
-  }, [setUser, checkAdminStatus, navigate]);
-
   const handleSignOut = async () => {
     try {
       setOpen(false);
-      console.log("Handling sign out click...");
       await signOut();
       navigate("/");
       toast({
@@ -81,9 +38,6 @@ export const UserMenu = () => {
       });
     }
   };
-
-  console.log("Current user:", user);
-  console.log("Current isAdmin status:", isAdmin);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

@@ -19,12 +19,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoading: true,
 
   setUser: (user) => {
-    console.log('Setting user in store:', user);
+    console.log('Setting user:', user);
     set({ user });
+    if (user) {
+      get().checkAdminStatus(user.id);
+    }
   },
 
   setIsAdmin: (isAdmin) => {
-    console.log('Setting isAdmin in store:', isAdmin);
+    console.log('Setting admin status:', isAdmin);
     set({ isAdmin });
   },
 
@@ -32,19 +35,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAdminStatus: async (userId) => {
     try {
-      console.log('=== Starting Admin Status Check ===');
-      console.log('Checking admin status for userId:', userId);
+      console.log('Checking admin status for user:', userId);
       
-      if (!userId) {
-        console.log('No userId provided, setting isAdmin to false');
-        set({ isAdmin: false });
-        return;
-      }
-
       const { data: userRoles, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .single();
 
       if (error) {
         console.error('Error checking admin status:', error);
@@ -52,21 +49,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return;
       }
 
-      console.log('Retrieved user roles:', userRoles);
+      console.log('User roles data:', userRoles);
       
-      const isAdmin = userRoles?.some(role => role.role === 'admin') || false;
-      console.log('Calculated isAdmin status:', isAdmin);
+      const isAdmin = userRoles?.role === 'admin';
+      console.log('Is admin?', isAdmin);
       
       set({ isAdmin });
-      
-      // Verify state update
-      const currentState = get();
-      console.log('Current state after update:', {
-        isAdmin: currentState.isAdmin,
-        userId: currentState.user?.id,
-        roles: userRoles
-      });
-      
     } catch (err) {
       console.error('Unexpected error in checkAdminStatus:', err);
       set({ isAdmin: false });
@@ -75,13 +63,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     try {
-      console.log('Starting signOut process...');
+      console.log('Starting sign out...');
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      set({ user: null, isAdmin: false, isLoading: false });
-      console.log('SignOut successful, store state cleared');
+      set({ user: null, isAdmin: false });
+      console.log('Sign out successful');
     } catch (error) {
-      console.error('Error in signOut:', error);
+      console.error('Error signing out:', error);
       throw error;
     }
   },
