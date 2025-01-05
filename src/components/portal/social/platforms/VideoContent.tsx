@@ -1,23 +1,20 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { toast } from "sonner";
-import { VideoContent, PlatformConnection } from "./types";
 import { VideoFeed } from "./components/VideoFeed";
 import { PlatformConnectionCard } from "./components/PlatformConnectionCard";
-import { Json } from "@/integrations/supabase/types";
+import { toast } from "sonner";
+import { VideoContent as VideoContentType, PlatformConnection } from "./types";
 
 interface VideoPlatformContentProps {
   platform: string;
 }
 
 export const VideoPlatformContent = ({ platform }: VideoPlatformContentProps) => {
-  const queryClient = useQueryClient();
-  const [activeFeeds, setActiveFeeds] = useState<Record<string, VideoContent[]>>({});
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+  const [channelFeeds, setChannelFeeds] = useState<Record<string, VideoContentType[]>>({});
 
+  // Fetch platform connections
   const { data: connections } = useQuery({
     queryKey: ["social-connections", platform],
     queryFn: async () => {
@@ -27,126 +24,93 @@ export const VideoPlatformContent = ({ platform }: VideoPlatformContentProps) =>
         .eq("platform", platform)
         .eq("status", "active");
 
-      if (error) throw error;
+      if (error) {
+        toast.error(`Failed to fetch ${platform} connections`);
+        return [];
+      }
+
       return data as PlatformConnection[];
     },
   });
 
-  const createPostMutation = useMutation({
-    mutationFn: async (video: VideoContent) => {
-      const { data: post, error: postError } = await supabase
-        .from("posts")
-        .insert([
-          {
-            title: video.title,
-            content: video.description,
-            status: "published",
-          },
-        ])
-        .select()
-        .single();
-
-      if (postError) throw postError;
-
-      const platformPost = {
-        platform,
-        platform_post_id: video.platformId,
-        status: "published",
-        posted_at: video.publishedAt,
-        engagement_metrics: video.metrics as Json,
-        featured: true,
-      };
-
-      const { error: platformError } = await supabase
-        .from("platform_posts")
-        .insert([platformPost]);
-
-      if (platformError) throw platformError;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["platform-posts"] });
-      toast.success("Video added to posts successfully");
-    },
-    onError: () => {
-      toast.error("Failed to add video to posts");
-    },
-  });
-
   const handleInitialize = async (connectionId: string) => {
-    setIsLoading(prev => ({ ...prev, [connectionId]: true }));
+    setIsLoading((prev) => ({ ...prev, [connectionId]: true }));
     
     try {
-      const response = await supabase.functions.invoke('fetch-platform-videos', {
+      const { data, error } = await supabase.functions.invoke('fetch-platform-videos', {
         body: { platform, connectionId }
       });
 
-      if (response.error) {
-        throw new Error(response.error.message);
+      if (error) {
+        console.error('Error initializing feed:', error);
+        throw error;
       }
 
-      const { videos } = response.data;
-      
-      setActiveFeeds(prev => ({
+      if (!data?.videos) {
+        throw new Error('No videos returned from the API');
+      }
+
+      setChannelFeeds((prev) => ({
         ...prev,
-        [connectionId]: videos,
+        [connectionId]: data.videos,
       }));
 
-      toast.success('Feed initialized successfully');
+      toast.success("Channel feed initialized successfully");
     } catch (error) {
       console.error('Error initializing feed:', error);
-      toast.error(error.message || 'Failed to initialize feed');
+      toast.error(`Failed to initialize ${platform} feed: ${error.message}`);
     } finally {
-      setIsLoading(prev => ({ ...prev, [connectionId]: false }));
+      setIsLoading((prev) => ({ ...prev, [connectionId]: false }));
     }
   };
 
-  const handleRefresh = async (connectionId: string) => {
-    await handleInitialize(connectionId);
+  const handleRefresh = (connectionId: string) => {
+    handleInitialize(connectionId);
   };
 
   const handleClear = (connectionId: string) => {
-    setActiveFeeds(prev => {
+    setChannelFeeds((prev) => {
       const newFeeds = { ...prev };
       delete newFeeds[connectionId];
       return newFeeds;
     });
-    toast.success("Feed cleared successfully");
+    toast.success("Channel feed cleared");
+  };
+
+  const handleAddToPost = (video: VideoContentType) => {
+    // This will be implemented in a future update
+    toast.info("Add to post feature coming soon!");
   };
 
   if (!connections?.length) {
     return (
-      <Alert>
-        <AlertDescription>
-          No {platform} connections found. Connect an account in the Social Connections section above.
-        </AlertDescription>
-      </Alert>
+      <div className="text-center text-muted-foreground py-8">
+        No {platform} channels connected. Connect a channel in the Social Connections section above.
+      </div>
     );
   }
 
   return (
-    <Accordion type="single" collapsible className="space-y-4">
+    <div className="space-y-6">
       {connections.map((connection) => (
-        <AccordionItem key={connection.id} value={connection.id}>
-          <AccordionTrigger>
-            <PlatformConnectionCard
-              connection={connection}
-              isLoading={isLoading[connection.id] || false}
-              onInitialize={() => handleInitialize(connection.id)}
-              onRefresh={() => handleRefresh(connection.id)}
-              onClear={() => handleClear(connection.id)}
-              hasContent={!!activeFeeds[connection.id]}
+        <div key={connection.id} className="space-y-4">
+          <PlatformConnectionCard
+            connection={connection}
+            isLoading={isLoading[connection.id] || false}
+            onInitialize={() => handleInitialize(connection.id)}
+            onRefresh={() => handleRefresh(connection.id)}
+            onClear={() => handleClear(connection.id)}
+            hasContent={!!channelFeeds[connection.id]}
+          />
+          
+          {channelFeeds[connection.id] && (
+            <VideoFeed
+              videos={channelFeeds[connection.id]}
+              onAddToPost={handleAddToPost}
             />
-          </AccordionTrigger>
-          <AccordionContent>
-            {activeFeeds[connection.id] && (
-              <VideoFeed
-                videos={activeFeeds[connection.id]}
-                onAddToPost={(video) => createPostMutation.mutate(video)}
-              />
-            )}
-          </AccordionContent>
-        </AccordionItem>
+          )}
+        </div>
       ))}
-    </Accordion>
+    </div>
   );
 };
