@@ -26,6 +26,12 @@ export const UserMenu = () => {
       console.log("Auth state changed:", event, session);
       
       switch (event) {
+        case 'INITIAL_SESSION':
+          // Handle initial session - no need for toast
+          if (session?.user) {
+            console.log("Initial session with user:", session.user);
+          }
+          break;
         case 'SIGNED_IN':
           if (session) {
             setOpen(false);
@@ -116,6 +122,11 @@ export const UserMenu = () => {
                     },
                   },
                 },
+                className: {
+                  container: 'auth-container',
+                  button: 'auth-button',
+                  input: 'auth-input',
+                }
               }}
               theme={theme === "dark" ? "dark" : "light"}
               providers={[]}
