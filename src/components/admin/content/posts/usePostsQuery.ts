@@ -19,7 +19,7 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
           status,
           created_at,
           updated_at,
-          profiles:author_id (
+          profiles!posts_author_id_fkey (
             id,
             username,
             avatar_url,
