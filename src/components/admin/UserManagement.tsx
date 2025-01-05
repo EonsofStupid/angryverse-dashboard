@@ -33,22 +33,20 @@ export const UserManagement = () => {
         throw rolesError;
       }
 
-      // Then get all users from auth.users through profiles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, email:id');
-
-      if (profilesError) {
-        console.error('Error fetching profiles:', profilesError);
-        throw profilesError;
+      // Get users from auth.users through profiles, including their email
+      const { data: users, error: usersError } = await supabase.auth.admin.listUsers();
+      
+      if (usersError) {
+        console.error('Error fetching users:', usersError);
+        throw usersError;
       }
 
       // Combine the data
-      return profiles.map(profile => {
-        const userRole = userRoles?.find(role => role.user_id === profile.id);
+      return users.users.map(user => {
+        const userRole = userRoles?.find(role => role.user_id === user.id);
         return {
-          id: profile.id,
-          email: profile.email || 'No email',
+          id: user.id,
+          email: user.email || 'No email',
           role: userRole?.role || 'user',
           status: 'active' as UserStatus // Default status
         };
