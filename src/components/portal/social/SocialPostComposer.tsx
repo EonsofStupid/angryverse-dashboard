@@ -9,10 +9,11 @@ import { toast } from "sonner";
 import { Facebook, Instagram, Twitter, Linkedin, Youtube, Image as ImageIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/store/useAuthStore";
+import { SocialConnection } from "@/types/social";
 
 export const SocialPostComposer = () => {
   const [content, setContent] = useState("");
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [selectedConnections, setSelectedConnections] = useState<string[]>([]);
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
 
@@ -25,12 +26,12 @@ export const SocialPostComposer = () => {
         .eq("status", "active");
 
       if (error) throw error;
-      return data;
+      return data as SocialConnection[];
     },
   });
 
   const createPostMutation = useMutation({
-    mutationFn: async ({ content, platforms }: { content: string; platforms: string[] }) => {
+    mutationFn: async ({ content, connectionIds }: { content: string; connectionIds: string[] }) => {
       if (!user) throw new Error("User not authenticated");
 
       // First create the main social post
@@ -45,17 +46,21 @@ export const SocialPostComposer = () => {
 
       if (socialPostError) throw socialPostError;
 
-      // Then create platform-specific posts
-      const platformPosts = platforms.map((platform) => ({
+      // Then create platform-specific posts for each selected connection
+      const selectedConnections = connections?.filter(conn => connectionIds.includes(conn.id)) || [];
+      const platformPosts = selectedConnections.map((connection) => ({
         social_post_id: socialPost.id,
-        platform,
+        platform: connection.platform,
+        status: 'pending'
       }));
 
-      const { error: platformPostsError } = await supabase
-        .from("platform_posts")
-        .insert(platformPosts);
+      if (platformPosts.length > 0) {
+        const { error: platformPostsError } = await supabase
+          .from("platform_posts")
+          .insert(platformPosts);
 
-      if (platformPostsError) throw platformPostsError;
+        if (platformPostsError) throw platformPostsError;
+      }
 
       return socialPost;
     },
@@ -63,7 +68,7 @@ export const SocialPostComposer = () => {
       queryClient.invalidateQueries({ queryKey: ["social-posts"] });
       toast.success("Post created successfully");
       setContent("");
-      setSelectedPlatforms([]);
+      setSelectedConnections([]);
     },
     onError: (error) => {
       toast.error("Failed to create post");
@@ -71,25 +76,25 @@ export const SocialPostComposer = () => {
     },
   });
 
-  const handlePlatformToggle = (platform: string) => {
-    setSelectedPlatforms((current) =>
-      current.includes(platform)
-        ? current.filter((p) => p !== platform)
-        : [...current, platform]
-    );
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) {
       toast.error("Please enter some content for your post");
       return;
     }
-    if (selectedPlatforms.length === 0) {
-      toast.error("Please select at least one platform");
+    if (selectedConnections.length === 0) {
+      toast.error("Please select at least one platform to post to");
       return;
     }
-    createPostMutation.mutate({ content, platforms: selectedPlatforms });
+    createPostMutation.mutate({ content, connectionIds: selectedConnections });
+  };
+
+  const platformIcons = {
+    facebook: { icon: Facebook, color: "text-blue-600" },
+    instagram: { icon: Instagram, color: "text-pink-600" },
+    twitter: { icon: Twitter, color: "text-blue-400" },
+    linkedin: { icon: Linkedin, color: "text-blue-700" },
+    youtube: { icon: Youtube, color: "text-red-600" },
   };
 
   return (
@@ -112,29 +117,44 @@ export const SocialPostComposer = () => {
 
           <div className="space-y-2">
             <Label>Share to</Label>
-            <div className="flex flex-wrap gap-4">
-              {[
-                { platform: "facebook", icon: Facebook, color: "text-blue-600" },
-                { platform: "instagram", icon: Instagram, color: "text-pink-600" },
-                { platform: "twitter", icon: Twitter, color: "text-blue-400" },
-                { platform: "linkedin", icon: Linkedin, color: "text-blue-700" },
-                { platform: "youtube", icon: Youtube, color: "text-red-600" },
-              ].map(({ platform, icon: Icon, color }) => (
-                <div key={platform} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={platform}
-                    checked={selectedPlatforms.includes(platform)}
-                    onCheckedChange={() => handlePlatformToggle(platform)}
-                  />
-                  <Label
-                    htmlFor={platform}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <Icon className={`h-5 w-5 ${color}`} />
-                    <span className="capitalize">{platform}</span>
-                  </Label>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {connections?.map((connection) => {
+                const platform = platformIcons[connection.platform as keyof typeof platformIcons];
+                if (!platform) return null;
+                
+                const Icon = platform.icon;
+                return (
+                  <div key={connection.id} className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <Checkbox
+                      id={connection.id}
+                      checked={selectedConnections.includes(connection.id)}
+                      onCheckedChange={(checked) => {
+                        setSelectedConnections(prev =>
+                          checked
+                            ? [...prev, connection.id]
+                            : prev.filter(id => id !== connection.id)
+                        );
+                      }}
+                    />
+                    <Label
+                      htmlFor={connection.id}
+                      className="flex items-center space-x-2 cursor-pointer flex-1"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className={`h-5 w-5 ${platform.color}`} />
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {connection.connection_name || connection.platform_username}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {connection.account_type}
+                          </span>
+                        </div>
+                      </div>
+                    </Label>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
