@@ -45,22 +45,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       console.log('Starting signOut process in auth store...');
       console.log('Calling supabase.auth.signOut()...');
       
+      // First clear the store state
+      set({ user: null, isAdmin: false, isLoading: false });
+      console.log('Store state cleared');
+      
+      // Then sign out from Supabase
       const { error } = await supabase.auth.signOut();
-      console.log('Supabase signOut response:', error ? 'Error' : 'Success');
       
       if (error) {
         console.error('Supabase signOut error:', error);
         throw error;
       }
       
-      console.log('Clearing store state...');
-      set((state) => {
-        console.log('Previous state:', state);
-        return { user: null, isAdmin: false };
-      });
+      console.log('Supabase signOut successful');
       
-      console.log('Store state cleared, forcing page reload...');
-      window.location.replace('/');
+      // Force a hard reload to clear any cached state
+      window.location.reload();
     } catch (error) {
       console.error('Error in signOut:', error);
       throw error;

@@ -19,20 +19,16 @@ export const UserMenu = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log('Setting up auth state change listener...');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session);
-        console.log('Current user state:', user);
         
         if (event === 'SIGNED_OUT') {
-          console.log('SIGNED_OUT event received, clearing user...');
           setUser(null);
           return;
         }
         
         if (session?.user) {
-          console.log('Session user found, updating state...', session.user);
           setUser(session.user);
           await checkAdminStatus(session.user.id);
         }
@@ -40,18 +36,14 @@ export const UserMenu = () => {
     );
 
     return () => {
-      console.log('Cleaning up auth state change listener...');
       subscription.unsubscribe();
     }
   }, [setUser, checkAdminStatus]);
 
   const handleSignOut = async () => {
     try {
-      console.log('Handling sign out click...');
-      console.log('Current user before signOut:', user);
+      setOpen(false); // Close the menu first
       await signOut();
-      console.log('SignOut completed successfully');
-      setOpen(false);
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
@@ -154,4 +146,3 @@ export const UserMenu = () => {
       </SheetContent>
     </Sheet>
   );
-};
