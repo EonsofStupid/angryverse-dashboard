@@ -33,29 +33,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   checkAdminStatus: async (userId) => {
     try {
       console.log('=== Starting Admin Status Check ===');
+      console.log('Checking admin status for userId:', userId);
+      
       if (!userId) {
         console.log('No userId provided, setting isAdmin to false');
         set({ isAdmin: false });
         return;
       }
 
-      const { data: userRoles, error } = await supabase
+      const { data: userRole, error } = await supabase
         .from('user_roles')
-        .select('*')
-        .eq('user_id', userId);
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
 
       if (error) {
-        console.error('Error fetching user roles:', error);
+        console.error('Error checking admin status:', error);
         throw error;
       }
 
-      console.log('Fetched roles:', JSON.stringify(userRoles, null, 2));
-
-      const isAdmin = Array.isArray(userRoles) && userRoles.some(role => role.role.trim().toLowerCase() === 'admin');
-      console.log('Setting isAdmin to:', isAdmin);
-
+      const isAdmin = userRole !== null;
+      console.log('Admin role check result:', { userRole, isAdmin });
+      
       set({ isAdmin });
-      console.log('Zustand store updated with isAdmin:', get().isAdmin);
+      
+      // Verify state update
+      const currentState = get();
+      console.log('Current state after update:', {
+        isAdmin: currentState.isAdmin,
+        userId: currentState.user?.id,
+        roleData: userRole
+      });
+      
     } catch (err) {
       console.error('Unexpected error in checkAdminStatus:', err);
       set({ isAdmin: false });
