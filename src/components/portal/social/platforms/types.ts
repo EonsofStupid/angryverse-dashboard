@@ -1,9 +1,13 @@
+import { Json } from "@/integrations/supabase/types";
+
 export interface VideoMetrics {
   [key: string]: number | undefined;
   views?: number;
   likes?: number;
   comments?: number;
   shares?: number;
+  followers?: number;
+  subscribers?: number;
 }
 
 export interface VideoContent {
@@ -27,7 +31,7 @@ export interface PlatformConnection {
   refresh_token: string | null;
   token_expires_at: string | null;
   connected_at: string | null;
-  status: 'active' | 'inactive';
+  status: string;
   connection_name: string | null;
   account_type: string | null;
   profile_url: string | null;

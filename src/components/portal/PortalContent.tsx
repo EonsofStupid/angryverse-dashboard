@@ -94,6 +94,7 @@ export const PortalContent = () => {
           <TabsTrigger value="facebook">Facebook</TabsTrigger>
           <TabsTrigger value="facebook_video">Facebook Video</TabsTrigger>
           <TabsTrigger value="twitch">Twitch</TabsTrigger>
+          <TabsTrigger value="rumble">Rumble</TabsTrigger>
           <TabsTrigger value="tiktok">TikTok</TabsTrigger>
           <TabsTrigger value="instagram">Instagram</TabsTrigger>
           <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
@@ -128,6 +129,10 @@ export const PortalContent = () => {
 
         <TabsContent value="twitch">
           <PlatformContent platform="twitch" />
+        </TabsContent>
+
+        <TabsContent value="rumble">
+          <PlatformContent platform="rumble" />
         </TabsContent>
 
         <TabsContent value="tiktok">

@@ -1,4 +1,3 @@
-import { Facebook, Video, Youtube, MessageCircle } from "lucide-react";
 import { PlatformConfig } from "./types";
 
 export const platformConfigs: PlatformConfig[] = [
@@ -30,7 +29,7 @@ export const platformConfigs: PlatformConfig[] = [
     id: "twitch",
     platform: "twitch",
     displayName: "Twitch",
-    icon: "MessageCircle",
+    icon: "Twitch",
     color: "text-purple-600",
     supportsVideo: true
   },
@@ -40,6 +39,14 @@ export const platformConfigs: PlatformConfig[] = [
     displayName: "TikTok",
     icon: "Video",
     color: "text-pink-600",
+    supportsVideo: true
+  },
+  {
+    id: "rumble",
+    platform: "rumble",
+    displayName: "Rumble",
+    icon: "Video",
+    color: "text-orange-600",
     supportsVideo: true
   }
 ];
