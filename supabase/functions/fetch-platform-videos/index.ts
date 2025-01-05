@@ -26,97 +26,207 @@ interface VideoResponse {
   }>;
 }
 
+async function fetchYouTubeVideos(accessToken: string) {
+  const response = await fetch(
+    `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.error('YouTube API Error:', await response.text());
+    throw new Error('Failed to fetch YouTube videos');
+  }
+
+  const data = await response.json();
+  return data.items.map((item: any) => ({
+    id: item.id.videoId,
+    title: item.snippet.title,
+    description: item.snippet.description,
+    thumbnailUrl: item.snippet.thumbnails.high.url,
+    publishedAt: item.snippet.publishedAt,
+    metrics: {
+      // We'll need another API call to get these metrics
+      views: 0,
+      likes: 0,
+      comments: 0
+    },
+    platformId: item.id.videoId,
+    url: `https://youtube.com/watch?v=${item.id.videoId}`
+  }));
+}
+
+async function fetchTwitchVideos(accessToken: string, userId: string) {
+  const response = await fetch(
+    `https://api.twitch.tv/helix/videos?user_id=${userId}`,
+    {
+      headers: {
+        'Client-ID': Deno.env.get('TWITCH_CLIENT_ID') || '',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.error('Twitch API Error:', await response.text());
+    throw new Error('Failed to fetch Twitch videos');
+  }
+
+  const data = await response.json();
+  return data.data.map((video: any) => ({
+    id: video.id,
+    title: video.title,
+    description: video.description,
+    thumbnailUrl: video.thumbnail_url,
+    publishedAt: video.created_at,
+    metrics: {
+      views: video.view_count,
+    },
+    platformId: video.id,
+    url: video.url
+  }));
+}
+
+async function fetchFacebookVideos(accessToken: string, pageId: string) {
+  const response = await fetch(
+    `https://graph.facebook.com/v18.0/${pageId}/videos?fields=id,title,description,created_time,thumbnails,views`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.error('Facebook API Error:', await response.text());
+    throw new Error('Failed to fetch Facebook videos');
+  }
+
+  const data = await response.json();
+  return data.data.map((video: any) => ({
+    id: video.id,
+    title: video.title || 'Untitled Video',
+    description: video.description || '',
+    thumbnailUrl: video.thumbnails?.data[0]?.uri || '',
+    publishedAt: video.created_time,
+    metrics: {
+      views: video.views?.total_views || 0,
+    },
+    platformId: video.id,
+    url: `https://facebook.com/${video.id}`
+  }));
+}
+
+async function fetchTikTokVideos(accessToken: string) {
+  const response = await fetch(
+    'https://open.tiktokapis.com/v2/video/list/',
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        max_count: 10,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    console.error('TikTok API Error:', await response.text());
+    throw new Error('Failed to fetch TikTok videos');
+  }
+
+  const data = await response.json();
+  return data.data.videos.map((video: any) => ({
+    id: video.id,
+    title: video.title,
+    description: video.video_description,
+    thumbnailUrl: video.cover_image_url,
+    publishedAt: video.create_time,
+    metrics: {
+      likes: video.like_count,
+      comments: video.comment_count,
+      shares: video.share_count,
+      views: video.view_count,
+    },
+    platformId: video.id,
+    url: video.share_url
+  }));
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { platform, connectionId } = await req.json()
+    const { platform, connectionId } = await req.json();
     
-    // Create Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    if (!supabaseUrl || !supabaseKey) throw new Error('Missing Supabase environment variables')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    if (!supabaseUrl || !supabaseKey) throw new Error('Missing Supabase environment variables');
     
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Get connection details
     const { data: connection, error: connectionError } = await supabase
       .from('social_connections')
       .select('*')
       .eq('id', connectionId)
-      .single()
+      .single();
 
     if (connectionError || !connection) {
-      throw new Error('Connection not found')
+      console.error('Connection error:', connectionError);
+      throw new Error('Connection not found');
     }
 
-    let videos = []
+    if (!connection.access_token) {
+      throw new Error('No access token available');
+    }
+
+    let videos = [];
+    console.log(`Fetching videos for platform: ${platform}`);
     
-    switch (platform) {
-      case 'youtube':
-        if (!connection.access_token) throw new Error('No access token available')
-        // Implement YouTube API call here
-        // For now returning mock data
-        videos = [{
-          id: 'youtube1',
-          title: 'Sample YouTube Video',
-          description: 'This is a sample YouTube video description',
-          thumbnailUrl: 'https://picsum.photos/seed/youtube/400/225',
-          publishedAt: new Date().toISOString(),
-          metrics: {
-            views: 1000,
-            likes: 100,
-            comments: 50,
-            subscribers: 5000
-          },
-          platformId: 'yt123',
-          url: 'https://youtube.com/watch?v=sample'
-        }]
-        break
+    try {
+      switch (platform) {
+        case 'youtube':
+          videos = await fetchYouTubeVideos(connection.access_token);
+          break;
 
-      case 'twitch':
-        if (!connection.access_token) throw new Error('No access token available')
-        // Implement Twitch API call here
-        videos = [{
-          id: 'twitch1',
-          title: 'Sample Twitch Stream',
-          description: 'This is a sample Twitch stream description',
-          thumbnailUrl: 'https://picsum.photos/seed/twitch/400/225',
-          publishedAt: new Date().toISOString(),
-          metrics: {
-            views: 500,
-            followers: 2000
-          },
-          platformId: 'tw123',
-          url: 'https://twitch.tv/sample'
-        }]
-        break
+        case 'twitch':
+          if (!connection.platform_user_id) {
+            throw new Error('No Twitch user ID available');
+          }
+          videos = await fetchTwitchVideos(connection.access_token, connection.platform_user_id);
+          break;
 
-      case 'rumble':
-        // Implement Rumble API call here
-        videos = [{
-          id: 'rumble1',
-          title: 'Sample Rumble Video',
-          description: 'This is a sample Rumble video description',
-          thumbnailUrl: 'https://picsum.photos/seed/rumble/400/225',
-          publishedAt: new Date().toISOString(),
-          metrics: {
-            views: 300,
-            likes: 50,
-            comments: 20
-          },
-          platformId: 'rb123',
-          url: 'https://rumble.com/sample'
-        }]
-        break
+        case 'facebook_video':
+          if (!connection.platform_user_id) {
+            throw new Error('No Facebook page ID available');
+          }
+          videos = await fetchFacebookVideos(connection.access_token, connection.platform_user_id);
+          break;
 
-      default:
-        throw new Error(`Unsupported platform: ${platform}`)
+        case 'tiktok':
+          videos = await fetchTikTokVideos(connection.access_token);
+          break;
+
+        default:
+          throw new Error(`Unsupported platform: ${platform}`);
+      }
+
+      console.log(`Successfully fetched ${videos.length} videos for ${platform}`);
+    } catch (error) {
+      console.error(`Error fetching ${platform} videos:`, error);
+      throw error;
     }
 
-    const response: VideoResponse = { videos }
+    const response: VideoResponse = { videos };
     
     return new Response(
       JSON.stringify(response),
@@ -126,8 +236,9 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         }
       }
-    )
+    );
   } catch (error) {
+    console.error('Error in edge function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
@@ -137,6 +248,6 @@ serve(async (req) => {
           'Content-Type': 'application/json'
         }
       }
-    )
+    );
   }
-})
+});
