@@ -13,7 +13,7 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
         .from('posts')
         .select(`
           *,
-          author:profiles(
+          profiles (
             id,
             username,
             avatar_url,
@@ -40,11 +40,8 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
         return [];
       }
 
-      // Transform the data to match the Post type
-      return data.map(post => ({
-        ...post,
-        profiles: post.author // Map the author to profiles to match the Post type
-      })) as Post[];
+      // Return the data directly since the structure matches our Post type
+      return data as Post[];
     },
   });
 };

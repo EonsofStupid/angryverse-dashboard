@@ -5,8 +5,8 @@ export interface Post {
   title: string;
   content: string | null;
   author_id: string | null;
-  status: string;
-  created_at: string;
+  status: string | null;
+  created_at: string | null;
   updated_at: string | null;
   profiles?: Profile | null;
 }
