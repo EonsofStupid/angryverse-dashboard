@@ -43,7 +43,7 @@ export const UserMenu = () => {
       console.log('Cleaning up auth state change listener...');
       subscription.unsubscribe();
     }
-  }, [setUser, checkAdminStatus, user]);
+  }, [setUser, checkAdminStatus]);
 
   const handleSignOut = async () => {
     try {
