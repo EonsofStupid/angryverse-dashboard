@@ -17,35 +17,42 @@ interface User {
   status: UserStatus;
 }
 
-interface UserRoleWithAuth {
-  user_id: string;
-  role: UserRole;
-  auth_user: {
-    email: string;
-  } | null;
-}
-
 export const UserManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      const { data: userRoles, error } = await supabase
+      // First get all user roles
+      const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
-        .select('*, auth_user:user_id(email)') as { data: UserRoleWithAuth[] | null, error: any };
+        .select('user_id, role');
 
-      if (error) {
-        console.error('Error fetching users:', error);
-        throw error;
+      if (rolesError) {
+        console.error('Error fetching user roles:', rolesError);
+        throw rolesError;
       }
 
-      return (userRoles || []).map(user => ({
-        id: user.user_id,
-        email: user.auth_user?.email || 'No email',
-        role: user.role as UserRole,
-        status: 'active' as UserStatus
-      }));
+      // Then get all users from auth.users through profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, email:id');
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        throw profilesError;
+      }
+
+      // Combine the data
+      return profiles.map(profile => {
+        const userRole = userRoles?.find(role => role.user_id === profile.id);
+        return {
+          id: profile.id,
+          email: profile.email || 'No email',
+          role: userRole?.role || 'user',
+          status: 'active' as UserStatus // Default status
+        };
+      });
     }
   });
 
@@ -64,8 +71,12 @@ export const UserManagement = () => {
     try {
       const { error } = await supabase
         .from('user_roles')
-        .update({ role: newRole })
-        .eq('user_id', userId);
+        .upsert({ 
+          user_id: userId, 
+          role: newRole 
+        }, { 
+          onConflict: 'user_id,role'
+        });
 
       if (error) throw error;
       toast.success("User role updated successfully");
