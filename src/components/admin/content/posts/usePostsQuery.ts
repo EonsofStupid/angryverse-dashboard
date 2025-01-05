@@ -12,8 +12,14 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
       let query = supabase
         .from('posts')
         .select(`
-          *,
-          profiles (
+          id,
+          title,
+          content,
+          author_id,
+          status,
+          created_at,
+          updated_at,
+          profiles!author_id (
             id,
             username,
             avatar_url,
@@ -40,7 +46,11 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
         throw error;
       }
 
-      return data as Post[];
+      // Transform the data to match the Post type
+      return (data as any[]).map(post => ({
+        ...post,
+        profiles: post.profiles || null
+      })) as Post[];
     },
   });
 };
