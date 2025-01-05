@@ -51,6 +51,12 @@ export const UserMenu = () => {
             description: "Please check your email to reset your password.",
           });
           break;
+        case 'USER_UPDATED':
+          toast({
+            title: "Profile updated",
+            description: "Your profile has been successfully updated.",
+          });
+          break;
         default:
           console.log("Unhandled auth event:", event);
       }
@@ -114,6 +120,22 @@ export const UserMenu = () => {
               theme={theme === "dark" ? "dark" : "light"}
               providers={[]}
               redirectTo={window.location.origin}
+              view="sign_in"
+              showLinks={true}
+              localization={{
+                variables: {
+                  sign_in: {
+                    email_label: "Email",
+                    password_label: "Password",
+                    button_label: "Sign In",
+                  },
+                  sign_up: {
+                    email_label: "Email",
+                    password_label: "Password",
+                    button_label: "Sign Up",
+                  },
+                },
+              }}
             />
           ) : (
             <>
