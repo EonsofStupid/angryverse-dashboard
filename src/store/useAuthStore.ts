@@ -28,19 +28,21 @@ export const useAuthStore = create<AuthState>((set) => ({
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
+        .single();
 
       console.log('Query response:', { data, error });
 
-      if (error || !data) {
-        console.error('Error or no matching role:', error || 'No data');
+      if (error) {
+        console.error('Error fetching role:', error);
         set({ isAdmin: false });
         return;
       }
 
-      set({ isAdmin: true });
-      console.log('Admin status confirmed:', true);
+      const isAdmin = data?.role === 'admin';
+      console.log('User role:', data?.role);
+      console.log('Setting isAdmin to:', isAdmin);
+      
+      set({ isAdmin });
     } catch (err) {
       console.error('Unexpected error:', err);
       set({ isAdmin: false });
