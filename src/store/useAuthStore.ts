@@ -22,7 +22,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   setIsLoading: (isLoading) => set({ isLoading }),
   checkAdminStatus: async (userId) => {
     try {
-      console.log('Starting admin status check for user:', userId);
+      console.log('=== Starting Admin Status Check ===');
+      console.log('Checking admin status for userId:', userId);
 
       const { data, error } = await supabase
         .from('user_roles')
@@ -30,37 +31,42 @@ export const useAuthStore = create<AuthState>((set) => ({
         .eq('user_id', userId)
         .single();
 
-      console.log('Query response:', { data, error });
+      console.log('Raw query response:', { data, error });
 
       if (error) {
-        console.error('Error fetching role:', error);
+        console.error('Database query error:', error);
         set({ isAdmin: false });
+        console.log('Setting isAdmin to false due to error');
         return;
       }
 
-      const isAdmin = data?.role === 'admin';
-      console.log('User role:', data?.role);
-      console.log('Setting isAdmin to:', isAdmin);
+      if (!data) {
+        console.log('No role data found for user');
+        set({ isAdmin: false });
+        console.log('Setting isAdmin to false due to no data');
+        return;
+      }
+
+      console.log('Role data found:', data);
+      const isAdmin = data.role === 'admin';
+      console.log('Calculated isAdmin status:', isAdmin);
       
       set({ isAdmin });
+      console.log('Updated store with isAdmin:', isAdmin);
+      console.log('=== Admin Status Check Complete ===');
     } catch (err) {
-      console.error('Unexpected error:', err);
+      console.error('Unexpected error in checkAdminStatus:', err);
       set({ isAdmin: false });
+      console.log('Setting isAdmin to false due to unexpected error');
     }
   },
   signOut: async () => {
     try {
-      console.log('Starting signOut process in auth store...');
-      
+      console.log('Starting signOut process...');
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Supabase signOut error:', error);
-        throw error;
-      }
-      
-      console.log('Supabase signOut successful');
+      if (error) throw error;
       set({ user: null, isAdmin: false, isLoading: false });
-      console.log('Store state cleared');
+      console.log('SignOut successful, store state cleared');
     } catch (error) {
       console.error('Error in signOut:', error);
       throw error;
