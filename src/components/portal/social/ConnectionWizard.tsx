@@ -32,13 +32,22 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
 
   const platformDisplayName = {
     facebook: "Facebook",
+    facebook_video: "Facebook Video",
     instagram: "Instagram",
     twitter: "Twitter/X",
     linkedin: "LinkedIn",
     youtube: "YouTube",
+    twitch: "Twitch",
+    rumble: "Rumble",
+    tiktok: "TikTok",
   }[platform] || platform;
 
   const handleNext = () => {
+    if (platform === 'facebook_video') {
+      handleComplete();
+      return;
+    }
+
     if (step === 2 && !config.connectionLabel) {
       toast.error("Please provide a label for this connection");
       return;
@@ -79,7 +88,7 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
             access_token: config.clientSecret,
             status: "active",
             connection_name: config.connectionLabel,
-            account_type: "Business",
+            account_type: platform === 'facebook_video' ? "Business" : "Personal",
           },
         ]);
 
@@ -152,18 +161,19 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
           config={config}
           setConfig={setConfig}
           platformDisplayName={platformDisplayName}
+          platform={platform}
           fileInputRef={fileInputRef}
           handleFileImport={handleFileImport}
           handleExportConfig={handleExportConfig}
         />
         <DialogFooter>
-          {step > 1 && (
+          {platform !== 'facebook_video' && step > 1 && (
             <Button variant="outline" onClick={handleBack}>
               Back
             </Button>
           )}
           <Button onClick={handleNext}>
-            {step === 3 ? "Connect" : "Next"}
+            {platform === 'facebook_video' ? "Connect" : (step === 3 ? "Connect" : "Next")}
           </Button>
         </DialogFooter>
       </DialogContent>
