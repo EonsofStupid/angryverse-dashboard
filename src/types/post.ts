@@ -8,5 +8,5 @@ export interface Post {
   status: string | null;
   created_at: string | null;
   updated_at: string | null;
-  profiles?: Profile | null;
+  profiles: Profile | null;
 }
