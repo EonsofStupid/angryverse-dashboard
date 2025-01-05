@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { Settings } from "@/components/admin/Settings";
 import { DashboardOverview } from "@/components/admin/DashboardOverview";
-import { PostsManagement } from "@/components/admin/content/PostsManagement";
 import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
@@ -37,9 +36,9 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
-      <Tabs defaultValue="dashboard" className="w-full">
+      <Tabs defaultValue="dashboard" className="w-full" onValueChange={(value) => navigate(`/admin/${value}`)}>
         <TabsList>
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="">Dashboard</TabsTrigger>
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
@@ -48,12 +47,12 @@ const AdminDashboard = () => {
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="dashboard">
+        <TabsContent value="">
           <DashboardOverview />
         </TabsContent>
         
         <TabsContent value="posts">
-          <PostsManagement />
+          <Outlet />
         </TabsContent>
         
         <TabsContent value="media">

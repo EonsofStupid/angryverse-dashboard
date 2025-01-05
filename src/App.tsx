@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AdminDashboard from "./pages/AdminDashboard";
 import Portal from "./pages/Portal";
+import { PostsManagement } from "./components/admin/content/PostsManagement";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />}>
+              <Route path="posts" element={<PostsManagement />} />
+            </Route>
             <Route path="/portal" element={<Portal />} />
           </Routes>
         </BrowserRouter>
