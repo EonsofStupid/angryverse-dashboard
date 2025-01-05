@@ -1,13 +1,11 @@
+import { useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Post } from "@/types/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { PlusCircle, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,15 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { PlusCircle, Search, Filter } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
-import { useToast } from "@/hooks/use-toast";
-import { Post } from "@/types/post";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { PostForm } from "./posts/PostForm";
+import { PostsTable } from "./posts/PostsTable";
+import { usePostsQuery } from "./posts/usePostsQuery";
 
 export const PostsManagement = () => {
   const { toast } = useToast();
@@ -40,60 +32,18 @@ export const PostsManagement = () => {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const { data: posts, isLoading } = useQuery<Post[]>({
-    queryKey: ['posts', searchQuery, statusFilter],
-    queryFn: async () => {
-      let query = supabase
-        .from('posts')
-        .select(`
-          id,
-          title,
-          content,
-          author_id,
-          status,
-          created_at,
-          updated_at,
-          profiles!posts_author_id_fkey (
-            id,
-            username,
-            avatar_url,
-            updated_at
-          )
-        `);
-
-      if (searchQuery) {
-        query = query.ilike('title', `%${searchQuery}%`);
-      }
-
-      if (statusFilter) {
-        query = query.eq('status', statusFilter);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) {
-        toast({
-          title: "Error fetching posts",
-          description: error.message,
-          variant: "destructive",
-        });
-        return [];
-      }
-
-      return data as Post[];
-    },
-  });
+  const { data: posts, isLoading } = usePostsQuery(searchQuery, statusFilter);
 
   const createPostMutation = useMutation({
     mutationFn: async (newPost: Partial<Post>) => {
       const { data, error } = await supabase
         .from('posts')
-        .insert([
-          {
-            ...newPost,
-            author_id: (await supabase.auth.getUser()).data.user?.id,
-          },
-        ])
+        .insert([{
+          title: newPost.title,
+          content: newPost.content,
+          status: newPost.status,
+          author_id: (await supabase.auth.getUser()).data.user?.id,
+        }])
         .select();
 
       if (error) throw error;
@@ -120,7 +70,12 @@ export const PostsManagement = () => {
     mutationFn: async (post: Partial<Post>) => {
       const { data, error } = await supabase
         .from('posts')
-        .update(post)
+        .update({
+          title: post.title,
+          content: post.content,
+          status: post.status,
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', post.id)
         .select();
 
@@ -169,63 +124,6 @@ export const PostsManagement = () => {
     },
   });
 
-  const PostForm = ({ post, onSubmit }: { post?: Post; onSubmit: (data: Partial<Post>) => void }) => {
-    const [title, setTitle] = useState(post?.title ?? "");
-    const [content, setContent] = useState(post?.content ?? "");
-    const [status, setStatus] = useState(post?.status ?? "draft");
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      onSubmit({ title, content, status, ...(post?.id ? { id: post.id } : {}) });
-    };
-
-    return (
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="title" className="text-sm font-medium">Title</label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter post title"
-            required
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <label htmlFor="content" className="text-sm font-medium">Content</label>
-          <Textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter post content"
-            className="min-h-[200px]"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="status" className="text-sm font-medium">Status</label>
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="published">Published</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex justify-end space-x-2">
-          <Button type="submit">
-            {post ? "Update Post" : "Create Post"}
-          </Button>
-        </div>
-      </form>
-    );
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -270,70 +168,26 @@ export const PostsManagement = () => {
         </Dialog>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Author</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center">Loading...</TableCell>
-            </TableRow>
-          ) : posts?.map((post) => (
-            <TableRow key={post.id}>
-              <TableCell className="font-medium">{post.title}</TableCell>
-              <TableCell>{post.profiles?.username || 'Unknown'}</TableCell>
-              <TableCell>
-                <Badge variant={
-                  post.status === 'published' ? 'default' :
-                  post.status === 'draft' ? 'secondary' : 'outline'
-                }>
-                  {post.status}
-                </Badge>
-              </TableCell>
-              <TableCell>{format(new Date(post.created_at), 'MMM d, yyyy')}</TableCell>
-              <TableCell className="text-right">
-                <Dialog open={selectedPost?.id === post.id} onOpenChange={(open) => !open && setSelectedPost(null)}>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={() => setSelectedPost(post)}>
-                      Edit
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[725px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit Post</DialogTitle>
-                    </DialogHeader>
-                    {selectedPost && (
-                      <PostForm
-                        post={selectedPost}
-                        onSubmit={(data) => updatePostMutation.mutate(data)}
-                      />
-                    )}
-                  </DialogContent>
-                </Dialog>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-destructive"
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this post?')) {
-                      deletePostMutation.mutate(post.id);
-                    }
-                  }}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Dialog open={selectedPost !== null} onOpenChange={(open) => !open && setSelectedPost(null)}>
+        <DialogContent className="sm:max-w-[725px]">
+          <DialogHeader>
+            <DialogTitle>Edit Post</DialogTitle>
+          </DialogHeader>
+          {selectedPost && (
+            <PostForm
+              post={selectedPost}
+              onSubmit={(data) => updatePostMutation.mutate(data)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <PostsTable
+        posts={posts || []}
+        isLoading={isLoading}
+        onEdit={setSelectedPost}
+        onDelete={(id) => deletePostMutation.mutate(id)}
+      />
     </div>
   );
 };
