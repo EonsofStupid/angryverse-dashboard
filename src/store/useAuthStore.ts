@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to handle null case
 
       if (error) {
         console.error('Error checking admin status:', error);
@@ -37,8 +37,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       console.log('User role data:', data);
+      
+      // Check if data exists and role is admin
       const isAdmin = data?.role === 'admin';
       console.log('Setting isAdmin to:', isAdmin);
+      
       set({ isAdmin });
     } catch (error) {
       console.error('Error in checkAdminStatus:', error);
@@ -48,8 +51,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     try {
       console.log('Starting signOut process in auth store...');
-      set({ user: null, isAdmin: false, isLoading: false });
-      console.log('Store state cleared');
       
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -58,6 +59,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       
       console.log('Supabase signOut successful');
+      set({ user: null, isAdmin: false, isLoading: false });
+      console.log('Store state cleared');
     } catch (error) {
       console.error('Error in signOut:', error);
       throw error;
