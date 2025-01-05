@@ -21,9 +21,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setUser: (user) => {
     console.log('Setting user:', user);
     set({ user });
-    if (user) {
-      get().checkAdminStatus(user.id);
-    }
   },
 
   setIsAdmin: (isAdmin) => {
