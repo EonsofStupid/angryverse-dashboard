@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Profile } from "@/types/profile";
 
 interface UserProfileEditProps {
   userId: string;
@@ -15,7 +16,7 @@ export const UserProfileEdit = ({ userId }: UserProfileEditProps) => {
   const [username, setUsername] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: profile, isLoading } = useQuery({
+  const { data: profile, isLoading } = useQuery<Profile>({
     queryKey: ['user-profile', userId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -27,12 +28,14 @@ export const UserProfileEdit = ({ userId }: UserProfileEditProps) => {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      if (data?.username) {
-        setUsername(data.username);
-      }
-    }
   });
+
+  // Set username when profile data is loaded
+  useState(() => {
+    if (profile?.username) {
+      setUsername(profile.username);
+    }
+  }, [profile]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (newUsername: string) => {
