@@ -27,8 +27,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .eq('role', 'admin')
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error checking admin status:', error);
@@ -37,9 +36,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       console.log('User role data received:', data);
-      // If we found a record, the user is an admin (since we filtered for role = 'admin')
-      const isAdmin = !!data;
-      console.log('Setting isAdmin to:', isAdmin, 'based on role check');
+      const isAdmin = data?.role === 'admin';
+      console.log('Setting isAdmin to:', isAdmin, 'based on role:', data?.role);
       set({ isAdmin });
     } catch (error) {
       console.error('Error in checkAdminStatus:', error);
