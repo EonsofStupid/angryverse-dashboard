@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { VideoContent, PlatformConnection } from "./types";
 import { VideoFeed } from "./components/VideoFeed";
 import { PlatformConnectionCard } from "./components/PlatformConnectionCard";
+import { Json } from "@/integrations/supabase/types";
 
 interface VideoContentProps {
   platform: string;

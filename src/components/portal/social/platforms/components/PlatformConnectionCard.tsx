@@ -34,17 +34,17 @@ export const PlatformConnectionCard = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {connection.avatarUrl && (
+            {connection.avatar_url && (
               <img
-                src={connection.avatarUrl}
+                src={connection.avatar_url}
                 alt={connection.name}
                 className="w-8 h-8 rounded-full"
               />
             )}
             <div>
-              <div>{connection.name}</div>
+              <div>{connection.name || connection.connection_name}</div>
               <div className="text-sm text-muted-foreground">
-                {connection.platformUsername}
+                {connection.platform_username}
               </div>
             </div>
           </CardTitle>
