@@ -24,9 +24,18 @@ export const PostsManagement = () => {
       const { data, error } = await supabase
         .from('posts')
         .select(`
-          *,
-          profiles:author_id (
-            username
+          id,
+          title,
+          content,
+          author_id,
+          status,
+          created_at,
+          updated_at,
+          profiles!posts_author_id_fkey (
+            id,
+            username,
+            avatar_url,
+            updated_at
           )
         `)
         .order('created_at', { ascending: false });
@@ -40,7 +49,7 @@ export const PostsManagement = () => {
         return [];
       }
 
-      return data as Post[];
+      return data as unknown as Post[];
     },
   });
 

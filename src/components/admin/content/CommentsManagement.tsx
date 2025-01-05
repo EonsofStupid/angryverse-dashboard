@@ -24,9 +24,17 @@ export const CommentsManagement = () => {
       const { data, error } = await supabase
         .from('comments')
         .select(`
-          *,
-          profiles:author_id (
-            username
+          id,
+          content,
+          post_id,
+          author_id,
+          status,
+          created_at,
+          profiles!comments_author_id_fkey (
+            id,
+            username,
+            avatar_url,
+            updated_at
           )
         `)
         .order('created_at', { ascending: false });
@@ -40,7 +48,7 @@ export const CommentsManagement = () => {
         return [];
       }
 
-      return data as Comment[];
+      return data as unknown as Comment[];
     },
   });
 
