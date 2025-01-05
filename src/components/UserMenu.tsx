@@ -146,3 +146,6 @@ export const UserMenu = () => {
       </SheetContent>
     </Sheet>
   );
+};
+
+export default UserMenu;
