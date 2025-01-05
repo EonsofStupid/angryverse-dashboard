@@ -99,6 +99,7 @@ export type Database = {
         Row: {
           created_at: string | null
           engagement_metrics: Json | null
+          featured: boolean | null
           id: string
           platform: string
           platform_post_id: string | null
@@ -109,6 +110,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           engagement_metrics?: Json | null
+          featured?: boolean | null
           id?: string
           platform: string
           platform_post_id?: string | null
@@ -119,6 +121,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           engagement_metrics?: Json | null
+          featured?: boolean | null
           id?: string
           platform?: string
           platform_post_id?: string | null
