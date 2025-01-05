@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ConnectionWizardProps {
   platform: string;
@@ -25,6 +28,9 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
     clientSecret: "",
     redirectUri: window.location.origin + "/auth/callback",
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const platformDisplayName = {
     facebook: "Facebook",
@@ -48,16 +54,85 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
     }
   };
 
-  const handleComplete = () => {
-    // Here we'll implement the actual OAuth flow
-    toast.info(`Configuration saved for ${platformDisplayName}`);
-    onClose();
-    setStep(1);
-    setConfig({
-      clientId: "",
-      clientSecret: "",
-      redirectUri: window.location.origin + "/auth/callback",
-    });
+  const handleComplete = async () => {
+    if (!user) {
+      toast.error("You must be logged in to connect social accounts");
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("social_connections")
+        .insert([
+          {
+            user_id: user.id,
+            platform,
+            platform_username: config.clientId, // Temporarily store client ID as username
+            access_token: config.clientSecret, // Temporarily store client secret as access token
+            status: "active",
+            connection_name: `${platformDisplayName} Connection`,
+            account_type: "Business",
+          },
+        ]);
+
+      if (error) throw error;
+
+      toast.success(`${platformDisplayName} configuration saved successfully`);
+      queryClient.invalidateQueries({ queryKey: ["social-connections"] });
+      onClose();
+      setStep(1);
+      setConfig({
+        clientId: "",
+        clientSecret: "",
+        redirectUri: window.location.origin + "/auth/callback",
+      });
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+      toast.error(`Failed to save ${platformDisplayName} configuration`);
+    }
+  };
+
+  const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const jsonConfig = JSON.parse(e.target?.result as string);
+        if (jsonConfig.clientId && jsonConfig.clientSecret) {
+          setConfig({
+            ...config,
+            clientId: jsonConfig.clientId,
+            clientSecret: jsonConfig.clientSecret,
+          });
+          toast.success("Configuration imported successfully");
+        } else {
+          toast.error("Invalid configuration file format");
+        }
+      } catch (error) {
+        toast.error("Failed to parse configuration file");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleExportConfig = () => {
+    const configData = JSON.stringify({
+      clientId: config.clientId,
+      clientSecret: config.clientSecret,
+      redirectUri: config.redirectUri,
+    }, null, 2);
+
+    const blob = new Blob([configData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${platform}-config.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const renderStep = () => {
@@ -91,10 +166,33 @@ export const ConnectionWizard = ({ platform, isOpen, onClose }: ConnectionWizard
             <DialogHeader>
               <DialogTitle>Enter API Credentials</DialogTitle>
               <DialogDescription>
-                Enter the API credentials from your {platformDisplayName} Developer Console.
+                Enter the API credentials from your {platformDisplayName} Developer Console or import from a JSON file.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleFileImport}
+                  ref={fileInputRef}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Import JSON
+                </Button>
+                {(config.clientId || config.clientSecret) && (
+                  <Button
+                    variant="outline"
+                    onClick={handleExportConfig}
+                  >
+                    Export JSON
+                  </Button>
+                )}
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="clientId">Client ID</Label>
                 <Input
