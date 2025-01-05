@@ -13,19 +13,19 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Comment } from "@/types/database";
 
 export const CommentsManagement = () => {
   const { toast } = useToast();
 
-  const { data: comments, isLoading } = useQuery({
+  const { data: comments, isLoading } = useQuery<Comment[]>({
     queryKey: ['comments'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('comments')
         .select(`
           *,
-          profiles:author_id (username),
-          posts:post_id (title)
+          profiles:author_id (username)
         `)
         .order('created_at', { ascending: false });
 
@@ -42,22 +42,22 @@ export const CommentsManagement = () => {
     },
   });
 
-  const handleStatusUpdate = async (id: string, status: 'approved' | 'rejected') => {
+  const handleDelete = async (id: string) => {
     const { error } = await supabase
       .from('comments')
-      .update({ status })
+      .delete()
       .eq('id', id);
 
     if (error) {
       toast({
-        title: "Error updating comment",
+        title: "Error deleting comment",
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Comment updated",
-        description: `The comment has been ${status}.`,
+        title: "Comment deleted",
+        description: "The comment has been deleted successfully.",
       });
     }
   };
@@ -78,48 +78,34 @@ export const CommentsManagement = () => {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Content</TableHead>
             <TableHead>Author</TableHead>
-            <TableHead>Comment</TableHead>
-            <TableHead>Post</TableHead>
-            <TableHead>Date</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Date</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">Loading...</TableCell>
+              <TableCell colSpan={5} className="text-center">Loading...</TableCell>
             </TableRow>
           ) : comments?.map((comment) => (
             <TableRow key={comment.id}>
-              <TableCell className="font-medium">
-                {comment.profiles?.username || 'Unknown'}
-              </TableCell>
-              <TableCell>{comment.content}</TableCell>
-              <TableCell>{comment.posts?.title || 'Deleted post'}</TableCell>
-              <TableCell>{format(new Date(comment.created_at), 'MMM d, yyyy')}</TableCell>
+              <TableCell className="font-medium">{comment.content}</TableCell>
+              <TableCell>{comment.profiles?.username || 'Unknown'}</TableCell>
               <TableCell className="capitalize">{comment.status}</TableCell>
+              <TableCell>{format(new Date(comment.created_at), 'MMM d, yyyy')}</TableCell>
               <TableCell className="text-right">
-                {comment.status === 'pending' && (
-                  <>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => handleStatusUpdate(comment.id, 'approved')}
-                    >
-                      Approve
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-destructive"
-                      onClick={() => handleStatusUpdate(comment.id, 'rejected')}
-                    >
-                      Reject
-                    </Button>
-                  </>
-                )}
+                <Button variant="ghost" size="sm">Edit</Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-destructive"
+                  onClick={() => handleDelete(comment.id)}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
