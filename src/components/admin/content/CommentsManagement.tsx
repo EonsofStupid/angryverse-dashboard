@@ -9,8 +9,59 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 export const CommentsManagement = () => {
+  const { toast } = useToast();
+
+  const { data: comments, isLoading } = useQuery({
+    queryKey: ['comments'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('comments')
+        .select(`
+          *,
+          profiles:author_id (username),
+          posts:post_id (title)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Error fetching comments",
+          description: error.message,
+          variant: "destructive",
+        });
+        return [];
+      }
+
+      return data;
+    },
+  });
+
+  const handleStatusUpdate = async (id: string, status: 'approved' | 'rejected') => {
+    const { error } = await supabase
+      .from('comments')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: "Error updating comment",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Comment updated",
+        description: `The comment has been ${status}.`,
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -31,20 +82,47 @@ export const CommentsManagement = () => {
             <TableHead>Comment</TableHead>
             <TableHead>Post</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">Jane Smith</TableCell>
-            <TableCell>Great article! Very helpful...</TableCell>
-            <TableCell>Getting Started with React</TableCell>
-            <TableCell>2024-01-05</TableCell>
-            <TableCell className="text-right">
-              <Button variant="ghost" size="sm">Approve</Button>
-              <Button variant="ghost" size="sm" className="text-destructive">Delete</Button>
-            </TableCell>
-          </TableRow>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">Loading...</TableCell>
+            </TableRow>
+          ) : comments?.map((comment) => (
+            <TableRow key={comment.id}>
+              <TableCell className="font-medium">
+                {comment.profiles?.username || 'Unknown'}
+              </TableCell>
+              <TableCell>{comment.content}</TableCell>
+              <TableCell>{comment.posts?.title || 'Deleted post'}</TableCell>
+              <TableCell>{format(new Date(comment.created_at), 'MMM d, yyyy')}</TableCell>
+              <TableCell className="capitalize">{comment.status}</TableCell>
+              <TableCell className="text-right">
+                {comment.status === 'pending' && (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleStatusUpdate(comment.id, 'approved')}
+                    >
+                      Approve
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-destructive"
+                      onClick={() => handleStatusUpdate(comment.id, 'rejected')}
+                    >
+                      Reject
+                    </Button>
+                  </>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
