@@ -22,31 +22,38 @@ export const useRoleStore = create<RoleState>((set) => ({
 export const checkUserRole = async (userId: string, role: UserRole): Promise<boolean> => {
   console.log('Checking role for user:', userId, 'role:', role);
   
-  // Check cache first
-  const cachedRoles = useRoleStore.getState().userRoles.get(userId);
-  if (cachedRoles) {
-    return cachedRoles.includes(role);
-  }
+  try {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', role)
+      .single();
 
-  // If not in cache, fetch from database
-  const { data, error } = await supabase
-    .from('user_roles')
-    .select('role')
-    .eq('user_id', userId)
-    .eq('role', role)
-    .single();
+    if (error) {
+      console.error('Error checking user role:', error);
+      return false;
+    }
 
-  if (error) {
-    console.error('Error checking user role:', error);
+    const hasRole = !!data;
+    console.log('User role check result:', hasRole);
+    
+    // Update the role store
+    if (hasRole) {
+      useRoleStore.getState().setUserRoles(userId, [data.role]);
+    }
+
+    return hasRole;
+  } catch (error) {
+    console.error('Error in checkUserRole:', error);
     return false;
   }
-
-  // Cache the result
-  useRoleStore.getState().setUserRoles(userId, [data.role]);
-  return !!data;
 };
 
 export const hasRole = async (user: User | null, role: UserRole): Promise<boolean> => {
-  if (!user) return false;
+  if (!user) {
+    console.log('No user provided for role check');
+    return false;
+  }
   return checkUserRole(user.id, role);
 };

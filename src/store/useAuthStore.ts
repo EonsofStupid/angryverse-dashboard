@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { checkUserRole, UserRole } from '@/utils/roles';
+import { checkUserRole } from '@/utils/roles';
 
 interface AuthState {
   user: User | null;
@@ -19,9 +19,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAdmin: false,
   isLoading: true,
 
-  setUser: (user) => {
+  setUser: async (user) => {
     console.log('Setting user:', user);
     set({ user });
+    if (user) {
+      const isAdmin = await checkUserRole(user.id, 'admin');
+      console.log('Admin status check result:', isAdmin);
+      set({ isAdmin });
+    } else {
+      set({ isAdmin: false });
+    }
   },
 
   setIsAdmin: (isAdmin) => {
