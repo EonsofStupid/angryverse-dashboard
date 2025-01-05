@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { YouTubeContent } from "./platforms/YouTubeContent";
 
 interface PlatformContentProps {
   platform: string;
@@ -28,6 +29,10 @@ interface PlatformPost {
 }
 
 export const PlatformContent = ({ platform }: PlatformContentProps) => {
+  if (platform === "youtube") {
+    return <YouTubeContent />;
+  }
+
   const queryClient = useQueryClient();
   const [selectedPosts, setSelectedPosts] = useState<string[]>([]);
 
