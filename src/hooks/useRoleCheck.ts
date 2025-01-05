@@ -1,22 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/store/useAuthStore';
-import { UserRole, hasRole } from '@/utils/roles';
+import { useQuery } from "@tanstack/react-query";
+import { User } from "@supabase/supabase-js";
+import { UserRole, checkUserRole } from "@/utils/roles";
 
-export const useRoleCheck = (requiredRole: UserRole) => {
-  const { user } = useAuthStore();
-  const [hasAccess, setHasAccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+export const useRoleCheck = (user: User | null, requiredRole: UserRole) => {
+  const { data: hasRole = false, isLoading } = useQuery({
+    queryKey: ['role-check', user?.id, requiredRole],
+    queryFn: async () => {
+      if (!user) return false;
+      return checkUserRole(user.id, requiredRole);
+    },
+    enabled: !!user,
+  });
 
-  useEffect(() => {
-    const checkAccess = async () => {
-      setIsLoading(true);
-      const result = await hasRole(user, requiredRole);
-      setHasAccess(result);
-      setIsLoading(false);
-    };
-
-    checkAccess();
-  }, [user, requiredRole]);
-
-  return { hasAccess, isLoading };
+  return { hasRole, isLoading };
 };

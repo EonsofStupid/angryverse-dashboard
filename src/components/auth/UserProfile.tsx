@@ -7,10 +7,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 interface UserProfileProps {
   onClose: () => void;
+  isAdmin: boolean;
+  isCheckingRole: boolean;
 }
 
-export const UserProfile = ({ onClose }: UserProfileProps) => {
-  const { user, isAdmin, signOut } = useAuthStore();
+export const UserProfile = ({ onClose, isAdmin, isCheckingRole }: UserProfileProps) => {
+  const { user, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -41,7 +43,11 @@ export const UserProfile = ({ onClose }: UserProfileProps) => {
         </Avatar>
         <div className="flex flex-col">
           <span className="font-medium">{user.email}</span>
-          {isAdmin && <span className="text-sm text-muted-foreground">Admin</span>}
+          {isCheckingRole ? (
+            <span className="text-sm text-muted-foreground">Checking permissions...</span>
+          ) : isAdmin && (
+            <span className="text-sm text-muted-foreground">Admin</span>
+          )}
         </div>
       </div>
 
@@ -59,7 +65,7 @@ export const UserProfile = ({ onClose }: UserProfileProps) => {
         Settings
       </Button>
 
-      {isAdmin && (
+      {!isCheckingRole && isAdmin && (
         <Button
           variant="ghost"
           className="justify-start gap-2"

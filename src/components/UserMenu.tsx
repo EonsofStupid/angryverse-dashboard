@@ -12,13 +12,15 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useNavigate } from "react-router-dom";
 import { AuthForm } from "./auth/AuthForm";
 import { UserProfile } from "./auth/UserProfile";
+import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, setUser, isAdmin, checkAdminStatus } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { hasRole: isAdmin, isLoading: isCheckingRole } = useRoleCheck(user, 'admin');
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -29,14 +31,12 @@ export const UserMenu = () => {
           if (session?.user) {
             console.log("Initial session with user:", session.user);
             setUser(session.user);
-            await checkAdminStatus(session.user.id);
           }
           break;
         case 'SIGNED_IN':
           if (session) {
             console.log("User signed in:", session.user);
             setUser(session.user);
-            await checkAdminStatus(session.user.id);
             setOpen(false);
             navigate('/');
             toast({
@@ -55,15 +55,11 @@ export const UserMenu = () => {
           break;
         case 'TOKEN_REFRESHED':
           console.log("Token refreshed successfully");
-          if (session?.user) {
-            await checkAdminStatus(session.user.id);
-          }
           break;
         case 'USER_UPDATED':
           if (session?.user) {
             console.log("User updated:", session.user);
             setUser(session.user);
-            await checkAdminStatus(session.user.id);
           }
           toast({
             title: "Profile updated",
@@ -81,7 +77,6 @@ export const UserMenu = () => {
       if (session?.user) {
         console.log("Found existing session:", session.user);
         setUser(session.user);
-        await checkAdminStatus(session.user.id);
       }
     };
     
@@ -90,10 +85,7 @@ export const UserMenu = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, toast, setUser, checkAdminStatus]);
-
-  console.log("Current user:", user);
-  console.log("Is admin:", isAdmin);
+  }, [navigate, toast, setUser]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -117,7 +109,11 @@ export const UserMenu = () => {
           {!user ? (
             <AuthForm theme={theme} />
           ) : (
-            <UserProfile onClose={() => setOpen(false)} />
+            <UserProfile 
+              onClose={() => setOpen(false)} 
+              isAdmin={isAdmin} 
+              isCheckingRole={isCheckingRole}
+            />
           )}
         </div>
       </SheetContent>
