@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Navbar } from "@/components/Navbar";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { Settings } from "@/components/admin/Settings";
 import { useToast } from "@/hooks/use-toast";
@@ -31,27 +31,22 @@ const AdminDashboard = () => {
   if (!user || !isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="container mx-auto pt-24 px-4">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <AdminLayout>
+      <Tabs defaultValue="users" className="w-full">
+        <TabsList>
+          <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
         
-        <Tabs defaultValue="users" className="w-full">
-          <TabsList>
-            <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="users">
-            <UserManagement />
-          </TabsContent>
-          
-          <TabsContent value="settings">
-            <Settings />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
+        <TabsContent value="users">
+          <UserManagement />
+        </TabsContent>
+        
+        <TabsContent value="settings">
+          <Settings />
+        </TabsContent>
+      </Tabs>
+    </AdminLayout>
   );
 };
 
