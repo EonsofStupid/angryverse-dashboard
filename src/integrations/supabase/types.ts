@@ -220,11 +220,15 @@ export type Database = {
       social_connections: {
         Row: {
           access_token: string | null
+          account_type: string | null
+          avatar_url: string | null
           connected_at: string | null
+          connection_name: string | null
           id: string
           platform: string
           platform_user_id: string | null
           platform_username: string | null
+          profile_url: string | null
           refresh_token: string | null
           status: string | null
           token_expires_at: string | null
@@ -232,11 +236,15 @@ export type Database = {
         }
         Insert: {
           access_token?: string | null
+          account_type?: string | null
+          avatar_url?: string | null
           connected_at?: string | null
+          connection_name?: string | null
           id?: string
           platform: string
           platform_user_id?: string | null
           platform_username?: string | null
+          profile_url?: string | null
           refresh_token?: string | null
           status?: string | null
           token_expires_at?: string | null
@@ -244,11 +252,15 @@ export type Database = {
         }
         Update: {
           access_token?: string | null
+          account_type?: string | null
+          avatar_url?: string | null
           connected_at?: string | null
+          connection_name?: string | null
           id?: string
           platform?: string
           platform_user_id?: string | null
           platform_username?: string | null
+          profile_url?: string | null
           refresh_token?: string | null
           status?: string | null
           token_expires_at?: string | null
