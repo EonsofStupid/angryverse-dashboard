@@ -11,12 +11,14 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useToast } from "@/hooks/use-toast";
 import { DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useNavigate } from "react-router-dom";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { user, isAdmin, setUser, checkAdminStatus, signOut } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -25,6 +27,7 @@ export const UserMenu = () => {
         
         if (event === 'SIGNED_OUT') {
           setUser(null);
+          navigate('/');
           return;
         }
         
@@ -37,13 +40,15 @@ export const UserMenu = () => {
 
     return () => {
       subscription.unsubscribe();
-    }
-  }, [setUser, checkAdminStatus]);
+    };
+  }, [setUser, checkAdminStatus, navigate]);
 
   const handleSignOut = async () => {
     try {
       setOpen(false); // Close the menu first
+      console.log('Handling sign out click...');
       await signOut();
+      navigate('/');
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
@@ -123,7 +128,7 @@ export const UserMenu = () => {
                   variant="ghost"
                   className="justify-start gap-2"
                   onClick={() => {
-                    window.location.href = '/admin';
+                    navigate('/admin');
                     setOpen(false);
                   }}
                 >

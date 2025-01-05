@@ -43,7 +43,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     try {
       console.log('Starting signOut process in auth store...');
-      console.log('Calling supabase.auth.signOut()...');
       
       // First clear the store state
       set({ user: null, isAdmin: false, isLoading: false });
@@ -58,9 +57,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       
       console.log('Supabase signOut successful');
-      
-      // Force a hard reload to clear any cached state
-      window.location.reload();
     } catch (error) {
       console.error('Error in signOut:', error);
       throw error;
