@@ -1,4 +1,5 @@
 export interface VideoMetrics {
+  [key: string]: number | undefined;
   views?: number;
   likes?: number;
   comments?: number;
@@ -18,10 +19,20 @@ export interface VideoContent {
 
 export interface PlatformConnection {
   id: string;
-  name: string;
-  platformUsername: string;
-  avatarUrl?: string;
+  user_id: string;
+  platform: string;
+  platform_user_id: string | null;
+  platform_username: string | null;
+  access_token: string | null;
+  refresh_token: string | null;
+  token_expires_at: string | null;
+  connected_at: string | null;
   status: 'active' | 'inactive';
+  connection_name: string | null;
+  account_type: string | null;
+  profile_url: string | null;
+  avatar_url: string | null;
+  name?: string;
 }
 
 export interface PlatformConfig {

@@ -47,18 +47,18 @@ export const VideoPlatformContent = ({ platform }: VideoContentProps) => {
 
       if (postError) throw postError;
 
+      const platformPost = {
+        platform,
+        platform_post_id: video.platformId,
+        status: "published",
+        posted_at: video.publishedAt,
+        engagement_metrics: video.metrics as unknown as Json,
+        featured: true,
+      };
+
       const { error: platformError } = await supabase
         .from("platform_posts")
-        .insert([
-          {
-            platform,
-            platform_post_id: video.platformId,
-            status: "published",
-            posted_at: video.publishedAt,
-            engagement_metrics: video.metrics,
-            featured: true,
-          },
-        ]);
+        .insert([platformPost]);
 
       if (platformError) throw platformError;
     },
