@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useThemeStore } from "@/store/useThemeStore";
-import { Settings, LogIn, LogOut, Database, User } from "lucide-react";
+import { Settings, LogOut, Database, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
@@ -21,14 +21,13 @@ export const UserMenu = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("Auth state changed:", event);
         if (event === 'SIGNED_OUT') {
-          console.log('Auth state detected sign out');
           setUser(null);
           return;
         }
-        setUser(session?.user ?? null);
+        
         if (session?.user) {
+          setUser(session.user);
           await checkAdminStatus(session.user.id);
         }
       }
@@ -38,10 +37,8 @@ export const UserMenu = () => {
   }, [setUser, checkAdminStatus]);
 
   const handleSignOut = async () => {
-    console.log('Handling sign out click...');
     try {
       await signOut();
-      console.log('Sign out successful, closing menu...');
       setOpen(false);
       toast({
         title: "Signed out",
