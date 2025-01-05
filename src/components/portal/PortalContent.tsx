@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlatformContent } from "./social/PlatformContent";
 
 export const PortalContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -86,20 +88,51 @@ export const PortalContent = () => {
       {/* Social Media Connections */}
       <SocialConnections />
 
-      {/* Post Composer */}
-      <div className="mb-8">
-        <SocialPostComposer />
-      </div>
+      <Tabs defaultValue="composer" className="mt-8">
+        <TabsList className="mb-4">
+          <TabsTrigger value="composer">Create Post</TabsTrigger>
+          <TabsTrigger value="youtube">YouTube</TabsTrigger>
+          <TabsTrigger value="twitter">Twitter/X</TabsTrigger>
+          <TabsTrigger value="facebook">Facebook</TabsTrigger>
+          <TabsTrigger value="instagram">Instagram</TabsTrigger>
+          <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
+        </TabsList>
 
-      {/* Content Management Section */}
-      <h3 className="text-xl font-semibold mb-4">Your Posts</h3>
-      <DataTable
-        columns={columns}
-        data={posts || []}
-        onSearch={handleSearch}
-        onSort={handleSort}
-        onDelete={handleDelete}
-      />
+        <TabsContent value="composer">
+          <div className="mb-8">
+            <SocialPostComposer />
+          </div>
+
+          <h3 className="text-xl font-semibold mb-4">Your Posts</h3>
+          <DataTable
+            columns={columns}
+            data={posts || []}
+            onSearch={handleSearch}
+            onSort={handleSort}
+            onDelete={handleDelete}
+          />
+        </TabsContent>
+
+        <TabsContent value="youtube">
+          <PlatformContent platform="youtube" />
+        </TabsContent>
+
+        <TabsContent value="twitter">
+          <PlatformContent platform="twitter" />
+        </TabsContent>
+
+        <TabsContent value="facebook">
+          <PlatformContent platform="facebook" />
+        </TabsContent>
+
+        <TabsContent value="instagram">
+          <PlatformContent platform="instagram" />
+        </TabsContent>
+
+        <TabsContent value="linkedin">
+          <PlatformContent platform="linkedin" />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
