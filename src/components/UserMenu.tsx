@@ -63,6 +63,8 @@ export const UserMenu = () => {
     }
   };
 
+  console.log('Current user isAdmin status:', isAdmin); // Add this log to debug
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
