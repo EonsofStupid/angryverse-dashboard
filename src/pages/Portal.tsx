@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import { Features } from "@/components/Features";
+import { PortalContent } from "@/components/portal/PortalContent";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -20,7 +20,7 @@ const Portal = () => {
       <div className="relative z-10">
         <Navbar />
         <div className="pt-20">
-          <Features />
+          <PortalContent />
         </div>
       </div>
     </div>
