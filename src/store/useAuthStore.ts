@@ -28,7 +28,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .maybeSingle(); // Use maybeSingle instead of single to handle null case
+        .eq('role', 'admin')
+        .maybeSingle();
 
       if (error) {
         console.error('Error checking admin status:', error);
@@ -38,8 +39,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       console.log('User role data:', data);
       
-      // Check if data exists and role is admin
-      const isAdmin = data?.role === 'admin';
+      // User is admin if we found a matching record
+      const isAdmin = !!data;
       console.log('Setting isAdmin to:', isAdmin);
       
       set({ isAdmin });
