@@ -12,14 +12,8 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
       let query = supabase
         .from('posts')
         .select(`
-          id,
-          title,
-          content,
-          author_id,
-          status,
-          created_at,
-          updated_at,
-          profiles!posts_author_id_fkey (
+          *,
+          author:profiles(
             id,
             username,
             avatar_url,
@@ -46,7 +40,11 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
         return [];
       }
 
-      return data as Post[];
+      // Transform the data to match the Post type
+      return data.map(post => ({
+        ...post,
+        profiles: post.author // Map the author to profiles to match the Post type
+      })) as Post[];
     },
   });
 };
