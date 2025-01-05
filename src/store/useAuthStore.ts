@@ -25,11 +25,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       console.log('=== Starting Admin Status Check ===');
       console.log('Checking admin status for userId:', userId);
 
+      // First, let's verify the user_roles table structure
+      const { data: tableInfo, error: tableError } = await supabase
+        .from('user_roles')
+        .select('*')
+        .limit(1);
+      
+      console.log('Table structure check:', { tableInfo, tableError });
+
+      // Now query for this specific user's role
       const { data, error } = await supabase
         .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .single();
+        .select('*')
+        .eq('user_id', userId);
 
       console.log('Raw query response:', { data, error });
 
@@ -40,7 +48,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         return;
       }
 
-      if (!data) {
+      if (!data || data.length === 0) {
         console.log('No role data found for user');
         set({ isAdmin: false });
         console.log('Setting isAdmin to false due to no data');
@@ -48,7 +56,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       console.log('Role data found:', data);
-      const isAdmin = data.role === 'admin';
+      const userRole = data[0];
+      console.log('User role object:', userRole);
+      
+      const isAdmin = userRole.role === 'admin';
+      console.log('Role value:', userRole.role);
       console.log('Calculated isAdmin status:', isAdmin);
       
       set({ isAdmin });
