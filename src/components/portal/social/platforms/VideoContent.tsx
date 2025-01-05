@@ -9,11 +9,11 @@ import { VideoFeed } from "./components/VideoFeed";
 import { PlatformConnectionCard } from "./components/PlatformConnectionCard";
 import { Json } from "@/integrations/supabase/types";
 
-interface VideoContentProps {
+interface VideoPlatformContentProps {
   platform: string;
 }
 
-export const VideoPlatformContent = ({ platform }: VideoContentProps) => {
+export const VideoPlatformContent = ({ platform }: VideoPlatformContentProps) => {
   const queryClient = useQueryClient();
   const [activeFeeds, setActiveFeeds] = useState<Record<string, VideoContent[]>>({});
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
@@ -53,7 +53,7 @@ export const VideoPlatformContent = ({ platform }: VideoContentProps) => {
         platform_post_id: video.platformId,
         status: "published",
         posted_at: video.publishedAt,
-        engagement_metrics: video.metrics as unknown as Json,
+        engagement_metrics: video.metrics as Json,
         featured: true,
       };
 
@@ -76,49 +76,32 @@ export const VideoPlatformContent = ({ platform }: VideoContentProps) => {
     setIsLoading(prev => ({ ...prev, [connectionId]: true }));
     
     try {
-      // Here we'll call the appropriate platform's API via edge function
-      // For now, using mock data
-      const mockVideos: VideoContent[] = [
-        {
-          id: "1",
-          title: "Sample Video",
-          description: "This is a sample video description",
-          thumbnailUrl: "https://picsum.photos/seed/1/400/225",
-          publishedAt: new Date().toISOString(),
-          metrics: {
-            views: 1000,
-            likes: 100,
-            comments: 50,
-          },
-          platformId: "vid1",
-          url: "https://example.com/video1",
-        },
-      ];
+      const response = await supabase.functions.invoke('fetch-platform-videos', {
+        body: { platform, connectionId }
+      });
 
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const { videos } = response.data;
+      
       setActiveFeeds(prev => ({
         ...prev,
-        [connectionId]: mockVideos,
+        [connectionId]: videos,
       }));
+
+      toast.success('Feed initialized successfully');
     } catch (error) {
-      toast.error("Failed to initialize feed");
-      console.error("Error initializing feed:", error);
+      console.error('Error initializing feed:', error);
+      toast.error(error.message || 'Failed to initialize feed');
     } finally {
       setIsLoading(prev => ({ ...prev, [connectionId]: false }));
     }
   };
 
   const handleRefresh = async (connectionId: string) => {
-    setIsLoading(prev => ({ ...prev, [connectionId]: true }));
-    
-    try {
-      // Here we'll refresh the feed from the platform's API
-      await handleInitialize(connectionId);
-      toast.success("Feed refreshed successfully");
-    } catch (error) {
-      toast.error("Failed to refresh feed");
-    } finally {
-      setIsLoading(prev => ({ ...prev, [connectionId]: false }));
-    }
+    await handleInitialize(connectionId);
   };
 
   const handleClear = (connectionId: string) => {
