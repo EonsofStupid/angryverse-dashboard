@@ -51,7 +51,6 @@ export const UserMenu = () => {
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('User signed in, setting user:', session.user);
           setUser(session.user);
-          console.log('Checking admin status for user:', session.user.id);
           await checkAdminStatus(session.user.id);
         }
       }

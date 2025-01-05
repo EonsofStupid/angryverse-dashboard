@@ -37,31 +37,34 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return;
       }
 
+      // First, try to get the user's role directly
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       console.log('Query response:', { data, error });
 
       if (error) {
         console.error('Error checking admin status:', error);
-        if (error.code === 'PGRST116') {
-          // No rows returned - user is not an admin
-          console.log('No role found for user, setting isAdmin to false');
-          set({ isAdmin: false });
-          return;
-        }
         throw error;
       }
 
+      // Check if we got a role back and if it's admin
       const isAdmin = data?.role === 'admin';
       console.log('Role from database:', data?.role);
-      console.log('Calculated isAdmin status:', isAdmin);
+      console.log('Setting isAdmin to:', isAdmin);
       
       set({ isAdmin });
-      console.log('Updated store with isAdmin:', isAdmin);
+      
+      // Double check the state was updated
+      const currentState = get();
+      console.log('Current state after update:', {
+        isAdmin: currentState.isAdmin,
+        userId: currentState.user?.id
+      });
+      
       console.log('=== Admin Status Check Complete ===');
     } catch (err) {
       console.error('Unexpected error in checkAdminStatus:', err);
