@@ -6,8 +6,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { Settings, LogOut, Database, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useToast } from "@/hooks/use-toast";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -22,13 +22,13 @@ export const UserMenu = () => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('Initializing auth...');
-      
+      console.log("Initializing auth...");
+
       const { data: { session } } = await supabase.auth.getSession();
-      console.log('Initial session check:', session);
-      
+      console.log("Initial session check:", session);
+
       if (session?.user) {
-        console.log('Found existing session, setting user:', session.user);
+        console.log("Found existing session, setting user:", session.user);
         setUser(session.user);
         await checkAdminStatus(session.user.id);
       }
@@ -38,18 +38,18 @@ export const UserMenu = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event);
-        console.log('Session data:', session);
-        
-        if (event === 'SIGNED_OUT') {
-          console.log('User signed out, clearing state');
+        console.log("Auth state changed:", event);
+        console.log("Session data:", session);
+
+        if (event === "SIGNED_OUT") {
+          console.log("User signed out, clearing state");
           setUser(null);
-          navigate('/');
+          navigate("/");
           return;
         }
-        
-        if (event === 'SIGNED_IN' && session?.user) {
-          console.log('User signed in, setting user:', session.user);
+
+        if (event === "SIGNED_IN" && session?.user) {
+          console.log("User signed in, setting user:", session.user);
           setUser(session.user);
           await checkAdminStatus(session.user.id);
         }
@@ -57,7 +57,7 @@ export const UserMenu = () => {
     );
 
     return () => {
-      console.log('Cleaning up auth listener');
+      console.log("Cleaning up auth listener");
       subscription.unsubscribe();
     };
   }, [setUser, checkAdminStatus, navigate]);
@@ -65,15 +65,15 @@ export const UserMenu = () => {
   const handleSignOut = async () => {
     try {
       setOpen(false);
-      console.log('Handling sign out click...');
+      console.log("Handling sign out click...");
       await signOut();
-      navigate('/');
+      navigate("/");
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
       });
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
       toast({
         title: "Error",
         description: "Failed to sign out. Please try again.",
@@ -82,8 +82,8 @@ export const UserMenu = () => {
     }
   };
 
-  console.log('Current user:', user);
-  console.log('Current isAdmin status:', isAdmin);
+  console.log("Current user:", user);
+  console.log("Current isAdmin status:", isAdmin);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -112,20 +112,20 @@ export const UserMenu = () => {
                 variables: {
                   default: {
                     colors: {
-                      brand: 'hsl(var(--primary))',
-                      brandAccent: 'hsl(var(--primary))',
+                      brand: "hsl(var(--primary))",
+                      brandAccent: "hsl(var(--primary))",
                     },
                   },
                 },
               }}
-              theme={theme === 'dark' ? 'dark' : 'light'}
+              theme={theme === "dark" ? "dark" : "light"}
             />
           ) : (
             <>
               <div className="flex items-center gap-2 p-2">
                 <Avatar>
                   <AvatarFallback>
-                    {user.email?.[0].toUpperCase() ?? 'U'}
+                    {user.email?.[0].toUpperCase() ?? "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
@@ -133,7 +133,7 @@ export const UserMenu = () => {
                   {isAdmin && <span className="text-sm text-muted-foreground">Admin</span>}
                 </div>
               </div>
-              
+
               <Button
                 variant="ghost"
                 className="justify-start gap-2"
@@ -153,7 +153,7 @@ export const UserMenu = () => {
                   variant="ghost"
                   className="justify-start gap-2"
                   onClick={() => {
-                    navigate('/admin');
+                    navigate("/admin");
                     setOpen(false);
                   }}
                 >
