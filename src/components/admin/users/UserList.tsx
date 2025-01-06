@@ -9,6 +9,7 @@ import { Shield, Ban, UserX, CheckCircle, XCircle } from "lucide-react";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
 import { UserStatus, User } from "@/types/user";
+import { toast } from "sonner";
 
 export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
@@ -17,33 +18,44 @@ export const UserList = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      const { data: userRoles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
-
-      if (rolesError) throw rolesError;
-
+      // First get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, username, avatar_url, bio, location, website, last_active, display_name');
+        .select(`
+          id,
+          username,
+          avatar_url,
+          bio,
+          location,
+          website,
+          last_active,
+          display_name,
+          user_roles (
+            role
+          )
+        `);
 
-      if (profilesError) throw profilesError;
+      if (profilesError) {
+        toast.error('Error fetching users');
+        throw profilesError;
+      }
 
-      const { data: users, error: usersError } = await supabase.auth.admin.listUsers();
-      
-      if (usersError) throw usersError;
-
-      return users.users.map(user => {
-        const userRole = userRoles?.find(role => role.user_id === user.id);
-        const profile = profiles?.find(profile => profile.id === user.id);
-        return {
-          id: user.id,
-          email: user.email || 'No email',
-          role: userRole?.role || 'user',
-          status: 'active' as UserStatus,
-          profile
-        };
-      });
+      // Transform the data to match our User type
+      return profiles.map(profile => ({
+        id: profile.id,
+        email: profile.username || 'No username', // Using username as fallback since we can't access email
+        role: profile.user_roles?.[0]?.role || 'user',
+        status: 'active' as UserStatus, // Default status
+        profile: {
+          username: profile.username,
+          display_name: profile.display_name,
+          avatar_url: profile.avatar_url,
+          bio: profile.bio,
+          location: profile.location,
+          website: profile.website,
+          last_active: profile.last_active
+        }
+      }));
     }
   });
 
@@ -101,10 +113,7 @@ export const UserList = () => {
                   }}
                 />
                 <div>
-                  <p className="font-medium">{user.email}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {user.profile?.display_name || user.profile?.username || 'No username'}
-                  </p>
+                  <p className="font-medium">{user.profile?.display_name || user.profile?.username || 'No username'}</p>
                   {user.profile?.location && (
                     <p className="text-sm text-muted-foreground">{user.profile.location}</p>
                   )}
