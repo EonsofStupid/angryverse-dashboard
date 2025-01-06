@@ -124,6 +124,19 @@ export const PostsManagement = () => {
     },
   });
 
+  // Add this new function to handle post editing
+  const handleEditPost = (post: Post) => {
+    // Ensure all required fields are present before setting the state
+    const completePost: Post = {
+      ...post,
+      excerpt: post.excerpt || null,
+      featured_image: post.featured_image || null,
+      meta_title: post.meta_title || null,
+      meta_description: post.meta_description || null,
+    };
+    setSelectedPost(completePost);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -184,7 +197,7 @@ export const PostsManagement = () => {
       <PostsTable
         posts={posts || []}
         isLoading={isLoading}
-        onEdit={setSelectedPost}
+        onEdit={handleEditPost}
         onDelete={(id) => deletePostMutation.mutate(id)}
       />
     </div>
