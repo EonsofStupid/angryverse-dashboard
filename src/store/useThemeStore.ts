@@ -33,11 +33,11 @@ export const useThemeStore = create<ThemeState>()(
             .from('themes')
             .select('*')
             .eq('id', themeId)
-            .maybeSingle();
+            .single();
 
           if (error) throw error;
           if (themeData) {
-            const theme = themeData as unknown as Theme;
+            const theme = themeData as Theme;
             set({ currentTheme: theme });
             get().applyTheme(theme);
           }
@@ -57,35 +57,44 @@ export const useThemeStore = create<ThemeState>()(
       fetchPageTheme: async (pagePath: string) => {
         try {
           set({ isLoading: true, error: null });
-          const { data: pageTheme, error: pageThemeError } = await supabase
+          
+          // First try to get the page theme
+          const { data: pageThemeData, error: pageThemeError } = await supabase
             .from('page_themes')
-            .select('*, themes(*)')
+            .select(`
+              *,
+              theme:themes (
+                *
+              )
+            `)
             .eq('page_path', pagePath)
             .maybeSingle();
 
           if (pageThemeError) throw pageThemeError;
-          
-          if (pageTheme?.themes) {
-            const theme = pageTheme.themes as unknown as Theme;
+
+          if (pageThemeData?.theme) {
+            const theme = pageThemeData.theme as Theme;
             get().pageThemes.set(pagePath, theme);
             set({ currentTheme: theme });
             get().applyTheme(theme);
-          } else {
-            // If no page theme is found, fetch default theme
-            const { data: defaultTheme, error: defaultThemeError } = await supabase
-              .from('themes')
-              .select('*')
-              .eq('is_default', true)
-              .maybeSingle();
+            return;
+          }
 
-            if (defaultThemeError) throw defaultThemeError;
-            if (defaultTheme) {
-              const theme = defaultTheme as unknown as Theme;
-              set({ currentTheme: theme });
-              get().applyTheme(theme);
-            } else {
-              console.log('No default theme found');
-            }
+          // If no page theme is found, fetch default theme
+          const { data: defaultTheme, error: defaultThemeError } = await supabase
+            .from('themes')
+            .select('*')
+            .eq('is_default', true)
+            .maybeSingle();
+
+          if (defaultThemeError) throw defaultThemeError;
+
+          if (defaultTheme) {
+            const theme = defaultTheme as Theme;
+            set({ currentTheme: theme });
+            get().applyTheme(theme);
+          } else {
+            console.warn('No default theme found');
           }
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch page theme';
