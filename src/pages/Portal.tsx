@@ -13,11 +13,25 @@ const Portal = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      toast.error("Please sign in to access the portal");
-      navigate("/");
-    }
-  }, [user, authLoading, navigate]);
+    const checkAccess = async () => {
+      console.log("Checking portal access:", { user, isAdmin, authLoading, roleLoading });
+      
+      if (!authLoading && !user) {
+        console.log("No user found, redirecting to home");
+        toast.error("Please sign in to access the portal");
+        navigate("/");
+        return;
+      }
+
+      if (!authLoading && !roleLoading && !isAdmin) {
+        console.log("User is not admin, redirecting to home");
+        toast.error("You don't have permission to access the portal");
+        navigate("/");
+      }
+    };
+
+    checkAccess();
+  }, [user, isAdmin, authLoading, roleLoading, navigate]);
 
   if (authLoading || roleLoading) {
     return (
@@ -27,7 +41,7 @@ const Portal = () => {
     );
   }
 
-  if (!user) {
+  if (!user || !isAdmin) {
     return null; // Will redirect via useEffect
   }
 
