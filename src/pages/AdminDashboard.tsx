@@ -94,11 +94,16 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <AdminLayout>
-        <Tabs value={currentPath} className="w-full" onValueChange={(value) => {
-          const newPath = value ? `/admin/${value}` : '/admin';
-          console.log('Tab change, navigating to:', newPath);
-          navigate(newPath);
-        }}>
+        <Tabs 
+          defaultValue={currentPath || ''} 
+          value={currentPath} 
+          className="w-full" 
+          onValueChange={(value) => {
+            const newPath = value ? `/admin/${value}` : '/admin';
+            console.log('Tab change, navigating to:', newPath);
+            navigate(newPath);
+          }}
+        >
           <TabsList>
             <TabsTrigger value="">Dashboard</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
