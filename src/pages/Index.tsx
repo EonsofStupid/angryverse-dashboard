@@ -1,8 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
+import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
+import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
+  const { currentTheme } = useTheme();
+
   return (
     <div className="min-h-screen bg-transparent text-white relative overflow-hidden">
       {/* Animated gradient overlay */}
@@ -13,6 +17,7 @@ const Index = () => {
         <Navbar />
         <Hero />
         <Features />
+        {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
       </div>
     </div>
   );
