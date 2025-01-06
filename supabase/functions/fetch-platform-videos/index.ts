@@ -14,14 +14,15 @@ async function fetchYouTubeVideos(accessToken: string) {
       throw new Error('No access token provided');
     }
 
-    console.log('Access token present, attempting to fetch channel data...');
-    
-    // First try to fetch user's channel info to validate token
+    const cleanToken = accessToken.trim();
+    console.log('Attempting to validate access token...');
+
+    // First validate the token by fetching channel info
     const channelResponse = await fetch(
-      'https://youtube.googleapis.com/youtube/v3/channels?part=snippet&mine=true',
+      'https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true',
       {
         headers: {
-          'Authorization': `Bearer ${accessToken.trim()}`,
+          'Authorization': `Bearer ${cleanToken}`,
           'Accept': 'application/json',
         },
       }
@@ -29,20 +30,25 @@ async function fetchYouTubeVideos(accessToken: string) {
 
     if (!channelResponse.ok) {
       const errorData = await channelResponse.text();
-      console.error('Channel validation failed:', errorData);
-      throw new Error(`YouTube API authentication failed: ${errorData}`);
+      console.error('Token validation failed:', errorData);
+      throw new Error(`Token validation failed: ${errorData}`);
     }
 
     const channelData = await channelResponse.json();
-    console.log('Channel validation successful:', channelData?.items?.[0]?.snippet?.title);
+    if (!channelData?.items?.length) {
+      console.error('No channel found for this token');
+      throw new Error('No YouTube channel found for this token');
+    }
+
+    console.log('Token validated successfully for channel:', channelData.items[0].snippet.title);
     
     // Now fetch the videos
     console.log('Fetching videos...');
     const response = await fetch(
-      'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true',
+      'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true&order=date',
       {
         headers: {
-          'Authorization': `Bearer ${accessToken.trim()}`,
+          'Authorization': `Bearer ${cleanToken}`,
           'Accept': 'application/json',
         },
       }
@@ -50,8 +56,8 @@ async function fetchYouTubeVideos(accessToken: string) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('YouTube API Error:', errorText);
-      throw new Error(`YouTube API returned ${response.status}: ${errorText}`);
+      console.error('Failed to fetch videos:', errorText);
+      throw new Error(`Failed to fetch videos: ${errorText}`);
     }
 
     const data = await response.json();
@@ -65,10 +71,10 @@ async function fetchYouTubeVideos(accessToken: string) {
     // Get video statistics in a separate call
     const videoIds = data.items.map((item: any) => item.id.videoId).join(',');
     const statsResponse = await fetch(
-      `https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}`,
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}`,
       {
         headers: {
-          'Authorization': `Bearer ${accessToken.trim()}`,
+          'Authorization': `Bearer ${cleanToken}`,
           'Accept': 'application/json',
         },
       }
