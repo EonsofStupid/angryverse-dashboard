@@ -3,39 +3,31 @@ import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { useTheme } from "@/hooks/useTheme";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const { currentTheme, fetchPageTheme, isLoading, error } = useTheme();
   const { toast } = useToast();
 
-  // Memoize the theme loading function to prevent unnecessary re-renders
-  const loadTheme = useCallback(async () => {
-    try {
-      await fetchPageTheme('/');
-    } catch (error) {
-      console.error('Error loading theme:', error);
-      toast({
-        title: "Theme Error",
-        description: "Failed to load theme. Using default theme.",
-        variant: "destructive",
-      });
-    }
-  }, [fetchPageTheme, toast]);
-
-  // Clean up effect and prevent multiple theme fetches
   useEffect(() => {
-    let mounted = true;
+    const loadTheme = async () => {
+      try {
+        await fetchPageTheme('/');
+      } catch (err) {
+        console.error('Error loading theme:', err);
+        toast({
+          title: "Theme Error",
+          description: "Failed to load theme. Using default theme.",
+          variant: "destructive",
+        });
+      }
+    };
 
-    if (mounted && !currentTheme) {
+    if (!currentTheme && !isLoading) {
       loadTheme();
     }
-
-    return () => {
-      mounted = false;
-    };
-  }, [loadTheme, currentTheme]);
+  }, [currentTheme, fetchPageTheme, isLoading, toast]);
 
   if (isLoading) {
     return (

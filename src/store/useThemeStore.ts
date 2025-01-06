@@ -1,173 +1,74 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Theme, ThemeConfiguration } from '@/types/theme';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { Theme } from '@/types/theme';
 
 interface ThemeState {
   currentTheme: Theme | null;
-  pageThemes: Map<string, Theme>;
   isLoading: boolean;
-  error: string | null;
-  theme: 'light' | 'dark' | 'system';
-  fetchTheme: (themeId: string) => Promise<void>;
-  fetchPageTheme: (pagePath: string) => Promise<void>;
-  setCurrentTheme: (theme: Theme) => void;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
-  applyTheme: (theme: Theme) => void;
+  error: Error | null;
+  theme: string;
+  setTheme: (theme: string) => void;
+  setCurrentTheme: (theme: Theme | null) => void;
+  fetchPageTheme: (path: string) => Promise<void>;
 }
 
-// Helper function to convert database theme to Theme type
-const convertDatabaseTheme = (dbTheme: any): Theme => {
-  const configuration = dbTheme.configuration as ThemeConfiguration;
-  return {
-    id: dbTheme.id,
-    name: dbTheme.name,
-    description: dbTheme.description,
-    is_default: dbTheme.is_default,
-    status: dbTheme.status,
-    configuration,
-    created_by: dbTheme.created_by,
-    created_at: dbTheme.created_at,
-    updated_at: dbTheme.updated_at,
-  };
-};
+export const useThemeStore = create<ThemeState>((set) => ({
+  currentTheme: null,
+  isLoading: false,
+  error: null,
+  theme: 'dark',
+  
+  setTheme: (theme) => set({ theme }),
+  
+  setCurrentTheme: (theme) => set({ currentTheme: theme }),
+  
+  fetchPageTheme: async (path) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // First try to get the page-specific theme
+      const { data: pageTheme, error: pageError } = await supabase
+        .from('page_themes')
+        .select(`
+          *,
+          themes:theme_id (*)
+        `)
+        .eq('page_path', path)
+        .maybeSingle();
 
-export const useThemeStore = create<ThemeState>()(
-  persist(
-    (set, get) => ({
-      currentTheme: null,
-      pageThemes: new Map(),
-      isLoading: false,
-      error: null,
-      theme: 'system',
+      if (pageError) throw pageError;
 
-      fetchTheme: async (themeId: string) => {
-        try {
-          set({ isLoading: true, error: null });
-          const { data: themeData, error } = await supabase
-            .from('themes')
-            .select('*')
-            .eq('id', themeId)
-            .single();
-
-          if (error) throw error;
-          if (themeData) {
-            const theme = convertDatabaseTheme(themeData);
-            set({ currentTheme: theme });
-            get().applyTheme(theme);
-          }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch theme';
-          set({ error: errorMessage });
-          toast({
-            title: 'Error',
-            description: errorMessage,
-            variant: 'destructive',
-          });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      fetchPageTheme: async (pagePath: string) => {
-        try {
-          set({ isLoading: true, error: null });
-          
-          // First try to get the page theme
-          const { data: pageThemeData, error: pageThemeError } = await supabase
-            .from('page_themes')
-            .select(`
-              *,
-              theme:themes (
-                *
-              )
-            `)
-            .eq('page_path', pagePath)
-            .maybeSingle();
-
-          if (pageThemeError) throw pageThemeError;
-
-          if (pageThemeData?.theme) {
-            const theme = convertDatabaseTheme(pageThemeData.theme);
-            get().pageThemes.set(pagePath, theme);
-            set({ currentTheme: theme });
-            get().applyTheme(theme);
-            return;
-          }
-
-          // If no page theme is found, fetch default theme
-          const { data: defaultTheme, error: defaultThemeError } = await supabase
-            .from('themes')
-            .select('*')
-            .eq('is_default', true)
-            .maybeSingle();
-
-          if (defaultThemeError) throw defaultThemeError;
-
-          if (defaultTheme) {
-            const theme = convertDatabaseTheme(defaultTheme);
-            set({ currentTheme: theme });
-            get().applyTheme(theme);
-          } else {
-            console.warn('No default theme found');
-          }
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch page theme';
-          set({ error: errorMessage });
-          toast({
-            title: 'Error',
-            description: errorMessage,
-            variant: 'destructive',
-          });
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      setCurrentTheme: (theme: Theme) => {
-        set({ currentTheme: theme });
-        get().applyTheme(theme);
-      },
-
-      setTheme: (theme: 'light' | 'dark' | 'system') => {
-        set({ theme });
-      },
-
-      applyTheme: (theme: Theme) => {
-        const root = document.documentElement;
-        const { colors, effects } = theme.configuration;
-
-        // Apply colors
-        Object.entries(colors.cyber).forEach(([key, value]) => {
-          if (typeof value === 'object') {
-            Object.entries(value).forEach(([subKey, subValue]) => {
-              root.style.setProperty(
-                `--cyber-${key}-${subKey.toLowerCase()}`,
-                subValue
-              );
-            });
-          } else {
-            root.style.setProperty(`--cyber-${key}`, value);
-          }
+      if (pageTheme?.themes) {
+        set({ 
+          currentTheme: pageTheme.themes as Theme,
+          isLoading: false 
         });
+        return;
+      }
 
-        // Apply glass effect properties
-        Object.entries(effects.glass).forEach(([key, value]) => {
-          root.style.setProperty(`--glass-${key}`, value);
-        });
+      // If no page-specific theme, get the default theme
+      const { data: defaultTheme, error: defaultError } = await supabase
+        .from('themes')
+        .select('*')
+        .eq('is_default', true)
+        .maybeSingle();
 
-        // Store the applied theme in localStorage for persistence
-        localStorage.setItem('current-theme', JSON.stringify(theme));
-      },
-    }),
-    {
-      name: 'theme-storage',
-      partialize: (state) => ({
-        currentTheme: state.currentTheme,
-        pageThemes: Array.from(state.pageThemes.entries()),
-        theme: state.theme,
-      }),
+      if (defaultError) throw defaultError;
+
+      if (!defaultTheme) {
+        throw new Error('No default theme found');
+      }
+
+      set({ 
+        currentTheme: defaultTheme as Theme,
+        isLoading: false 
+      });
+    } catch (error) {
+      console.error('Error fetching theme:', error);
+      set({ 
+        error: error as Error,
+        isLoading: false 
+      });
     }
-  )
-);
+  },
+}));
