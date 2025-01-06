@@ -20,22 +20,20 @@ export const UserMenu = () => {
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { hasRole: isAdmin, isLoading: isCheckingRole } = useRoleCheck(user, 'admin');
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
+      console.log("Auth state changed:", event);
       
       switch (event) {
         case 'INITIAL_SESSION':
           if (session?.user) {
-            console.log("Initial session with user:", session.user);
             setUser(session.user);
           }
           break;
         case 'SIGNED_IN':
           if (session) {
-            console.log("User signed in:", session.user);
             setUser(session.user);
             setOpen(false);
             navigate('/');
@@ -46,7 +44,6 @@ export const UserMenu = () => {
           }
           break;
         case 'SIGNED_OUT':
-          console.log("User signed out");
           setUser(null);
           toast({
             title: "Signed out",
@@ -58,7 +55,6 @@ export const UserMenu = () => {
           break;
         case 'USER_UPDATED':
           if (session?.user) {
-            console.log("User updated:", session.user);
             setUser(session.user);
           }
           toast({
@@ -66,16 +62,12 @@ export const UserMenu = () => {
             description: "Your profile has been successfully updated.",
           });
           break;
-        default:
-          console.log("Unhandled auth event:", event);
       }
     });
 
-    // Check initial session
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        console.log("Found existing session:", session.user);
         setUser(session.user);
       }
     };
@@ -112,7 +104,7 @@ export const UserMenu = () => {
             <UserProfile 
               onClose={() => setOpen(false)} 
               isAdmin={isAdmin} 
-              isCheckingRole={isCheckingRole}
+              isCheckingRole={false}
             />
           )}
         </div>

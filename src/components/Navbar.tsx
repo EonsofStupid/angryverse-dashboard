@@ -5,7 +5,7 @@ import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 export const Navbar = () => {
   const { user } = useAuthStore();
-  const { hasRole: isAdmin, isLoading } = useRoleCheck(user, 'admin');
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
   return (
     <>
@@ -16,7 +16,7 @@ export const Navbar = () => {
               <Link to="/" className="font-semibold">
                 Home
               </Link>
-              {!isLoading && isAdmin && (
+              {isAdmin && (
                 <Link to="/admin" className="text-muted-foreground hover:text-foreground">
                   Admin
                 </Link>
