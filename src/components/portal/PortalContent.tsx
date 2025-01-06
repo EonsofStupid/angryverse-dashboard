@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlatformContent } from "./social/PlatformContent";
 import { platformConfigs } from "./social/platforms/platformConfigs";
+import { Loader2 } from "lucide-react";
 
 export const PortalContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +43,7 @@ export const PortalContent = () => {
       const { data, error } = await query;
 
       if (error) {
+        console.error("Error fetching posts:", error);
         toast.error("Failed to fetch posts");
         return [];
       }
@@ -76,11 +78,20 @@ export const PortalContent = () => {
       .in("id", ids);
 
     if (error) {
+      console.error("Error deleting posts:", error);
       toast.error("Failed to delete posts");
     } else {
       toast.success("Posts deleted successfully");
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
