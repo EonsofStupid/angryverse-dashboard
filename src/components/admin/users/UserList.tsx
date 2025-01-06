@@ -20,7 +20,6 @@ interface ProfileWithRoles {
   website: string | null;
   last_active: string | null;
   display_name: string | null;
-  user_roles: { role: 'admin' | 'user' }[];
 }
 
 export const UserList = () => {
@@ -30,6 +29,7 @@ export const UserList = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
+      // First, get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
@@ -40,10 +40,7 @@ export const UserList = () => {
           location,
           website,
           last_active,
-          display_name,
-          user_roles (
-            role
-          )
+          display_name
         `) as { data: ProfileWithRoles[] | null, error: any };
 
       if (profilesError) {
@@ -51,11 +48,27 @@ export const UserList = () => {
         throw profilesError;
       }
 
+      // Then, get user roles for each profile
+      const userRoles = new Map<string, string>();
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      if (rolesError) {
+        toast.error('Error fetching user roles');
+        throw rolesError;
+      }
+
+      // Create a map of user_id to role
+      roles?.forEach(role => {
+        userRoles.set(role.user_id, role.role);
+      });
+
       // Transform the data to match our User type
       return (profiles || []).map(profile => ({
         id: profile.id,
         email: profile.username || 'No username',
-        role: profile.user_roles?.[0]?.role || 'user',
+        role: userRoles.get(profile.id) || 'user',
         status: 'active' as UserStatus,
         profile: {
           username: profile.username,
