@@ -7,7 +7,7 @@ export const AdminHeader = () => {
   const currentSection = useAdminStore((state) => state.currentSection);
 
   return (
-    <header className="fixed top-0 right-0 left-0 bg-background border-b z-50 h-16 w-full">
+    <header className="fixed top-0 right-0 left-0 bg-background border-b z-50 h-16">
       <div className="flex items-center justify-between px-6 h-full">
         <h1 className="text-xl font-semibold">{currentSection}</h1>
         <div className="flex items-center space-x-4">

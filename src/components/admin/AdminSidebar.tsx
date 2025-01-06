@@ -29,7 +29,7 @@ export const AdminSidebar = () => {
   return (
     <aside 
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-background border-r transition-all duration-300 z-40",
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-background border-r transition-all duration-300",
         sidebarOpen ? "w-64" : "w-16"
       )}
     >
