@@ -24,42 +24,44 @@ const AdminDashboard = () => {
   const isPortal = location.pathname === '/portal';
   const currentPath = location.pathname.split('/').pop() || '';
 
-  console.log('AdminDashboard rendering:', {
-    currentPath,
-    pathname: location.pathname,
-    isPortal,
-    user: !!user,
-    isAdmin,
-    authLoading,
-    roleLoading
-  });
-
-  // Single auth check for both admin and portal
+  // Auth check effect
   useEffect(() => {
-    console.log('Auth check effect running:', {
-      pathname: location.pathname,
-      user: !!user,
+    console.log('Auth check running:', {
+      user: user?.id,
       isAdmin,
       authLoading,
-      roleLoading
+      roleLoading,
+      path: location.pathname
     });
 
-    if (!authLoading && !user) {
-      console.log("No user found, redirecting to home");
+    // Wait for both auth and role check to complete
+    if (authLoading || roleLoading) {
+      console.log('Still loading auth or role status...');
+      return;
+    }
+
+    // No user - redirect to home
+    if (!user) {
+      console.log('No authenticated user found - redirecting to home');
       toast.error("Please sign in to access this area");
       navigate("/");
       return;
     }
 
-    if (!authLoading && !roleLoading && !isAdmin) {
-      console.log("User is not admin, redirecting to home");
+    // Not admin - redirect to home 
+    if (!isAdmin) {
+      console.log('User is not admin - redirecting to home');
       toast.error("You don't have permission to access this area");
       navigate("/");
+      return;
     }
+
+    console.log('Auth check passed:', { userId: user.id, isAdmin });
   }, [user, isAdmin, authLoading, roleLoading, navigate, location.pathname]);
 
+  // Show loading state while checking auth/role
   if (authLoading || roleLoading) {
-    console.log('Showing loading state');
+    console.log('Rendering loading state');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -67,8 +69,9 @@ const AdminDashboard = () => {
     );
   }
 
+  // Don't render anything if not authenticated or not admin
   if (!user || !isAdmin) {
-    console.log('User or admin check failed, rendering null');
+    console.log('Auth requirements not met - rendering null');
     return null;
   }
 
@@ -90,15 +93,15 @@ const AdminDashboard = () => {
 
   // Admin dashboard route
   console.log('Rendering admin dashboard:', { currentPath });
-
+  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <AdminLayout>
         <Tabs 
           defaultValue={currentPath || ''} 
-          value={currentPath} 
-          className="w-full" 
+          value={currentPath}
+          className="w-full"
           onValueChange={(value) => {
             const newPath = value ? `/admin/${value}` : '/admin';
             console.log('Tab change, navigating to:', newPath);

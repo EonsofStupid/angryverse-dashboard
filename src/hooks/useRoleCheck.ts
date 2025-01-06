@@ -6,7 +6,11 @@ export const useRoleCheck = (user: User | null, requiredRole: UserRole) => {
   const { data: hasRole = false, isLoading } = useQuery({
     queryKey: ['role-check', user?.id, requiredRole],
     queryFn: async () => {
-      if (!user) return false;
+      if (!user) {
+        console.log('No user provided for role check');
+        return false;
+      }
+      console.log(`Checking if user ${user.id} has role ${requiredRole}`);
       const result = await checkUserRole(user.id, requiredRole);
       console.log('Role check result:', { userId: user.id, role: requiredRole, hasRole: result });
       return result;
