@@ -7,16 +7,16 @@ import Index from './pages/Index';
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
+    <Router>
+      <ThemeProvider>
         <TooltipProvider>
           <div className="app">
             <Index />
             <Toaster />
           </div>
         </TooltipProvider>
-      </Router>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Router>
   );
 }
 
