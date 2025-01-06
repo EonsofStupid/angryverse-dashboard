@@ -22,12 +22,11 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Extract the current section from the path
   const currentPath = location.pathname.split('/').pop() || 'dashboard';
   const isPortal = location.pathname === '/portal';
 
   console.log('AdminDashboard render:', {
-    user: user?.id,
+    userId: user?.id,
     isAdmin,
     authLoading,
     roleLoading,
@@ -36,34 +35,23 @@ const AdminDashboard = () => {
     fullPath: location.pathname
   });
 
-  // Auth check effect
   useEffect(() => {
     if (!authLoading && !roleLoading) {
-      console.log('Auth check complete:', {
-        user: user?.id,
-        isAdmin,
-        path: location.pathname
-      });
-
       if (!user) {
-        console.log('No user - redirecting to home');
         toast.error("Please sign in to access this area");
         navigate("/");
         return;
       }
 
       if (!isAdmin) {
-        console.log('Not admin - redirecting to home');
         toast.error("You don't have permission to access this area");
         navigate("/");
         return;
       }
     }
-  }, [user, isAdmin, authLoading, roleLoading, navigate, location.pathname]);
+  }, [user, isAdmin, authLoading, roleLoading, navigate]);
 
-  // Show loading state
   if (authLoading || roleLoading) {
-    console.log('Rendering loading state');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -71,15 +59,11 @@ const AdminDashboard = () => {
     );
   }
 
-  // Don't render anything if not authenticated or not admin
   if (!user || !isAdmin) {
-    console.log('Auth requirements not met - rendering null');
     return null;
   }
 
-  // Portal route
   if (isPortal) {
-    console.log('Rendering portal content');
     return (
       <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden">
         <div className="fixed inset-0 bg-gradient-to-b from-background via-background/90 to-background/80 z-0" />
@@ -92,9 +76,6 @@ const AdminDashboard = () => {
       </div>
     );
   }
-
-  // Admin dashboard route
-  console.log('Rendering admin dashboard:', { currentPath });
   
   return (
     <div className="min-h-screen bg-background">
@@ -105,9 +86,7 @@ const AdminDashboard = () => {
           value={currentPath}
           className="w-full"
           onValueChange={(value) => {
-            console.log('Tab change:', value);
             const newPath = value === 'dashboard' ? '/admin' : `/admin/${value}`;
-            console.log('Navigating to:', newPath);
             navigate(newPath);
           }}
         >
