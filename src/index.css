@@ -75,17 +75,13 @@
   }
 
   @keyframes scrollBackground {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-50%);
-    }
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
   }
 
   .glass {
     @apply bg-white/5 backdrop-blur-lg border border-white/10;
-    box-shadow: 0 0 20px rgba(255, 42, 109, 0.1);
+    box-shadow: 0 0 20px rgba(var(--primary), 0.1);
     transition: all 500ms ease;
     position: relative;
     z-index: 1;
@@ -94,26 +90,20 @@
   .glass:hover {
     @apply bg-white/10 border-white/20;
     box-shadow: 
-      0 0 20px rgba(255, 42, 109, 0.2),
-      0 0 40px rgba(0, 255, 245, 0.1);
+      0 0 20px rgba(var(--primary), 0.2),
+      0 0 40px rgba(var(--accent), 0.1);
   }
 
   .cyber-gradient {
-    @apply bg-gradient-to-r from-cyber-pink via-cyber-purple to-cyber-cyan;
+    @apply bg-gradient-to-r from-[hsl(var(--primary))] via-[hsl(var(--accent))] to-[hsl(var(--secondary))];
     background-size: 200% 200%;
     animation: gradientFlow 8s ease infinite;
   }
 
   @keyframes gradientFlow {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .text-gradient {
@@ -121,15 +111,40 @@
   }
 
   .hover-glow {
-    @apply transition-all duration-500;
-    box-shadow: 0 0 0 rgba(255, 42, 109, 0);
-    position: relative;
-    z-index: 1;
+    @apply transition-all duration-500 relative;
+    &::before {
+      content: '';
+      @apply absolute inset-0 opacity-0 transition-opacity duration-500 rounded-md;
+      background: radial-gradient(
+        circle at center,
+        hsl(var(--primary) / 0.2),
+        transparent 70%
+      );
+      z-index: -1;
+    }
+    &:hover::before {
+      @apply opacity-100;
+    }
+    &:hover {
+      @apply text-[hsl(var(--primary-foreground))];
+      text-shadow: 0 0 8px hsl(var(--primary) / 0.5);
+    }
   }
 
-  .hover-glow:hover {
-    box-shadow: 
-      0 0 20px theme('colors.cyber.pink.DEFAULT'),
-      0 0 40px theme('colors.cyber.cyan.DEFAULT');
+  /* Interactive element base styles */
+  button, a {
+    @apply relative cursor-pointer;
+    &:hover {
+      @apply scale-105;
+      transform-origin: center;
+    }
+    &:active {
+      @apply scale-95;
+    }
+  }
+
+  /* Enhanced focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-[hsl(var(--ring))] ring-offset-2 ring-offset-[hsl(var(--background))];
   }
 }

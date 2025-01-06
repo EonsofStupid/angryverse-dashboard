@@ -53,23 +53,23 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         cyber: {
-          dark: "#1a1f2c",
+          dark: "hsl(var(--background))",
           pink: {
-            DEFAULT: "#ff2a6d",
-            hover: "#ff1a8c"
+            DEFAULT: "hsl(var(--primary))",
+            hover: "hsl(var(--primary) / 0.8)"
           },
           cyan: {
-            DEFAULT: "#00fff5",
-            hover: "#00e6e6"
+            DEFAULT: "hsl(var(--accent))",
+            hover: "hsl(var(--accent) / 0.8)"
           },
-          purple: "#9d4edd",
+          purple: "hsl(var(--secondary))",
           green: {
-            DEFAULT: "#39ff14",
-            hover: "#33ff00"
+            DEFAULT: "hsl(var(--success, 142 71% 45%))",
+            hover: "hsl(var(--success, 142 71% 45%) / 0.8)"
           },
           yellow: {
-            DEFAULT: "#ffd700",
-            hover: "#ffed4a"
+            DEFAULT: "hsl(var(--warning, 45 93% 47%))",
+            hover: "hsl(var(--warning, 45 93% 47%) / 0.8)"
           }
         },
       },
@@ -88,8 +88,14 @@ export default {
           to: { height: "0" },
         },
         "glow": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.5" },
+          "0%, 100%": { 
+            opacity: "1",
+            boxShadow: "0 0 20px hsl(var(--primary) / 0.5)"
+          },
+          "50%": { 
+            opacity: "0.5",
+            boxShadow: "0 0 10px hsl(var(--primary) / 0.3)"
+          },
         },
         "float": {
           "0%, 100%": { transform: "translateY(0)" },
