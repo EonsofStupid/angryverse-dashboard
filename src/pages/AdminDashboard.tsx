@@ -52,67 +52,74 @@ const AdminDashboard = () => {
     return null;
   }
 
+  // Check if we're on the portal route
+  const isPortalRoute = location.pathname.includes('/portal');
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <AdminLayout>
-        <Tabs 
-          defaultValue={currentPath} 
-          value={currentPath}
-          className="w-full"
-          onValueChange={(value) => {
-            const newPath = value === 'dashboard' ? '/admin' : `/admin/${value}`;
-            navigate(newPath);
-          }}
-        >
-          <TabsList>
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="media">Media</TabsTrigger>
-            <TabsTrigger value="categories">Categories</TabsTrigger>
-            <TabsTrigger value="comments">Comments</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="themes">Themes</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-            <TabsTrigger value="portal">Portal</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="dashboard">
-            <DashboardOverview />
-          </TabsContent>
-          
-          <TabsContent value="posts">
-            <Outlet />
-          </TabsContent>
-          
-          <TabsContent value="media">
-            <MediaLibrary />
-          </TabsContent>
-          
-          <TabsContent value="categories">
-            <CategoriesManagement />
-          </TabsContent>
-          
-          <TabsContent value="comments">
-            <CommentsManagement />
-          </TabsContent>
-          
-          <TabsContent value="users">
-            <UserManagement />
-          </TabsContent>
-          
-          <TabsContent value="themes">
-            <ThemeManagement />
-          </TabsContent>
-          
-          <TabsContent value="settings">
-            <Settings />
-          </TabsContent>
+        {!isPortalRoute ? (
+          <Tabs 
+            defaultValue={currentPath} 
+            value={currentPath}
+            className="w-full"
+            onValueChange={(value) => {
+              const newPath = value === 'dashboard' ? '/admin' : `/admin/${value}`;
+              navigate(newPath);
+            }}
+          >
+            <TabsList>
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="media">Media</TabsTrigger>
+              <TabsTrigger value="categories">Categories</TabsTrigger>
+              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="users">Users</TabsTrigger>
+              <TabsTrigger value="themes">Themes</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="portal">Portal</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="dashboard">
+              <DashboardOverview />
+            </TabsContent>
+            
+            <TabsContent value="posts">
+              <Outlet />
+            </TabsContent>
+            
+            <TabsContent value="media">
+              <MediaLibrary />
+            </TabsContent>
+            
+            <TabsContent value="categories">
+              <CategoriesManagement />
+            </TabsContent>
+            
+            <TabsContent value="comments">
+              <CommentsManagement />
+            </TabsContent>
+            
+            <TabsContent value="users">
+              <UserManagement />
+            </TabsContent>
+            
+            <TabsContent value="themes">
+              <ThemeManagement />
+            </TabsContent>
+            
+            <TabsContent value="settings">
+              <Settings />
+            </TabsContent>
 
-          <TabsContent value="portal">
-            <PortalContent />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="portal">
+              <PortalContent />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <PortalContent />
+        )}
       </AdminLayout>
     </div>
   );
