@@ -23,10 +23,14 @@ const AdminDashboard = () => {
   const location = useLocation();
   const isPortal = location.pathname === '/portal';
 
+  // Single auth check for both admin and portal
   useEffect(() => {
+    console.log('Current location:', location.pathname);
+    console.log('Auth status:', { user, isAdmin, authLoading, roleLoading });
+
     if (!authLoading && !user) {
       console.log("No user found, redirecting to home");
-      toast.error("Please sign in to access the admin area");
+      toast.error("Please sign in to access this area");
       navigate("/");
       return;
     }
@@ -36,7 +40,7 @@ const AdminDashboard = () => {
       toast.error("You don't have permission to access this area");
       navigate("/");
     }
-  }, [user, isAdmin, authLoading, roleLoading, navigate]);
+  }, [user, isAdmin, authLoading, roleLoading, navigate, location.pathname]);
 
   if (authLoading || roleLoading) {
     return (
@@ -50,7 +54,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  // If we're on the portal route, render the portal content
+  // Portal route
   if (isPortal) {
     return (
       <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden">
@@ -65,12 +69,18 @@ const AdminDashboard = () => {
     );
   }
 
-  // Otherwise render the admin dashboard
+  // Admin dashboard route
+  const currentPath = location.pathname.split('/').pop() || '';
+  console.log('Current admin path:', currentPath);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <AdminLayout>
-        <Tabs defaultValue="" className="w-full" onValueChange={(value) => navigate(`/admin/${value}`)}>
+        <Tabs value={currentPath} className="w-full" onValueChange={(value) => {
+          console.log('Navigating to:', value ? `/admin/${value}` : '/admin');
+          navigate(value ? `/admin/${value}` : '/admin');
+        }}>
           <TabsList>
             <TabsTrigger value="">Dashboard</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
