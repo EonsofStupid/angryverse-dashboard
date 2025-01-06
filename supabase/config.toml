@@ -1,4 +1,1 @@
 project_id = "vkcimdnqmrjfiauusibe"
-
-[functions.fetch-platform-videos]
-verify_jwt = true
