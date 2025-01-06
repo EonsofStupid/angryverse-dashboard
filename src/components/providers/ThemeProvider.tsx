@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
-import { ThemeContext } from '@/hooks/useTheme';
+import { ThemeContext, useThemeVariables } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
@@ -14,6 +14,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   } = useThemeStore();
   const location = useLocation();
   const { toast } = useToast();
+  const { applyThemeVariables } = useThemeVariables();
 
   useEffect(() => {
     const loadTheme = async () => {
@@ -30,6 +31,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     loadTheme();
   }, [location.pathname, fetchPageTheme, toast]);
+
+  // Apply theme variables whenever the current theme changes
+  useEffect(() => {
+    if (currentTheme) {
+      applyThemeVariables();
+    }
+  }, [currentTheme, applyThemeVariables]);
 
   const value = {
     currentTheme,

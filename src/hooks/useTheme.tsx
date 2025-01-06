@@ -9,7 +9,7 @@ interface ThemeContextValue {
   setCurrentTheme: (theme: Theme) => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function useTheme() {
   const context = useContext(ThemeContext);
