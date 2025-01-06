@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 // Cache for role check results
-const roleCache = new Map<string, boolean>();
+const roleCache = new Map<string, Set<string>>();
 
 export const useRoleCheck = (user: User | null, requiredRole: string) => {
   const [hasRole, setHasRole] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+
+  const getCacheKey = useCallback((userId: string) => `${userId}`, []);
 
   useEffect(() => {
     const checkRole = async () => {
@@ -18,11 +19,16 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
         return;
       }
 
-      const cacheKey = `${user.id}-${requiredRole}`;
+      const cacheKey = getCacheKey(user.id);
+      
+      // Check cache first
       if (roleCache.has(cacheKey)) {
-        setHasRole(roleCache.get(cacheKey)!);
-        setIsLoading(false);
-        return;
+        const userRoles = roleCache.get(cacheKey);
+        if (userRoles) {
+          setHasRole(userRoles.has(requiredRole));
+          setIsLoading(false);
+          return;
+        }
       }
 
       try {
@@ -30,17 +36,19 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
-          .eq('role', requiredRole)
           .single();
 
         if (error) throw error;
 
-        const roleExists = !!data;
-        roleCache.set(cacheKey, roleExists);
+        const roleExists = data?.role === requiredRole;
+        
+        // Update cache
+        const userRoles = new Set([data?.role]);
+        roleCache.set(cacheKey, userRoles);
+        
         setHasRole(roleExists);
       } catch (err) {
         console.error('Error checking role:', err);
-        setError(err instanceof Error ? err : new Error('Failed to check role'));
         setHasRole(false);
       } finally {
         setIsLoading(false);
@@ -49,7 +57,7 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
 
     setIsLoading(true);
     checkRole();
-  }, [user, requiredRole]);
+  }, [user, requiredRole, getCacheKey]);
 
-  return { hasRole, isLoading, error };
+  return { hasRole, isLoading };
 };

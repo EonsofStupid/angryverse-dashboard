@@ -17,7 +17,7 @@ import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 const AdminDashboard = () => {
-  const { user, isLoading: authLoading } = useAuthStore();
+  const { user } = useAuthStore();
   const { hasRole: isAdmin, isLoading: roleLoading } = useRoleCheck(user, 'admin');
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   const isPortal = location.pathname === '/portal';
 
   useEffect(() => {
-    if (!authLoading && !roleLoading) {
+    if (!roleLoading) {
       if (!user) {
         toast.error("Please sign in to access this area");
         navigate("/");
@@ -39,9 +39,9 @@ const AdminDashboard = () => {
         return;
       }
     }
-  }, [user, isAdmin, authLoading, roleLoading, navigate]);
+  }, [user, isAdmin, roleLoading, navigate]);
 
-  if (authLoading || roleLoading) {
+  if (roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
