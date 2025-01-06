@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Media } from "@/types/database";
+import { Media } from "@/types/database/media";
 import { Image, X } from "lucide-react";
 
 interface MediaSelectorProps {
@@ -37,10 +37,10 @@ export const MediaSelector = ({ value, onChange, accept }: MediaSelectorProps) =
         .from('media')
         .select('*')
         .eq('id', value)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
-      return data as Media;
+      return data as Media | null;
     },
     enabled: !!value,
   });
