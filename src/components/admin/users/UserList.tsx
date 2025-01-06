@@ -18,6 +18,7 @@ interface ProfileWithRoles {
   website: string | null;
   last_active: string | null;
   display_name: string | null;
+  updated_at: string | null;
 }
 
 export const UserList = () => {
@@ -39,7 +40,8 @@ export const UserList = () => {
           location,
           website,
           last_active,
-          display_name
+          display_name,
+          updated_at
         `) as { data: ProfileWithRoles[] | null, error: any };
 
       if (profilesError) {
@@ -70,13 +72,15 @@ export const UserList = () => {
         role: userRoles.get(profile.id) || 'user' as UserRole,
         status: 'active' as UserStatus,
         profile: {
+          id: profile.id,
           username: profile.username,
           display_name: profile.display_name,
           avatar_url: profile.avatar_url,
           bio: profile.bio,
           location: profile.location,
           website: profile.website,
-          last_active: profile.last_active
+          last_active: profile.last_active,
+          updated_at: profile.updated_at
         }
       }));
     }
