@@ -33,7 +33,14 @@ export const CategoryForm = ({ category, onSubmit, onCancel, categories }: Categ
   const [metaDescription, setMetaDescription] = useState(category?.meta_description || "");
 
   const mutation = useMutation({
-    mutationFn: async (data: Partial<Category>) => {
+    mutationFn: async (data: { 
+      name: string; 
+      slug: string; 
+      description?: string; 
+      parent_id?: string | null;
+      meta_title?: string;
+      meta_description?: string;
+    }) => {
       if (category?.id) {
         const { error } = await supabase
           .from('categories')
