@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ThemeContext, useThemeVariables } from '@/hooks/useTheme';
@@ -16,12 +16,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
   const { applyThemeVariables } = useThemeVariables();
 
-  // Apply theme variables whenever the current theme changes
-  useEffect(() => {
+  // Memoize theme application to prevent unnecessary re-renders
+  const applyTheme = useCallback(() => {
     if (currentTheme) {
       applyThemeVariables();
     }
   }, [currentTheme, applyThemeVariables]);
+
+  // Apply theme variables when the current theme changes
+  useEffect(() => {
+    let mounted = true;
+    
+    if (mounted) {
+      applyTheme();
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [applyTheme]);
 
   const value = {
     currentTheme,

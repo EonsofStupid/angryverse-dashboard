@@ -1,4 +1,4 @@
-import { useContext, createContext } from 'react';
+import { useContext, createContext, useCallback } from 'react';
 import { Theme } from '@/types/theme';
 import { useThemeStore } from '@/store/useThemeStore';
 
@@ -23,7 +23,7 @@ export function useTheme() {
 export function useThemeVariables() {
   const { currentTheme } = useTheme();
   
-  const applyThemeVariables = () => {
+  const applyThemeVariables = useCallback(() => {
     if (!currentTheme) return;
     
     const root = document.documentElement;
@@ -47,7 +47,7 @@ export function useThemeVariables() {
     Object.entries(effects.glass).forEach(([key, value]) => {
       root.style.setProperty(`--glass-${key}`, value);
     });
-  };
+  }, [currentTheme]);
 
   return { applyThemeVariables };
 }
