@@ -114,12 +114,17 @@ export default {
           '@apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg': {},
         },
         '.neo-blur': {
-          '@apply backdrop-blur-lg bg-white/5 border border-white/10': {},
+          '@apply backdrop-blur-lg bg-white/5 border border-white/10 shadow-lg': {},
         },
         '.gradient-border': {
           'border-image': 'linear-gradient(to right, var(--primary), var(--secondary)) 1',
           'border-image-slice': '1',
-        }
+        },
+        '.animated-bg': {
+          'background': 'linear-gradient(45deg, var(--primary), var(--secondary))',
+          'background-size': '200% 200%',
+          'animation': 'gradient 15s ease infinite',
+        },
       })
     }
   ],
