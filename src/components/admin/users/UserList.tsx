@@ -5,11 +5,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, Ban, UserX, CheckCircle, XCircle } from "lucide-react";
+import { Shield, Ban, UserX, CheckCircle } from "lucide-react";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
 import { UserStatus, User } from "@/types/user";
 import { toast } from "sonner";
+
+interface ProfileWithRoles {
+  id: string;
+  username: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  last_active: string | null;
+  display_name: string | null;
+  user_roles: { role: 'admin' | 'user' }[];
+}
 
 export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
@@ -18,7 +30,6 @@ export const UserList = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      // First get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
@@ -33,7 +44,7 @@ export const UserList = () => {
           user_roles (
             role
           )
-        `);
+        `) as { data: ProfileWithRoles[] | null, error: any };
 
       if (profilesError) {
         toast.error('Error fetching users');
@@ -41,11 +52,11 @@ export const UserList = () => {
       }
 
       // Transform the data to match our User type
-      return profiles.map(profile => ({
+      return (profiles || []).map(profile => ({
         id: profile.id,
-        email: profile.username || 'No username', // Using username as fallback since we can't access email
+        email: profile.username || 'No username',
         role: profile.user_roles?.[0]?.role || 'user',
-        status: 'active' as UserStatus, // Default status
+        status: 'active' as UserStatus,
         profile: {
           username: profile.username,
           display_name: profile.display_name,
