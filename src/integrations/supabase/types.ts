@@ -758,7 +758,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_tables: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          name: string
+          schema: string
+          is_updatable: boolean
+        }[]
+      }
     }
     Enums: {
       theme_status: "active" | "inactive" | "draft"
