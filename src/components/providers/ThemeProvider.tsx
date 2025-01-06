@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ThemeContext, createThemeVariables } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -49,6 +50,27 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     initializeTheme();
   }, [location.pathname, fetchPageTheme, toast]);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        <div className="text-center space-y-4">
+          <p className="text-xl font-semibold text-destructive">Theme Error</p>
+          <p className="text-muted-foreground">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   const value = {
     currentTheme,
