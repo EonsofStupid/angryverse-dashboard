@@ -12,19 +12,20 @@ import { CommentsManagement } from "@/components/admin/content/CommentsManagemen
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
+import { Loader2 } from "lucide-react";
 
 const AdminDashboard = () => {
-  const { user, isAdmin } = useAuthStore();
+  const { user, isAdmin, isLoading } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user) {
+    if (!isLoading && !user) {
       navigate("/");
       return;
     }
 
-    if (!isAdmin) {
+    if (!isLoading && !isAdmin) {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access the admin dashboard.",
@@ -32,9 +33,19 @@ const AdminDashboard = () => {
       });
       navigate("/");
     }
-  }, [user, isAdmin, navigate, toast]);
+  }, [user, isAdmin, isLoading, navigate, toast]);
 
-  if (!user || !isAdmin) return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <div className="min-h-screen bg-background">
