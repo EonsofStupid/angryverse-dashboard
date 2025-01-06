@@ -1,34 +1,27 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider } from './components/providers/ThemeProvider';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import './App.css';
-import Index from './pages/Index';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import AdminDashboard from "./pages/AdminDashboard";
+import { PostsManagement } from "@/components/admin/content/PostsManagement";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <ThemeProvider>
-          <TooltipProvider>
-            <div className="app">
-              <Index />
-              <Toaster />
-            </div>
-          </TooltipProvider>
-        </ThemeProvider>
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/admin" element={<AdminDashboard />}>
+              <Route path="posts" element={<PostsManagement />} />
+            </Route>
+          </Routes>
+        </Router>
+        <Toaster />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
