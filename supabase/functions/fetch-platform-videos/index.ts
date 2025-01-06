@@ -9,7 +9,27 @@ const corsHeaders = {
 // Split out YouTube specific logic
 async function fetchYouTubeVideos(accessToken: string) {
   try {
-    console.log('Fetching YouTube videos with access token:', accessToken.substring(0, 10) + '...');
+    console.log('Validating YouTube access token...');
+    
+    // First validate the token
+    const validateResponse = await fetch(
+      'https://www.googleapis.com/oauth2/v1/tokeninfo',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!validateResponse.ok) {
+      const errorText = await validateResponse.text();
+      console.error('Token validation failed:', errorText);
+      throw new Error(`Invalid access token: ${errorText}`);
+    }
+
+    console.log('Token validated, fetching videos...');
+    
     const response = await fetch(
       'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true',
       {
@@ -29,6 +49,10 @@ async function fetchYouTubeVideos(accessToken: string) {
     const data = await response.json();
     console.log('Successfully fetched YouTube videos:', data.items?.length || 0);
     
+    if (!data.items || data.items.length === 0) {
+      return [];
+    }
+
     // Get video statistics in a separate call
     const videoIds = data.items.map((item: any) => item.id.videoId).join(',');
     const statsResponse = await fetch(
