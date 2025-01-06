@@ -20,6 +20,9 @@ function App() {
               <Route path="posts" element={<PostsManagement />} />
               <Route path="portal" element={<PortalContent />} />
             </Route>
+            <Route path="/portal" element={<AdminDashboard />}>
+              <Route index element={<PortalContent />} />
+            </Route>
           </Routes>
           <Toaster />
         </ThemeProvider>

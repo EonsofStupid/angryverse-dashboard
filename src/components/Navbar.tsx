@@ -1,11 +1,17 @@
 import { UserMenu } from "./UserMenu";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 export const Navbar = () => {
   const { user } = useAuthStore();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const navigate = useNavigate();
+
+  const handlePortalClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate("/admin/portal");
+  };
 
   return (
     <>
@@ -17,9 +23,18 @@ export const Navbar = () => {
                 Home
               </Link>
               {isAdmin && (
-                <Link to="/admin" className="text-muted-foreground hover:text-foreground">
-                  Admin
-                </Link>
+                <>
+                  <Link to="/admin" className="text-muted-foreground hover:text-foreground">
+                    Admin
+                  </Link>
+                  <Link 
+                    to="/admin/portal" 
+                    onClick={handlePortalClick}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Portal
+                  </Link>
+                </>
               )}
             </div>
             <UserMenu />
