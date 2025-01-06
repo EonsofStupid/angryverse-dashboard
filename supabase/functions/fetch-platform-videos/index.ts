@@ -6,29 +6,28 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Split out YouTube specific logic
 async function fetchYouTubeVideos(accessToken: string) {
   try {
-    console.log('Validating YouTube access token...');
+    console.log('Attempting to fetch YouTube videos...');
     
-    // First validate the token
-    const validateResponse = await fetch(
-      'https://www.googleapis.com/oauth2/v1/tokeninfo',
+    // Try to fetch user's channel info first to validate token
+    const channelResponse = await fetch(
+      'https://youtube.googleapis.com/youtube/v3/channels?part=snippet&mine=true',
       {
-        method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
+          'Accept': 'application/json',
         },
       }
     );
 
-    if (!validateResponse.ok) {
-      const errorText = await validateResponse.text();
-      console.error('Token validation failed:', errorText);
-      throw new Error(`Invalid access token: ${errorText}`);
+    if (!channelResponse.ok) {
+      const errorText = await channelResponse.text();
+      console.error('Channel validation failed:', errorText);
+      throw new Error(`YouTube API authentication failed: ${errorText}`);
     }
 
-    console.log('Token validated, fetching videos...');
+    console.log('Token validated successfully, fetching videos...');
     
     const response = await fetch(
       'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true',
@@ -50,6 +49,7 @@ async function fetchYouTubeVideos(accessToken: string) {
     console.log('Successfully fetched YouTube videos:', data.items?.length || 0);
     
     if (!data.items || data.items.length === 0) {
+      console.log('No videos found for this channel');
       return [];
     }
 
@@ -95,7 +95,6 @@ async function fetchYouTubeVideos(accessToken: string) {
   }
 }
 
-// Main serve function
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
