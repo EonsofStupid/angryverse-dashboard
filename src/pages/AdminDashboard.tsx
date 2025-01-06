@@ -9,6 +9,7 @@ import { DashboardOverview } from "@/components/admin/DashboardOverview";
 import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
+import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
 
@@ -47,6 +48,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="comments">Comments</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="themes">Themes</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           
@@ -72,6 +74,10 @@ const AdminDashboard = () => {
           
           <TabsContent value="users">
             <UserManagement />
+          </TabsContent>
+          
+          <TabsContent value="themes">
+            <ThemeManagement />
           </TabsContent>
           
           <TabsContent value="settings">
