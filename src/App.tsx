@@ -9,8 +9,11 @@ import { Settings } from "@/components/settings/Settings";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { UserProfileEdit } from "@/components/admin/UserProfileEdit";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function App() {
+  const user = useAuthStore(state => state.user);
+
   return (
     <Routes>
       <Route path="/admin" element={<AdminLayout>
@@ -23,7 +26,7 @@ export default function App() {
           <Route path="themes" element={<ThemeManagement />} />
           <Route path="settings" element={<Settings />} />
           <Route path="users" element={<UserManagement />} />
-          <Route path="profile" element={<UserProfileEdit />} />
+          <Route path="profile" element={<UserProfileEdit userId={user?.id || ''} />} />
         </Routes>
       </AdminLayout>} />
     </Routes>

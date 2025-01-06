@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Profile } from "@/types/profile";
+import { useNavigate } from "react-router-dom";
 
 interface UserProfileEditProps {
   userId: string;
@@ -15,6 +16,15 @@ interface UserProfileEditProps {
 export const UserProfileEdit = ({ userId }: UserProfileEditProps) => {
   const [username, setUsername] = useState("");
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // Redirect if no userId is provided
+  useEffect(() => {
+    if (!userId) {
+      toast.error("No user ID provided");
+      navigate("/admin");
+    }
+  }, [userId, navigate]);
 
   const { data: profile, isLoading } = useQuery<Profile>({
     queryKey: ['user-profile', userId],
@@ -28,9 +38,9 @@ export const UserProfileEdit = ({ userId }: UserProfileEditProps) => {
       if (error) throw error;
       return data;
     },
+    enabled: !!userId, // Only run query if userId exists
   });
 
-  // Set username when profile data is loaded
   useEffect(() => {
     if (profile?.username) {
       setUsername(profile.username);
@@ -59,6 +69,8 @@ export const UserProfileEdit = ({ userId }: UserProfileEditProps) => {
     e.preventDefault();
     updateProfileMutation.mutate(username);
   };
+
+  if (!userId) return null;
 
   if (isLoading) {
     return <div>Loading profile...</div>;
