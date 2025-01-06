@@ -33,7 +33,7 @@ export const useThemeStore = create<ThemeState>()(
             .from('themes')
             .select('*')
             .eq('id', themeId)
-            .single();
+            .maybeSingle();
 
           if (error) throw error;
           if (themeData) {
@@ -61,7 +61,7 @@ export const useThemeStore = create<ThemeState>()(
             .from('page_themes')
             .select('*, themes(*)')
             .eq('page_path', pagePath)
-            .single();
+            .maybeSingle();
 
           if (pageThemeError) throw pageThemeError;
           
@@ -71,18 +71,20 @@ export const useThemeStore = create<ThemeState>()(
             set({ currentTheme: theme });
             get().applyTheme(theme);
           } else {
-            // Fetch default theme if no page theme is set
+            // If no page theme is found, fetch default theme
             const { data: defaultTheme, error: defaultThemeError } = await supabase
               .from('themes')
               .select('*')
               .eq('is_default', true)
-              .single();
+              .maybeSingle();
 
             if (defaultThemeError) throw defaultThemeError;
             if (defaultTheme) {
               const theme = defaultTheme as unknown as Theme;
               set({ currentTheme: theme });
               get().applyTheme(theme);
+            } else {
+              console.log('No default theme found');
             }
           }
         } catch (error) {
