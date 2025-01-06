@@ -95,6 +95,38 @@ export type Database = {
         }
         Relationships: []
       }
+      page_themes: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          page_path: string
+          theme_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          page_path: string
+          theme_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          page_path?: string
+          theme_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_themes_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_posts: {
         Row: {
           created_at: string | null
@@ -317,6 +349,113 @@ export type Database = {
           },
         ]
       }
+      theme_backups: {
+        Row: {
+          configuration: Json
+          created_at: string | null
+          created_by: string | null
+          id: string
+          notes: string | null
+          theme_id: string | null
+          version: number
+        }
+        Insert: {
+          configuration: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          theme_id?: string | null
+          version: number
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          theme_id?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_backups_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_presets: {
+        Row: {
+          category: string | null
+          configuration: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          configuration: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          configuration?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      themes: {
+        Row: {
+          configuration: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_default: boolean | null
+          name: string
+          status: Database["public"]["Enums"]["theme_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          configuration: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name: string
+          status?: Database["public"]["Enums"]["theme_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          status?: Database["public"]["Enums"]["theme_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -346,6 +485,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      theme_status: "active" | "inactive" | "draft"
       user_role: "user" | "admin"
     }
     CompositeTypes: {
