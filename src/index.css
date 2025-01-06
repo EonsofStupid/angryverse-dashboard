@@ -26,6 +26,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 142 72% 29%;
     --radius: 0.5rem;
+    --link-hover-color: hsl(var(--primary));
   }
 
   * {
@@ -64,6 +65,29 @@
     animation: glow 2s ease-in-out infinite alternate;
   }
 
+  .link-animation {
+    position: relative;
+    display: inline-block;
+    color: hsl(var(--muted-foreground));
+    transition: color 0.3s;
+  }
+
+  .link-animation::before {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    color: var(--link-hover-color);
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .link-animation:hover::before {
+    width: 100%;
+  }
+
   @keyframes glow {
     from {
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.2),
@@ -75,6 +99,15 @@
                    0 0 30px rgba(255, 255, 255, 0.4),
                    0 0 40px rgba(255, 255, 255, 0.4);
     }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 }
 

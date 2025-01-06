@@ -35,6 +35,12 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Update link colors based on theme
+  useEffect(() => {
+    const primaryColor = currentTheme?.configuration?.colors?.cyber?.pink?.DEFAULT || 'hsl(var(--primary))';
+    document.documentElement.style.setProperty('--link-hover-color', primaryColor);
+  }, [currentTheme]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -53,9 +59,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       </div>
     );
   }
-
-  // Get the primary color from the current theme for glass tint
-  const primaryColor = currentTheme?.configuration?.colors?.cyber?.pink?.DEFAULT || 'hsl(var(--primary))';
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
@@ -84,40 +87,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
           </div>
         </main>
       </div>
-
-      <style jsx global>{`
-        .link-animation {
-          position: relative;
-          display: inline-block;
-          color: hsl(var(--muted-foreground));
-          transition: color 0.3s;
-        }
-
-        .link-animation::before {
-          content: attr(data-text);
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 0;
-          color: ${primaryColor};
-          overflow: hidden;
-          white-space: nowrap;
-          transition: width 0.3s ease-in-out;
-        }
-
-        .link-animation:hover::before {
-          width: 100%;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 };
