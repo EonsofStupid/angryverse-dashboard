@@ -21,45 +21,47 @@ const AdminDashboard = () => {
   const { hasRole: isAdmin, isLoading: roleLoading } = useRoleCheck(user, 'admin');
   const navigate = useNavigate();
   const location = useLocation();
-  const isPortal = location.pathname === '/portal';
+  
+  // Extract the current section from the path
   const currentPath = location.pathname.split('/').pop() || '';
+  const isPortal = location.pathname === '/portal';
+
+  console.log('AdminDashboard render:', {
+    user: user?.id,
+    isAdmin,
+    authLoading,
+    roleLoading,
+    currentPath,
+    isPortal,
+    fullPath: location.pathname
+  });
 
   // Auth check effect
   useEffect(() => {
-    console.log('Auth check running:', {
-      user: user?.id,
-      isAdmin,
-      authLoading,
-      roleLoading,
-      path: location.pathname
-    });
+    if (!authLoading && !roleLoading) {
+      console.log('Auth check complete:', {
+        user: user?.id,
+        isAdmin,
+        path: location.pathname
+      });
 
-    // Wait for both auth and role check to complete
-    if (authLoading || roleLoading) {
-      console.log('Still loading auth or role status...');
-      return;
+      if (!user) {
+        console.log('No user - redirecting to home');
+        toast.error("Please sign in to access this area");
+        navigate("/");
+        return;
+      }
+
+      if (!isAdmin) {
+        console.log('Not admin - redirecting to home');
+        toast.error("You don't have permission to access this area");
+        navigate("/");
+        return;
+      }
     }
-
-    // No user - redirect to home
-    if (!user) {
-      console.log('No authenticated user found - redirecting to home');
-      toast.error("Please sign in to access this area");
-      navigate("/");
-      return;
-    }
-
-    // Not admin - redirect to home 
-    if (!isAdmin) {
-      console.log('User is not admin - redirecting to home');
-      toast.error("You don't have permission to access this area");
-      navigate("/");
-      return;
-    }
-
-    console.log('Auth check passed:', { userId: user.id, isAdmin });
   }, [user, isAdmin, authLoading, roleLoading, navigate, location.pathname]);
 
-  // Show loading state while checking auth/role
+  // Show loading state
   if (authLoading || roleLoading) {
     console.log('Rendering loading state');
     return (
@@ -99,7 +101,7 @@ const AdminDashboard = () => {
       <Navbar />
       <AdminLayout>
         <Tabs 
-          defaultValue={currentPath || ''} 
+          defaultValue={currentPath} 
           value={currentPath}
           className="w-full"
           onValueChange={(value) => {
