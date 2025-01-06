@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,21 @@ import { Facebook, Instagram, Twitter, Linkedin, Youtube, Video } from "lucide-r
 import { SocialConnection } from "@/types/social";
 import { useState } from "react";
 import { ConnectionWizard } from "./ConnectionWizard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const SocialConnections = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [connectionToDelete, setConnectionToDelete] = useState<SocialConnection | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: connections } = useQuery({
     queryKey: ["social-connections"],
@@ -24,16 +36,41 @@ export const SocialConnections = () => {
     },
   });
 
-  const handleDisconnect = async (connectionId: string) => {
-    const { error } = await supabase
-      .from("social_connections")
-      .update({ status: "inactive" })
-      .eq("id", connectionId);
+  const handleDisconnect = async (connection: SocialConnection) => {
+    setConnectionToDelete(connection);
+  };
 
-    if (error) {
-      toast.error("Failed to disconnect account");
-    } else {
+  const confirmDelete = async () => {
+    if (!connectionToDelete) return;
+
+    try {
+      // First, delete any associated platform posts
+      const { error: platformPostsError } = await supabase
+        .from("platform_posts")
+        .delete()
+        .eq("platform", connectionToDelete.platform);
+
+      if (platformPostsError) {
+        throw platformPostsError;
+      }
+
+      // Then, update the connection status to inactive
+      const { error: connectionError } = await supabase
+        .from("social_connections")
+        .update({ status: "inactive" })
+        .eq("id", connectionToDelete.id);
+
+      if (connectionError) {
+        throw connectionError;
+      }
+
       toast.success("Account disconnected successfully");
+      queryClient.invalidateQueries({ queryKey: ["social-connections"] });
+    } catch (error) {
+      console.error("Error disconnecting account:", error);
+      toast.error("Failed to disconnect account");
+    } finally {
+      setConnectionToDelete(null);
     }
   };
 
@@ -136,9 +173,9 @@ export const SocialConnections = () => {
                           </div>
                         </div>
                         <Button
-                          variant="ghost"
+                          variant="destructive"
                           size="sm"
-                          onClick={() => handleDisconnect(connection.id)}
+                          onClick={() => handleDisconnect(connection)}
                         >
                           Disconnect
                         </Button>
@@ -172,6 +209,24 @@ export const SocialConnections = () => {
         isOpen={!!selectedPlatform}
         onClose={() => setSelectedPlatform(null)}
       />
+
+      <AlertDialog open={!!connectionToDelete} onOpenChange={() => setConnectionToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Disconnect Account</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to disconnect this account? This will remove all associated posts and data.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Disconnect
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
