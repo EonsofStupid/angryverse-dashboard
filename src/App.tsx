@@ -1,64 +1,29 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
-import AdminDashboard from "./pages/AdminDashboard";
+import { Routes, Route } from "react-router-dom";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { DashboardOverview } from "@/components/admin/DashboardOverview";
 import { PostsManagement } from "@/components/admin/content/PostsManagement";
-import { PortalContent } from "@/components/portal/PortalContent";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { Toaster } from "@/components/ui/sonner";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useRoleCheck } from "@/hooks/useRoleCheck";
+import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
+import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
+import { MediaManagement } from "@/components/admin/content/MediaManagement";
+import { ThemeManagement } from "@/components/admin/content/ThemeManagement";
+import { Settings } from "@/components/admin/content/Settings";
+import { UserManagement } from "@/components/admin/content/UserManagement";
+import { UserProfileEdit } from "@/components/admin/content/UserProfileEdit";
 
-const queryClient = new QueryClient();
-
-// Protected route component that checks auth and admin role
-const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuthStore();
-  const { hasRole: isAdmin, isLoading } = useRoleCheck(user, 'admin');
-
-  if (isLoading) {
-    return null; // Or a loading spinner
-  }
-
-  if (!user || !isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <>{children}</>;
-};
-
-function App() {
+export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <ThemeProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            
-            {/* Admin routes */}
-            <Route path="/admin" element={
-              <ProtectedAdminRoute>
-                <AdminDashboard />
-              </ProtectedAdminRoute>
-            }>
-              <Route path="posts" element={<PostsManagement />} />
-              <Route path="portal" element={<PortalContent />} />
-            </Route>
-
-            {/* Portal route that also uses admin dashboard */}
-            <Route path="/portal" element={
-              <ProtectedAdminRoute>
-                <AdminDashboard />
-              </ProtectedAdminRoute>
-            }>
-              <Route index element={<PortalContent />} />
-            </Route>
-          </Routes>
-          <Toaster />
-        </ThemeProvider>
-      </Router>
-    </QueryClientProvider>
+    <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<DashboardOverview />} />
+        <Route path="posts" element={<PostsManagement />} />
+        <Route path="categories" element={<CategoriesManagement />} />
+        <Route path="comments" element={<CommentsManagement />} />
+        <Route path="media" element={<MediaManagement />} />
+        <Route path="themes" element={<ThemeManagement />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="profile" element={<UserProfileEdit />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
