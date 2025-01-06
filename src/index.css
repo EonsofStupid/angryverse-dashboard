@@ -6,27 +6,77 @@
 
 @layer base {
   :root {
+    /* Base colors */
     --background: 222 47% 11%;
     --foreground: 0 0% 95%;
+    
+    /* Card colors */
     --card: 24 9.8% 10%;
     --card-foreground: 0 0% 95%;
+    
+    /* Popover colors */
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
+    
+    /* Primary colors */
     --primary: 142 72% 29%;
     --primary-foreground: 144 72% 95%;
+    --primary-light: 142 72% 39%;
+    --primary-dark: 142 72% 19%;
+    
+    /* Secondary colors */
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
+    --secondary-light: 240 3.7% 25.9%;
+    --secondary-dark: 240 3.7% 5.9%;
+    
+    /* Success colors */
+    --success: 145 58% 55%;
+    --success-foreground: 145 58% 95%;
+    --success-light: 145 58% 65%;
+    --success-dark: 145 58% 45%;
+    
+    /* Warning colors */
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 95%;
+    --warning-light: 38 92% 60%;
+    --warning-dark: 38 92% 40%;
+    
+    /* Info colors */
+    --info: 200 98% 39%;
+    --info-foreground: 200 98% 95%;
+    --info-light: 200 98% 49%;
+    --info-dark: 200 98% 29%;
+    
+    /* Error colors */
+    --error: 0 84% 60%;
+    --error-foreground: 0 84% 95%;
+    --error-light: 0 84% 70%;
+    --error-dark: 0 84% 50%;
+    
+    /* Destructive colors */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 85.7% 97.3%;
+    
+    /* Muted colors */
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    /* Accent colors */
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    
+    /* Utility colors */
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 142 72% 29%;
+    
+    /* Gradient colors */
+    --gradient-start: 142 72% 29%;
+    --gradient-end: 200 98% 39%;
+    
+    /* Border radius */
     --radius: 0.5rem;
-    --link-hover-color: hsl(var(--primary));
   }
 
   * {
