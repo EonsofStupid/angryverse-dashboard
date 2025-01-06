@@ -2,16 +2,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, Ban, UserX, CheckCircle, Pencil } from "lucide-react";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
 import { UserStatus, User } from "@/types/user";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useNavigate } from "react-router-dom";
+import { UserListContent } from "./UserListContent";
 
 interface ProfileWithRoles {
   id: string;
@@ -28,7 +24,6 @@ export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>("all");
-  const navigate = useNavigate();
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
@@ -87,10 +82,6 @@ export const UserList = () => {
     }
   });
 
-  const handleEditUser = (userId: string) => {
-    navigate(`/admin/users/${userId}/edit`);
-  };
-
   const filteredUsers = users?.filter(user => {
     if (activeTab === "active") {
       return user.status === "active";
@@ -100,11 +91,19 @@ export const UserList = () => {
     selectedStatus === 'all' ? true : user.status === selectedStatus
   );
 
-  const toggleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedUsers(filteredUsers?.map(user => user.id) || []);
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && filteredUsers) {
+      setSelectedUsers(filteredUsers.map(user => user.id));
     } else {
       setSelectedUsers([]);
+    }
+  };
+
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedUsers([...selectedUsers, userId]);
+    } else {
+      setSelectedUsers(selectedUsers.filter(id => id !== userId));
     }
   };
 
@@ -132,154 +131,21 @@ export const UserList = () => {
               />
             )}
             
-            <div className="space-y-4">
-              <div className="border-b pb-2">
-                <Checkbox
-                  checked={selectedUsers.length === filteredUsers?.length}
-                  onCheckedChange={toggleSelectAll}
-                />
-              </div>
-              
-              {filteredUsers?.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <Checkbox
-                      checked={selectedUsers.includes(user.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedUsers([...selectedUsers, user.id]);
-                        } else {
-                          setSelectedUsers(selectedUsers.filter(id => id !== user.id));
-                        }
-                      }}
-                    />
-                    <div>
-                      <button 
-                        onClick={() => handleEditUser(user.id)}
-                        className="flex items-center gap-2 hover:text-primary"
-                      >
-                        <p className="font-medium">{user.profile?.display_name || user.profile?.username || 'No username'}</p>
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      {user.profile?.location && (
-                        <p className="text-sm text-muted-foreground">{user.profile.location}</p>
-                      )}
-                      <div className="flex gap-2 mt-1">
-                        <Badge variant="outline">{user.role}</Badge>
-                        <Badge 
-                          variant={user.status === 'active' ? 'default' : 'destructive'}
-                        >
-                          {user.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      title={user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
-                    >
-                      <Shield className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      title={user.status === 'active' ? 'Suspend User' : 'Activate User'}
-                    >
-                      {user.status === 'active' ? (
-                        <UserX className="h-4 w-4" />
-                      ) : (
-                        <CheckCircle className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      title={user.status === 'banned' ? 'Unban User' : 'Ban User'}
-                    >
-                      {user.status === 'banned' ? (
-                        <CheckCircle className="h-4 w-4" />
-                      ) : (
-                        <Ban className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <UserListContent
+              users={filteredUsers || []}
+              selectedUsers={selectedUsers}
+              onSelectUser={handleSelectUser}
+              onSelectAll={handleSelectAll}
+            />
           </TabsContent>
 
           <TabsContent value="active">
-            <div className="space-y-4">
-              {filteredUsers?.map((user) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between p-4 border rounded-lg"
-            >
-              <div className="flex items-center gap-4">
-                <Checkbox
-                  checked={selectedUsers.includes(user.id)}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setSelectedUsers([...selectedUsers, user.id]);
-                    } else {
-                      setSelectedUsers(selectedUsers.filter(id => id !== user.id));
-                    }
-                  }}
-                />
-                <div>
-                  <p className="font-medium">{user.profile?.display_name || user.profile?.username || 'No username'}</p>
-                  {user.profile?.location && (
-                    <p className="text-sm text-muted-foreground">{user.profile.location}</p>
-                  )}
-                  <div className="flex gap-2 mt-1">
-                    <Badge variant="outline">{user.role}</Badge>
-                    <Badge 
-                      variant={user.status === 'active' ? 'default' : 'destructive'}
-                    >
-                      {user.status}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  title={user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
-                >
-                  <Shield className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  title={user.status === 'active' ? 'Suspend User' : 'Activate User'}
-                >
-                  {user.status === 'active' ? (
-                    <UserX className="h-4 w-4" />
-                  ) : (
-                    <CheckCircle className="h-4 w-4" />
-                  )}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  title={user.status === 'banned' ? 'Unban User' : 'Ban User'}
-                >
-                  {user.status === 'banned' ? (
-                    <CheckCircle className="h-4 w-4" />
-                  ) : (
-                    <Ban className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-              ))}
-            </div>
+            <UserListContent
+              users={filteredUsers || []}
+              selectedUsers={selectedUsers}
+              onSelectUser={handleSelectUser}
+              onSelectAll={handleSelectAll}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>
