@@ -10,6 +10,7 @@ import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { useToast } from "@/hooks/use-toast";
+import { Navbar } from "@/components/Navbar";
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useAuthStore();
@@ -35,47 +36,50 @@ const AdminDashboard = () => {
   if (!user || !isAdmin) return null;
 
   return (
-    <AdminLayout>
-      <Tabs defaultValue="dashboard" className="w-full" onValueChange={(value) => navigate(`/admin/${value}`)}>
-        <TabsList>
-          <TabsTrigger value="">Dashboard</TabsTrigger>
-          <TabsTrigger value="posts">Posts</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
-          <TabsTrigger value="comments">Comments</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="">
-          <DashboardOverview />
-        </TabsContent>
-        
-        <TabsContent value="posts">
-          <Outlet />
-        </TabsContent>
-        
-        <TabsContent value="media">
-          <MediaLibrary />
-        </TabsContent>
-        
-        <TabsContent value="categories">
-          <CategoriesManagement />
-        </TabsContent>
-        
-        <TabsContent value="comments">
-          <CommentsManagement />
-        </TabsContent>
-        
-        <TabsContent value="users">
-          <UserManagement />
-        </TabsContent>
-        
-        <TabsContent value="settings">
-          <Settings />
-        </TabsContent>
-      </Tabs>
-    </AdminLayout>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <AdminLayout>
+        <Tabs defaultValue="dashboard" className="w-full" onValueChange={(value) => navigate(`/admin/${value}`)}>
+          <TabsList>
+            <TabsTrigger value="">Dashboard</TabsTrigger>
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="media">Media</TabsTrigger>
+            <TabsTrigger value="categories">Categories</TabsTrigger>
+            <TabsTrigger value="comments">Comments</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="">
+            <DashboardOverview />
+          </TabsContent>
+          
+          <TabsContent value="posts">
+            <Outlet />
+          </TabsContent>
+          
+          <TabsContent value="media">
+            <MediaLibrary />
+          </TabsContent>
+          
+          <TabsContent value="categories">
+            <CategoriesManagement />
+          </TabsContent>
+          
+          <TabsContent value="comments">
+            <CommentsManagement />
+          </TabsContent>
+          
+          <TabsContent value="users">
+            <UserManagement />
+          </TabsContent>
+          
+          <TabsContent value="settings">
+            <Settings />
+          </TabsContent>
+        </Tabs>
+      </AdminLayout>
+    </div>
   );
 };
 
