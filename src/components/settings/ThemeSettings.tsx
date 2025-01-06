@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useThemeStore } from "@/store/useThemeStore";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import type { Theme } from "@/types/theme";
+import type { Theme, ThemeConfiguration } from "@/types/theme";
 
 export const ThemeSettings = () => {
   const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
@@ -22,6 +22,9 @@ export const ThemeSettings = () => {
       if (error) throw error;
 
       if (defaultTheme) {
+        // Ensure the configuration is properly typed
+        const configuration = defaultTheme.configuration as ThemeConfiguration;
+        
         // Update the current theme with the default configuration
         const updatedTheme: Theme = {
           id: currentTheme?.id || 'default',
@@ -29,7 +32,7 @@ export const ThemeSettings = () => {
           description: 'Default application theme',
           is_default: true,
           status: 'active',
-          configuration: defaultTheme.configuration,
+          configuration,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
