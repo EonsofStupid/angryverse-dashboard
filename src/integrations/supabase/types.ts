@@ -12,23 +12,43 @@ export type Database = {
       categories: {
         Row: {
           created_at: string | null
+          description: string | null
           id: string
+          meta_description: string | null
+          meta_title: string | null
           name: string
+          parent_id: string | null
           slug: string
         }
         Insert: {
           created_at?: string | null
+          description?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           name: string
+          parent_id?: string | null
           slug: string
         }
         Update: {
           created_at?: string | null
+          description?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           name?: string
+          parent_id?: string | null
           slug?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       comments: {
         Row: {
@@ -36,6 +56,8 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
+          is_approved: boolean | null
+          parent_id: string | null
           post_id: string | null
           status: string | null
         }
@@ -44,6 +66,8 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
+          is_approved?: boolean | null
+          parent_id?: string | null
           post_id?: string | null
           status?: string | null
         }
@@ -52,10 +76,19 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
+          is_approved?: boolean | null
+          parent_id?: string | null
           post_id?: string | null
           status?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "comments_post_id_fkey"
             columns: ["post_id"]
@@ -67,27 +100,36 @@ export type Database = {
       }
       media: {
         Row: {
+          alt_text: string | null
           created_at: string | null
+          description: string | null
           filename: string
           id: string
+          metadata: Json | null
           size: number
           type: string
           uploaded_by: string | null
           url: string
         }
         Insert: {
+          alt_text?: string | null
           created_at?: string | null
+          description?: string | null
           filename: string
           id?: string
+          metadata?: Json | null
           size: number
           type: string
           uploaded_by?: string | null
           url: string
         }
         Update: {
+          alt_text?: string | null
           created_at?: string | null
+          description?: string | null
           filename?: string
           id?: string
+          metadata?: Json | null
           size?: number
           type?: string
           uploaded_by?: string | null
@@ -171,33 +213,93 @@ export type Database = {
           },
         ]
       }
-      posts: {
+      post_revisions: {
         Row: {
           author_id: string | null
           content: string | null
           created_at: string | null
           id: string
-          status: string | null
+          post_id: string | null
+          revision_note: string | null
           title: string
-          updated_at: string | null
         }
         Insert: {
           author_id?: string | null
           content?: string | null
           created_at?: string | null
           id?: string
-          status?: string | null
+          post_id?: string | null
+          revision_note?: string | null
           title: string
-          updated_at?: string | null
         }
         Update: {
           author_id?: string | null
           content?: string | null
           created_at?: string | null
           id?: string
+          post_id?: string | null
+          revision_note?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_revisions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_revisions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          author_id: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          featured_image: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           status?: string | null
           title?: string
           updated_at?: string | null
+          view_count?: number | null
         }
         Relationships: [
           {
@@ -205,6 +307,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_featured_image_fkey"
+            columns: ["featured_image"]
+            isOneToOne: false
+            referencedRelation: "media"
             referencedColumns: ["id"]
           },
         ]
