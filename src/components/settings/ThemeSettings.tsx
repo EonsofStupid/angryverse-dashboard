@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useThemeStore } from "@/store/useThemeStore";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
+import type { Theme } from "@/types/theme";
 
 export const ThemeSettings = () => {
   const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
@@ -13,15 +14,27 @@ export const ThemeSettings = () => {
   const restoreDefaultTheme = async () => {
     try {
       const { data: defaultTheme, error } = await supabase
-        .from('themes')
+        .from('theme_presets')
         .select('*')
-        .eq('is_default', true)
+        .eq('name', 'Modern Glass Theme')
         .single();
 
       if (error) throw error;
 
       if (defaultTheme) {
-        setCurrentTheme(defaultTheme);
+        // Update the current theme with the default configuration
+        const updatedTheme: Theme = {
+          id: currentTheme?.id || 'default',
+          name: 'Default Theme',
+          description: 'Default application theme',
+          is_default: true,
+          status: 'active',
+          configuration: defaultTheme.configuration,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        setCurrentTheme(updatedTheme);
         toast({
           title: "Default theme restored",
           description: "Your theme has been reset to the default configuration.",
@@ -79,7 +92,10 @@ export const ThemeSettings = () => {
           </div>
         </div>
         
-        <Button onClick={restoreDefaultTheme} className="w-full hover-glow">
+        <Button 
+          onClick={restoreDefaultTheme} 
+          className="w-full hover-glow bg-gradient-to-r from-cyber-pink via-cyber-purple to-cyber-cyan"
+        >
           Restore Default Theme
         </Button>
       </CardContent>
