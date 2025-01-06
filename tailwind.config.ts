@@ -114,5 +114,14 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function({ addUtilities }) {
+      addUtilities({
+        '.glass': {
+          '@apply bg-white/10 backdrop-blur-md border border-white/20 shadow-lg': {},
+        },
+      })
+    }
+  ],
 } satisfies Config;
