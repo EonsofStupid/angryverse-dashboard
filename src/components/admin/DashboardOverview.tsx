@@ -9,130 +9,190 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-const mockData = {
-  stats: {
-    activeUsers: 142,
-    totalPosts: 523,
-    systemUptime: "99.9%",
-    drafts: 12,
-  },
-  activityData: [
-    { name: "Mon", value: 20 },
-    { name: "Tue", value: 35 },
-    { name: "Wed", value: 25 },
-    { name: "Thu", value: 40 },
-    { name: "Fri", value: 30 },
-    { name: "Sat", value: 15 },
-    { name: "Sun", value: 22 },
-  ],
-  recentActivity: [
-    { id: 1, type: "user", message: "New user registration", time: "5 min ago" },
-    { id: 2, type: "post", message: "Blog post published", time: "1 hour ago" },
-    { id: 3, type: "system", message: "System update completed", time: "3 hours ago" },
-  ],
+// Analytics data fetching functions
+const fetchPostViews = async () => {
+  const { data, error } = await supabase
+    .from('analytics_post_views')
+    .select('*')
+    .order('viewed_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
 };
 
+const fetchSearchTerms = async () => {
+  const { data, error } = await supabase
+    .from('analytics_search_terms')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+};
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 export const DashboardOverview = () => {
+  // Fetch analytics data
+  const { data: postViews, isLoading: isLoadingViews } = useQuery({
+    queryKey: ['postViews'],
+    queryFn: fetchPostViews,
+    onError: (error) => {
+      toast.error('Failed to fetch post views');
+      console.error('Error fetching post views:', error);
+    }
+  });
+
+  const { data: searchTerms, isLoading: isLoadingSearches } = useQuery({
+    queryKey: ['searchTerms'],
+    queryFn: fetchSearchTerms,
+    onError: (error) => {
+      toast.error('Failed to fetch search terms');
+      console.error('Error fetching search terms:', error);
+    }
+  });
+
+  // Process data for charts
+  const viewsData = postViews?.reduce((acc: any[], view: any) => {
+    const date = new Date(view.viewed_at).toLocaleDateString();
+    const existingDate = acc.find(item => item.date === date);
+    if (existingDate) {
+      existingDate.views += 1;
+    } else {
+      acc.push({ date, views: 1 });
+    }
+    return acc;
+  }, []) || [];
+
+  const searchData = searchTerms?.reduce((acc: any[], term: any) => {
+    const existingTerm = acc.find(item => item.term === term.search_term);
+    if (existingTerm) {
+      existingTerm.count += 1;
+    } else {
+      acc.push({ term: term.search_term, count: 1 });
+    }
+    return acc;
+  }, []).sort((a: any, b: any) => b.count - a.count).slice(0, 5) || [];
+
   return (
     <div className="space-y-6">
       {/* Quick Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{mockData.stats.activeUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              +2.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockData.stats.totalPosts}</div>
+            <div className="text-2xl font-bold">{postViews?.length || 0}</div>
             <p className="text-xs text-muted-foreground">
-              +12 posts this week
+              All time post views
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Status</CardTitle>
+            <CardTitle className="text-sm font-medium">Unique Viewers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {new Set(postViews?.map(view => view.viewer_id)).size || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Distinct users
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Search Volume</CardTitle>
             <Server className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockData.stats.systemUptime}</div>
+            <div className="text-2xl font-bold">{searchTerms?.length || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Uptime last 30 days
+              Total searches
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Draft Posts</CardTitle>
+            <CardTitle className="text-sm font-medium">Avg. Results</CardTitle>
             <FilePlus className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockData.stats.drafts}</div>
+            <div className="text-2xl font-bold">
+              {searchTerms?.length 
+                ? Math.round(searchTerms.reduce((acc, term) => acc + (term.results_count || 0), 0) / searchTerms.length)
+                : 0}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Pending publication
+              Per search
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Activity Chart */}
+      {/* Views Over Time Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Weekly Activity</CardTitle>
+          <CardTitle>Views Over Time</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockData.activityData}>
+              <LineChart data={viewsData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" fill="#8884d8" />
-              </BarChart>
+                <Line type="monotone" dataKey="views" stroke="#8884d8" />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
 
-      {/* Recent Activity Feed */}
+      {/* Popular Search Terms Chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Popular Search Terms</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {mockData.recentActivity.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
-              >
-                <div className="flex items-center space-x-4">
-                  <Activity className="h-4 w-4 text-muted-foreground" />
-                  <span>{activity.message}</span>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {activity.time}
-                </span>
-              </div>
-            ))}
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={searchData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ term, count }) => `${term} (${count})`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="count"
+                >
+                  {searchData.map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
