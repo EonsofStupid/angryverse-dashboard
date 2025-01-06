@@ -101,8 +101,8 @@ const AdminDashboard = () => {
       <Navbar />
       <AdminLayout>
         <Tabs 
-          defaultValue={currentPath} 
-          value={currentPath}
+          defaultValue={currentPath || 'dashboard'} 
+          value={currentPath || 'dashboard'}
           className="w-full"
           onValueChange={(value) => {
             const newPath = value ? `/admin/${value}` : '/admin';
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
           }}
         >
           <TabsList>
-            <TabsTrigger value="">Dashboard</TabsTrigger>
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="">
+          <TabsContent value="dashboard">
             <DashboardOverview />
           </TabsContent>
           
