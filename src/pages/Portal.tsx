@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Portal = () => {
   const { user, isLoading } = useAuthStore();
@@ -11,6 +12,7 @@ const Portal = () => {
 
   useEffect(() => {
     if (!isLoading && !user) {
+      toast.error("Please sign in to access the portal");
       navigate("/");
     }
   }, [user, isLoading, navigate]);

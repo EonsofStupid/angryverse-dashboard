@@ -10,30 +10,32 @@ import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 
 const AdminDashboard = () => {
   const { user, isAdmin, isLoading } = useAuthStore();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate("/");
-      return;
-    }
+    const checkAccess = async () => {
+      if (!isLoading) {
+        if (!user) {
+          toast.error("Please sign in to access the admin dashboard");
+          navigate("/");
+          return;
+        }
 
-    if (!isLoading && !isAdmin) {
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access the admin dashboard.",
-        variant: "destructive",
-      });
-      navigate("/");
-    }
-  }, [user, isAdmin, isLoading, navigate, toast]);
+        if (!isAdmin) {
+          toast.error("You don't have permission to access the admin dashboard");
+          navigate("/");
+        }
+      }
+    };
+
+    checkAccess();
+  }, [user, isAdmin, isLoading, navigate]);
 
   if (isLoading) {
     return (
