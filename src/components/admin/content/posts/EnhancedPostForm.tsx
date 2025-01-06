@@ -3,22 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Post } from "@/types/post";
-import { Category } from "@/types/database/category";
-import { Media } from "@/types/database/media";
-import { MediaSelector } from "./MediaSelector";
 import { Editor } from "@/components/editor/Editor";
+import { MediaSelector } from "./MediaSelector";
+import { SeoMetadataForm } from "./forms/SeoMetadataForm";
+import { CategorySelector } from "./forms/CategorySelector";
+import { StatusSelector } from "./forms/StatusSelector";
+import { RevisionHistory } from "./RevisionHistory";
 import { toast } from "sonner";
 
 interface EnhancedPostFormProps {
@@ -36,45 +29,6 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
   const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? "");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [featuredImage, setFeaturedImage] = useState<string | null>(post?.featured_image ?? null);
-
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-      
-      if (error) throw error;
-      return data as Category[];
-    },
-  });
-
-  const { data: postCategories } = useQuery({
-    queryKey: ['post-categories', post?.id],
-    queryFn: async () => {
-      if (!post?.id) return [];
-      
-      const { data, error } = await supabase
-        .from('posts_categories')
-        .select('category_id')
-        .eq('post_id', post.id);
-      
-      if (error) throw error;
-      return data.map(pc => pc.category_id);
-    },
-    enabled: !!post?.id,
-  });
-
-  useEffect(() => {
-    if (postCategories) {
-      setSelectedCategories(postCategories);
-    }
-  }, [postCategories]);
-
-  const handleStatusChange = (value: string) => {
-    setStatus(value as 'draft' | 'published' | 'archived');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,42 +92,15 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
           <Card className="p-4 space-y-4">
             <div className="space-y-2">
               <Label>Status</Label>
-              <Select value={status} onValueChange={handleStatusChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
+              <StatusSelector status={status} onStatusChange={(value) => setStatus(value as 'draft' | 'published' | 'archived')} />
             </div>
 
             <div className="space-y-2">
               <Label>Categories</Label>
-              <div className="space-y-2">
-                {categories?.map((category) => (
-                  <div key={category.id} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id={`category-${category.id}`}
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedCategories([...selectedCategories, category.id]);
-                        } else {
-                          setSelectedCategories(
-                            selectedCategories.filter((id) => id !== category.id)
-                          );
-                        }
-                      }}
-                      className="rounded border-gray-300"
-                    />
-                    <Label htmlFor={`category-${category.id}`}>{category.name}</Label>
-                  </div>
-                ))}
-              </div>
+              <CategorySelector
+                selectedCategories={selectedCategories}
+                onCategoryChange={setSelectedCategories}
+              />
             </div>
 
             <div className="space-y-2">
@@ -193,27 +120,13 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
                 <TabsTrigger value="social" className="flex-1">Social</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="seo" className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="metaTitle">Meta Title</Label>
-                  <Input
-                    id="metaTitle"
-                    value={metaTitle}
-                    onChange={(e) => setMetaTitle(e.target.value)}
-                    placeholder="SEO title"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="metaDescription">Meta Description</Label>
-                  <Textarea
-                    id="metaDescription"
-                    value={metaDescription}
-                    onChange={(e) => setMetaDescription(e.target.value)}
-                    placeholder="SEO description"
-                    className="h-20"
-                  />
-                </div>
+              <TabsContent value="seo">
+                <SeoMetadataForm
+                  metaTitle={metaTitle}
+                  metaDescription={metaDescription}
+                  onMetaTitleChange={setMetaTitle}
+                  onMetaDescriptionChange={setMetaDescription}
+                />
               </TabsContent>
 
               <TabsContent value="social" className="space-y-4">
@@ -223,6 +136,19 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
               </TabsContent>
             </Tabs>
           </Card>
+
+          {post?.id && (
+            <Card className="p-4">
+              <RevisionHistory
+                postId={post.id}
+                onRestoreRevision={(revision) => {
+                  setTitle(revision.title);
+                  setContent(revision.content);
+                  toast.success("Revision restored");
+                }}
+              />
+            </Card>
+          )}
         </div>
       </div>
 
