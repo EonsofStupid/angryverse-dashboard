@@ -35,7 +35,7 @@
   }
 
   body {
-    @apply bg-cyber-dark text-foreground font-sans overflow-x-hidden;
+    @apply bg-cyber-dark text-foreground font-sans overflow-x-hidden min-h-screen;
   }
 
   /* Enhanced background with texture and animation */
