@@ -23,7 +23,6 @@ const AdminDashboard = () => {
   const location = useLocation();
   
   const currentPath = location.pathname.split('/').pop() || 'dashboard';
-  const isPortal = location.pathname === '/portal';
 
   useEffect(() => {
     if (!roleLoading) {
@@ -53,20 +52,6 @@ const AdminDashboard = () => {
     return null;
   }
 
-  if (isPortal) {
-    return (
-      <div className="min-h-screen bg-transparent text-foreground relative overflow-hidden">
-        <div className="fixed inset-0 bg-gradient-to-b from-background via-background/90 to-background/80 z-0" />
-        <div className="relative z-10">
-          <Navbar />
-          <div className="pt-20">
-            <PortalContent />
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -89,6 +74,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="themes">Themes</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="portal">Portal</TabsTrigger>
           </TabsList>
           
           <TabsContent value="dashboard">
@@ -121,6 +107,10 @@ const AdminDashboard = () => {
           
           <TabsContent value="settings">
             <Settings />
+          </TabsContent>
+
+          <TabsContent value="portal">
+            <PortalContent />
           </TabsContent>
         </Tabs>
       </AdminLayout>
