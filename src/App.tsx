@@ -10,12 +10,17 @@ import { UserManagement } from "@/components/admin/UserManagement";
 import { UserProfileEdit } from "@/components/admin/UserProfileEdit";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { useAuthStore } from "@/store/useAuthStore";
+import Index from "@/pages/Index";
 
 export default function App() {
   const user = useAuthStore(state => state.user);
 
   return (
     <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Index />} />
+      
+      {/* Protected Admin Routes */}
       <Route path="/admin" element={<AdminLayout>
         <Routes>
           <Route index element={<DashboardOverview />} />
