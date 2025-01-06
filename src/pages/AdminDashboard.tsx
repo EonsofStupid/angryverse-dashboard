@@ -22,8 +22,10 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isPortal = location.pathname === '/portal';
+  const currentPath = location.pathname.split('/').pop() || '';
 
   console.log('AdminDashboard rendering:', {
+    currentPath,
     pathname: location.pathname,
     isPortal,
     user: !!user,
@@ -87,7 +89,6 @@ const AdminDashboard = () => {
   }
 
   // Admin dashboard route
-  const currentPath = location.pathname.split('/').pop() || '';
   console.log('Rendering admin dashboard:', { currentPath });
 
   return (
