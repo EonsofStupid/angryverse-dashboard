@@ -40,7 +40,11 @@ export const usePostsQuery = (searchQuery: string, statusFilter: string | null) 
         throw error;
       }
 
-      return data as Post[];
+      // Transform the data to ensure it matches the Post type interface
+      return data.map(post => ({
+        ...post,
+        profiles: post.profiles || null
+      })) as Post[];
     },
   });
 };
