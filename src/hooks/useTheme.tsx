@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import { useThemeStore } from '@/store/useThemeStore';
+import type { Theme } from '@/types/theme';
 
 export interface ThemeContextType {
   currentTheme: Theme | null;
@@ -37,16 +38,20 @@ export const useThemeVariables = () => {
     Object.entries(colors.cyber).forEach(([key, value]) => {
       if (typeof value === 'string') {
         root.style.setProperty(`--cyber-${key}`, value);
-      } else if (typeof value === 'object') {
+      } else if (typeof value === 'object' && value !== null) {
         Object.entries(value).forEach(([subKey, subValue]) => {
-          root.style.setProperty(`--cyber-${key}-${subKey}`, subValue as string);
+          if (typeof subValue === 'string') {
+            root.style.setProperty(`--cyber-${key}-${subKey}`, subValue);
+          }
         });
       }
     });
 
     // Apply glass effect variables
     Object.entries(effects.glass).forEach(([key, value]) => {
-      root.style.setProperty(`--glass-${key}`, value);
+      if (typeof value === 'string') {
+        root.style.setProperty(`--glass-${key}`, value);
+      }
     });
   };
 

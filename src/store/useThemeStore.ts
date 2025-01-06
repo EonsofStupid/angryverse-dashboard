@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import { Theme } from '@/types/theme';
+import type { Theme } from '@/types/theme';
 
 interface ThemeState {
   currentTheme: Theme | null;
@@ -11,6 +11,20 @@ interface ThemeState {
   setCurrentTheme: (theme: Theme | null) => void;
   fetchPageTheme: (path: string) => Promise<void>;
 }
+
+const convertDatabaseTheme = (dbTheme: any): Theme => {
+  return {
+    id: dbTheme.id,
+    name: dbTheme.name,
+    description: dbTheme.description,
+    is_default: dbTheme.is_default,
+    status: dbTheme.status,
+    configuration: dbTheme.configuration as Theme['configuration'],
+    created_by: dbTheme.created_by,
+    created_at: dbTheme.created_at,
+    updated_at: dbTheme.updated_at,
+  };
+};
 
 export const useThemeStore = create<ThemeState>((set) => ({
   currentTheme: null,
@@ -40,7 +54,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       if (pageTheme?.themes) {
         set({ 
-          currentTheme: pageTheme.themes as Theme,
+          currentTheme: convertDatabaseTheme(pageTheme.themes),
           isLoading: false 
         });
         return;
@@ -60,13 +74,13 @@ export const useThemeStore = create<ThemeState>((set) => ({
       }
 
       set({ 
-        currentTheme: defaultTheme as Theme,
+        currentTheme: convertDatabaseTheme(defaultTheme),
         isLoading: false 
       });
     } catch (error) {
       console.error('Error fetching theme:', error);
       set({ 
-        error: error as Error,
+        error: error instanceof Error ? error : new Error('Unknown error occurred'),
         isLoading: false 
       });
     }

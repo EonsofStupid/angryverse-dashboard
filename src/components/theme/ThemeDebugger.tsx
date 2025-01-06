@@ -9,7 +9,7 @@ export const ThemeDebugger = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error.message}</div>;
   }
 
   if (!currentTheme) {
