@@ -38,10 +38,25 @@ export const useThemeStore = create<ThemeState>((set) => ({
   
   fetchPageTheme: async (path) => {
     set({ isLoading: true, error: null });
-    console.log('Fetching theme for path:', path);
     
     try {
-      // First try to get the page-specific theme
+      // First try to get the default theme since we always need one
+      const { data: defaultTheme, error: defaultError } = await supabase
+        .from('themes')
+        .select('*')
+        .eq('is_default', true)
+        .eq('status', 'active')
+        .single();
+
+      if (defaultError) {
+        throw defaultError;
+      }
+
+      if (!defaultTheme) {
+        throw new Error('No active default theme found');
+      }
+
+      // Then check for page-specific theme
       const { data: pageTheme, error: pageError } = await supabase
         .from('page_themes')
         .select(`
@@ -52,49 +67,22 @@ export const useThemeStore = create<ThemeState>((set) => ({
         .maybeSingle();
 
       if (pageError) {
-        console.error('Error fetching page theme:', pageError);
         throw pageError;
       }
 
-      if (pageTheme?.themes) {
-        console.log('Found page-specific theme:', pageTheme.themes);
-        set({ 
-          currentTheme: convertDatabaseTheme(pageTheme.themes),
-          isLoading: false 
-        });
-        return;
-      }
-
-      console.log('No page-specific theme found, fetching default theme...');
-
-      // If no page-specific theme, get the default theme
-      const { data: defaultTheme, error: defaultError } = await supabase
-        .from('themes')
-        .select('*')
-        .eq('is_default', true)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      if (defaultError) {
-        console.error('Error fetching default theme:', defaultError);
-        throw defaultError;
-      }
-
-      if (!defaultTheme) {
-        console.error('No active default theme found in database');
-        throw new Error('No active default theme found');
-      }
-
-      console.log('Found default theme:', defaultTheme);
+      // Use page theme if exists, otherwise use default theme
+      const finalTheme = pageTheme?.themes ? convertDatabaseTheme(pageTheme.themes) : convertDatabaseTheme(defaultTheme);
+      
       set({ 
-        currentTheme: convertDatabaseTheme(defaultTheme),
+        currentTheme: finalTheme,
         isLoading: false 
       });
     } catch (error) {
       console.error('Error in fetchPageTheme:', error);
       set({ 
         error: error instanceof Error ? error : new Error('Unknown error occurred'),
-        isLoading: false 
+        isLoading: false,
+        currentTheme: null
       });
     }
   },

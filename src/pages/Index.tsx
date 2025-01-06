@@ -3,30 +3,10 @@ import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { useTheme } from "@/hooks/useTheme";
-import { useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { currentTheme, fetchPageTheme, isLoading, error } = useTheme();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        await fetchPageTheme('/');
-      } catch (err) {
-        console.error('Error loading theme:', err);
-        toast({
-          title: "Theme Error",
-          description: "Failed to load theme. Using default theme.",
-          variant: "destructive",
-        });
-      }
-    };
-
-    loadTheme();
-  }, [fetchPageTheme, toast]);
+  const { currentTheme, isLoading, error } = useTheme();
 
   if (isLoading) {
     return (

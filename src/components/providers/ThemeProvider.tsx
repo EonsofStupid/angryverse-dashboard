@@ -27,42 +27,28 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Apply theme variables when the current theme changes
   useEffect(() => {
-    let mounted = true;
-    
-    if (mounted && currentTheme) {
+    if (currentTheme) {
       applyThemeVariables();
     }
-
-    return () => {
-      mounted = false;
-    };
   }, [applyThemeVariables, currentTheme]);
 
-  // Initialize with a default theme if none is present
+  // Initialize theme on mount and route changes
   useEffect(() => {
-    let mounted = true;
-
     const initializeTheme = async () => {
-      if (!currentTheme && mounted) {
-        try {
-          await fetchPageTheme('/');
-        } catch (error) {
-          console.error('Failed to initialize theme:', error);
-          toast({
-            title: "Theme Error",
-            description: "Failed to load theme. Using default theme.",
-            variant: "destructive",
-          });
-        }
+      try {
+        await fetchPageTheme(location.pathname);
+      } catch (error) {
+        console.error('Failed to initialize theme:', error);
+        toast({
+          title: "Theme Error",
+          description: "Failed to load theme. Using default theme.",
+          variant: "destructive",
+        });
       }
     };
 
     initializeTheme();
-
-    return () => {
-      mounted = false;
-    };
-  }, [currentTheme, fetchPageTheme, toast]);
+  }, [location.pathname, fetchPageTheme, toast]);
 
   const value = {
     currentTheme,
