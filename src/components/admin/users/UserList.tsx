@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
-import { UserStatus, User } from "@/types/user";
+import { UserStatus, User, UserRole } from "@/types/user";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserListContent } from "./UserListContent";
@@ -48,7 +48,6 @@ export const UserList = () => {
       }
 
       // Then, get user roles for each profile
-      const userRoles = new Map<string, string>();
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id, role');
@@ -59,15 +58,16 @@ export const UserList = () => {
       }
 
       // Create a map of user_id to role
+      const userRoles = new Map<string, UserRole>();
       roles?.forEach(role => {
-        userRoles.set(role.user_id, role.role);
+        userRoles.set(role.user_id, role.role as UserRole);
       });
 
       // Transform the data to match our User type
       return (profiles || []).map(profile => ({
         id: profile.id,
         email: profile.username || 'No username',
-        role: userRoles.get(profile.id) || 'user',
+        role: userRoles.get(profile.id) || 'user' as UserRole,
         status: 'active' as UserStatus,
         profile: {
           username: profile.username,
