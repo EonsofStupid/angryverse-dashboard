@@ -123,9 +123,20 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
+      
       gradientColorStops: {
         'cyber-start': 'hsl(var(--gradient-start))',
         'cyber-end': 'hsl(var(--gradient-end))',
+        'success-start': 'hsl(var(--success))',
+        'success-end': 'hsl(var(--success-light))',
+        'warning-start': 'hsl(var(--warning))',
+        'warning-end': 'hsl(var(--warning-light))',
+        'info-start': 'hsl(var(--info))',
+        'info-end': 'hsl(var(--info-light))',
+        'error-start': 'hsl(var(--error))',
+        'error-end': 'hsl(var(--error-light))',
+        'primary-fade': 'hsl(var(--primary) / 0.8)',
+        'secondary-fade': 'hsl(var(--secondary) / 0.8)',
       },
     },
   },
@@ -160,11 +171,35 @@ export default {
         '.cyber-gradient': {
           '@apply bg-gradient-to-r from-cyber-start to-cyber-end': {},
         },
+        '.success-gradient': {
+          '@apply bg-gradient-to-r from-success-start to-success-end': {},
+        },
+        '.warning-gradient': {
+          '@apply bg-gradient-to-r from-warning-start to-warning-end': {},
+        },
+        '.info-gradient': {
+          '@apply bg-gradient-to-r from-info-start to-info-end': {},
+        },
+        '.error-gradient': {
+          '@apply bg-gradient-to-r from-error-start to-error-end': {},
+        },
         '.hover-scale': {
           '@apply transition-transform duration-300 hover:scale-105': {},
         },
         '.hover-lift': {
           '@apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl': {},
+        },
+        '.hover-pulse': {
+          '@apply transition-all duration-300 hover:animate-pulse': {},
+        },
+        '.hover-gradient': {
+          '@apply transition-all duration-300 hover:bg-gradient-to-r hover:from-primary hover:to-primary-fade': {},
+        },
+        '.active-scale': {
+          '@apply active:scale-95 transition-transform': {},
+        },
+        '.active-lift': {
+          '@apply active:translate-y-0.5 transition-transform': {},
         },
       })
     }
