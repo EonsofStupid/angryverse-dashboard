@@ -12,6 +12,53 @@ interface ThemeState {
   fetchPageTheme: (path: string) => Promise<void>;
 }
 
+const defaultTheme: Theme = {
+  id: 'default',
+  name: 'Default Theme',
+  description: 'Default system theme',
+  is_default: true,
+  status: 'active',
+  configuration: {
+    colors: {
+      cyber: {
+        dark: '#1a1b26',
+        pink: {
+          DEFAULT: '#ff007f',
+          hover: '#ff1a8c'
+        },
+        cyan: {
+          DEFAULT: '#00fff5',
+          hover: '#1affff'
+        },
+        purple: '#7928ca',
+        green: {
+          DEFAULT: '#4ade80',
+          hover: '#22c55e'
+        },
+        yellow: {
+          DEFAULT: '#fde047',
+          hover: '#facc15'
+        }
+      }
+    },
+    typography: {
+      fonts: {
+        sans: ['Inter', 'sans-serif'],
+        cyber: ['Inter', 'sans-serif']
+      }
+    },
+    effects: {
+      glass: {
+        background: 'rgba(0, 0, 0, 0.1)',
+        blur: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+      }
+    }
+  },
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
+};
+
 const convertDatabaseTheme = (dbTheme: any): Theme => {
   return {
     id: dbTheme.id,
@@ -40,21 +87,21 @@ export const useThemeStore = create<ThemeState>((set) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // First try to get the default theme since we always need one
-      const { data: defaultTheme, error: defaultError } = await supabase
+      // First try to get the default theme
+      const { data: defaultThemeData, error: defaultError } = await supabase
         .from('themes')
         .select('*')
         .eq('is_default', true)
         .eq('status', 'active')
-        .single();
+        .maybeSingle();
 
       if (defaultError) {
+        console.error('Error fetching default theme:', defaultError);
         throw defaultError;
       }
 
-      if (!defaultTheme) {
-        throw new Error('No active default theme found');
-      }
+      // If no default theme exists in the database, use the hardcoded default
+      const baseTheme = defaultThemeData ? convertDatabaseTheme(defaultThemeData) : defaultTheme;
 
       // Then check for page-specific theme
       const { data: pageTheme, error: pageError } = await supabase
@@ -67,11 +114,12 @@ export const useThemeStore = create<ThemeState>((set) => ({
         .maybeSingle();
 
       if (pageError) {
+        console.error('Error fetching page theme:', pageError);
         throw pageError;
       }
 
-      // Use page theme if exists, otherwise use default theme
-      const finalTheme = pageTheme?.themes ? convertDatabaseTheme(pageTheme.themes) : convertDatabaseTheme(defaultTheme);
+      // Use page theme if exists, otherwise use base theme
+      const finalTheme = pageTheme?.themes ? convertDatabaseTheme(pageTheme.themes) : baseTheme;
       
       set({ 
         currentTheme: finalTheme,
@@ -79,10 +127,11 @@ export const useThemeStore = create<ThemeState>((set) => ({
       });
     } catch (error) {
       console.error('Error in fetchPageTheme:', error);
+      // If there's an error, fall back to the default theme
       set({ 
-        error: error instanceof Error ? error : new Error('Unknown error occurred'),
+        currentTheme: defaultTheme,
         isLoading: false,
-        currentTheme: null
+        error: error instanceof Error ? error : new Error('Unknown error occurred')
       });
     }
   },
