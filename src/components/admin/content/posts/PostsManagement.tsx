@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Post } from "@/types/database/post";
+import { Post } from "@/types/post";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusCircle, Search } from "lucide-react";
@@ -41,7 +41,11 @@ export const PostsManagement = () => {
         .insert([{
           title: newPost.title,
           content: newPost.content,
-          status: newPost.status,
+          excerpt: newPost.excerpt,
+          status: newPost.status as 'draft' | 'published' | 'archived',
+          meta_title: newPost.meta_title,
+          meta_description: newPost.meta_description,
+          featured_image: newPost.featured_image,
           author_id: (await supabase.auth.getUser()).data.user?.id,
         }])
         .select();
@@ -73,7 +77,11 @@ export const PostsManagement = () => {
         .update({
           title: post.title,
           content: post.content,
-          status: post.status,
+          excerpt: post.excerpt,
+          status: post.status as 'draft' | 'published' | 'archived',
+          meta_title: post.meta_title,
+          meta_description: post.meta_description,
+          featured_image: post.featured_image,
           updated_at: new Date().toISOString(),
         })
         .eq('id', post.id)
@@ -201,7 +209,7 @@ export const PostsManagement = () => {
       <PostsTable
         posts={posts || []}
         isLoading={isLoading}
-        onEdit={setSelectedPost}
+        onEdit={(post) => setSelectedPost(post)}
         onDelete={(id) => deletePostMutation.mutate(id)}
         onBulkAction={handleBulkAction}
       />

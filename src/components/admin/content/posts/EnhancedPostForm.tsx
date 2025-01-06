@@ -11,11 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Post, Category, Media } from "@/types/database";
+import { Post } from "@/types/post";
+import { Category } from "@/types/database/category";
+import { Media } from "@/types/database/media";
 import { MediaSelector } from "./MediaSelector";
 import { Editor } from "@/components/editor/Editor";
 import { toast } from "sonner";
