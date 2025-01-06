@@ -6,12 +6,7 @@
 }
 
 .app {
-  @apply min-h-screen w-full relative;
-  background: linear-gradient(
-    135deg,
-    hsl(var(--background)) 0%,
-    hsl(var(--background)) 100%
-  );
+  @apply min-h-screen w-full relative bg-background;
 }
 
 .logo {
@@ -22,11 +17,11 @@
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 2em hsl(var(--primary)));
+  filter: drop-shadow(0 0 2em #646cffaa);
 }
 
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em hsl(var(--accent)));
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 @keyframes logo-spin {
@@ -46,9 +41,8 @@
 
 .card {
   padding: 2em;
-  @apply glass;
 }
 
 .read-the-docs {
-  color: hsl(var(--muted-foreground));
+  color: #888;
 }
