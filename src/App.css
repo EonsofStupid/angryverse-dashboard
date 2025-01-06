@@ -17,32 +17,21 @@
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  filter: drop-shadow(0 0 2em hsl(var(--primary)));
 }
 
 .card {
-  padding: 2em;
+  @apply glass p-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
 }
 
 .read-the-docs {
-  color: #888;
+  @apply text-muted-foreground;
+}
+
+.section {
+  @apply py-20 px-4 md:px-8 lg:px-12;
+}
+
+.container {
+  @apply max-w-7xl mx-auto;
 }

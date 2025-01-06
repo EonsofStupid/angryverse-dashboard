@@ -7,7 +7,7 @@ export const Hero = () => {
   return (
     <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
       {/* Enhanced gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyber-pink/10 via-cyber-cyan/5 to-cyber-purple/10 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 animate-pulse" />
       
       <ScrollingCode />
       <DataStream />

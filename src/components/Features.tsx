@@ -5,29 +5,29 @@ const features = [
     title: "Guides",
     description: "Detailed guides on pop culture topics",
     icon: BookOpen,
-    color: "text-cyber-pink",
-    gradient: "from-cyber-pink/20 to-cyber-purple/20",
+    color: "text-primary",
+    gradient: "from-primary/20 to-secondary/20",
   },
   {
     title: "Updates",
     description: "Latest news and personal updates",
     icon: Rss,
-    color: "text-cyber-cyan",
-    gradient: "from-cyber-cyan/20 to-cyber-purple/20",
+    color: "text-primary",
+    gradient: "from-primary/20 to-accent/20",
   },
   {
     title: "Blog",
     description: "In-depth articles and opinions",
     icon: Newspaper,
-    color: "text-cyber-purple",
-    gradient: "from-cyber-purple/20 to-cyber-pink/20",
+    color: "text-primary",
+    gradient: "from-primary/20 to-secondary/20",
   },
   {
     title: "Videos",
     description: "Video content and highlights",
     icon: Video,
-    color: "text-cyber-pink",
-    gradient: "from-cyber-pink/20 to-cyber-cyan/20",
+    color: "text-primary",
+    gradient: "from-primary/20 to-accent/20",
   },
 ];
 
@@ -35,7 +35,7 @@ export const Features = () => {
   return (
     <section className="py-20 relative">
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-cyber font-bold text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Latest <span className="text-gradient animate-glow">Content</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -49,10 +49,10 @@ export const Features = () => {
                 <feature.icon
                   className={`h-12 w-12 ${feature.color} mb-4 group-hover:scale-110 transition-transform duration-500`}
                 />
-                <h3 className="text-xl font-cyber font-semibold mb-2 group-hover:text-gradient">
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-gradient">
                   {feature.title}
                 </h3>
-                <p className="text-gray-300/90 group-hover:text-white transition-colors duration-300">
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                   {feature.description}
                 </p>
               </div>
