@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
+// Cache for role check results
+const roleCache = new Map<string, boolean>();
+
 export const useRoleCheck = (user: User | null, requiredRole: string) => {
   const [hasRole, setHasRole] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -10,15 +13,19 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
   useEffect(() => {
     const checkRole = async () => {
       if (!user) {
-        console.log('No user to check role for');
         setHasRole(false);
         setIsLoading(false);
         return;
       }
 
+      const cacheKey = `${user.id}-${requiredRole}`;
+      if (roleCache.has(cacheKey)) {
+        setHasRole(roleCache.get(cacheKey)!);
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        console.log(`Checking if user ${user.id} has role ${requiredRole}`);
-        
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -29,12 +36,7 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
         if (error) throw error;
 
         const roleExists = !!data;
-        console.log('Role check result:', {
-          userId: user.id,
-          role: requiredRole,
-          hasRole: roleExists
-        });
-
+        roleCache.set(cacheKey, roleExists);
         setHasRole(roleExists);
       } catch (err) {
         console.error('Error checking role:', err);
