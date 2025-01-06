@@ -145,6 +145,10 @@ export const PostsManagement = () => {
     }
   };
 
+  const handleEditPost = (post: Post) => {
+    setSelectedPost(post);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -209,7 +213,7 @@ export const PostsManagement = () => {
       <PostsTable
         posts={posts || []}
         isLoading={isLoading}
-        onEdit={(post) => setSelectedPost(post)}
+        onEdit={handleEditPost}
         onDelete={(id) => deletePostMutation.mutate(id)}
         onBulkAction={handleBulkAction}
       />

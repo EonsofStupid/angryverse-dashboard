@@ -31,7 +31,7 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
   const [title, setTitle] = useState(post?.title ?? "");
   const [content, setContent] = useState(post?.content ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
-  const [status, setStatus] = useState(post?.status ?? "draft");
+  const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(post?.status ?? "draft");
   const [metaTitle, setMetaTitle] = useState(post?.meta_title ?? "");
   const [metaDescription, setMetaDescription] = useState(post?.meta_description ?? "");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -71,6 +71,10 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
       setSelectedCategories(postCategories);
     }
   }, [postCategories]);
+
+  const handleStatusChange = (value: string) => {
+    setStatus(value as 'draft' | 'published' | 'archived');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,7 +138,7 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
           <Card className="p-4 space-y-4">
             <div className="space-y-2">
               <Label>Status</Label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select value={status} onValueChange={handleStatusChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -213,7 +217,6 @@ export const EnhancedPostForm = ({ post, onSubmit, onCancel }: EnhancedPostFormP
               </TabsContent>
 
               <TabsContent value="social" className="space-y-4">
-                {/* Social sharing preview will be implemented later */}
                 <p className="text-sm text-muted-foreground">
                   Social sharing preview coming soon
                 </p>

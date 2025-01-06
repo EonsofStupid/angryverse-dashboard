@@ -19,11 +19,15 @@ interface PostFormProps {
 export const PostForm = ({ post, onSubmit }: PostFormProps) => {
   const [title, setTitle] = useState(post?.title ?? "");
   const [content, setContent] = useState(post?.content ?? "");
-  const [status, setStatus] = useState(post?.status ?? "draft");
+  const [status, setStatus] = useState<'draft' | 'published' | 'archived'>(post?.status ?? "draft");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({ title, content, status, ...(post?.id ? { id: post.id } : {}) });
+  };
+
+  const handleStatusChange = (value: string) => {
+    setStatus(value as 'draft' | 'published' | 'archived');
   };
 
   return (
@@ -52,7 +56,7 @@ export const PostForm = ({ post, onSubmit }: PostFormProps) => {
 
       <div className="space-y-2">
         <label htmlFor="status" className="text-sm font-medium">Status</label>
-        <Select value={status} onValueChange={setStatus}>
+        <Select value={status} onValueChange={handleStatusChange}>
           <SelectTrigger>
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
