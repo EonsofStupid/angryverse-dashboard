@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useThemeStore } from "@/store/useThemeStore";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import type { Theme, ThemeConfiguration } from "@/types/theme";
+import type { Theme } from "@/types/theme";
 
 export const ThemeSettings = () => {
   const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
@@ -22,51 +22,13 @@ export const ThemeSettings = () => {
       if (error) throw error;
 
       if (defaultTheme) {
-        const defaultConfiguration: ThemeConfiguration = {
-          colors: {
-            cyber: {
-              dark: "hsl(222, 47%, 11%)",
-              pink: {
-                DEFAULT: "hsl(327, 73%, 57%)",
-                hover: "hsl(327, 73%, 52%)"
-              },
-              cyan: {
-                DEFAULT: "hsl(180, 100%, 50%)",
-                hover: "hsl(180, 100%, 45%)"
-              },
-              purple: "hsl(267, 73%, 57%)",
-              green: {
-                DEFAULT: "hsl(142, 71%, 45%)",
-                hover: "hsl(142, 71%, 40%)"
-              },
-              yellow: {
-                DEFAULT: "hsl(47, 95%, 55%)",
-                hover: "hsl(47, 95%, 50%)"
-              }
-            }
-          },
-          typography: {
-            fonts: {
-              sans: ["Inter", "sans-serif"],
-              cyber: ["Orbitron", "sans-serif"]
-            }
-          },
-          effects: {
-            glass: {
-              background: "rgba(255, 255, 255, 0.1)",
-              blur: "8px",
-              border: "1px solid rgba(255, 255, 255, 0.2)"
-            }
-          }
-        };
-
         const updatedTheme: Theme = {
           id: currentTheme?.id || 'default',
           name: 'Default Theme',
           description: 'Default application theme',
           is_default: true,
           status: 'active',
-          configuration: defaultConfiguration,
+          configuration: defaultTheme.configuration,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
