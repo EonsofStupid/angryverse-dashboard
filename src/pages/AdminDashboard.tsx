@@ -13,31 +13,33 @@ import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
+import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 const AdminDashboard = () => {
-  const { user, isAdmin, isLoading } = useAuthStore();
+  const { user, isLoading: authLoading } = useAuthStore();
+  const { hasRole: isAdmin, isLoading: roleLoading } = useRoleCheck(user, 'admin');
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAccess = async () => {
-      if (!isLoading) {
-        if (!user) {
-          toast.error("Please sign in to access the admin dashboard");
-          navigate("/");
-          return;
-        }
+      if (!authLoading && !user) {
+        console.log("No user found, redirecting to home");
+        toast.error("Please sign in to access the admin dashboard");
+        navigate("/");
+        return;
+      }
 
-        if (!isAdmin) {
-          toast.error("You don't have permission to access the admin dashboard");
-          navigate("/");
-        }
+      if (!authLoading && !roleLoading && !isAdmin) {
+        console.log("User is not admin, redirecting to home");
+        toast.error("You don't have permission to access the admin dashboard");
+        navigate("/");
       }
     };
 
     checkAccess();
-  }, [user, isAdmin, isLoading, navigate]);
+  }, [user, isAdmin, authLoading, roleLoading, navigate]);
 
-  if (isLoading) {
+  if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
