@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, LogOut, Database, User } from "lucide-react";
+import { Settings, LogOut, Database, User, Portal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -66,17 +66,30 @@ export const UserProfile = ({ onClose, isAdmin, isCheckingRole }: UserProfilePro
       </Button>
 
       {!isCheckingRole && isAdmin && (
-        <Button
-          variant="ghost"
-          className="justify-start gap-2"
-          onClick={() => {
-            navigate("/admin");
-            onClose();
-          }}
-        >
-          <Database className="h-5 w-5" />
-          Admin Dashboard
-        </Button>
+        <>
+          <Button
+            variant="ghost"
+            className="justify-start gap-2"
+            onClick={() => {
+              navigate("/portal");
+              onClose();
+            }}
+          >
+            <Portal className="h-5 w-5" />
+            Portal
+          </Button>
+          <Button
+            variant="ghost"
+            className="justify-start gap-2"
+            onClick={() => {
+              navigate("/admin");
+              onClose();
+            }}
+          >
+            <Database className="h-5 w-5" />
+            Admin Dashboard
+          </Button>
+        </>
       )}
 
       <Button

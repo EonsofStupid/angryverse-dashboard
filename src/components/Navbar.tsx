@@ -18,20 +18,18 @@ export const Navbar = () => {
               </h1>
             </Link>
             <div className="hidden md:flex space-x-6">
-              {user ? (
+              {user && isAdmin ? (
                 <>
                   <Link to="/portal">
                     <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
                       Portal
                     </Button>
                   </Link>
-                  {isAdmin && (
-                    <Link to="/admin">
-                      <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
-                        Admin
-                      </Button>
-                    </Link>
-                  )}
+                  <Link to="/admin">
+                    <Button variant="ghost" className="hover-glow text-gray-300 hover:text-white transition-colors duration-500">
+                      Admin
+                    </Button>
+                  </Link>
                 </>
               ) : (
                 <>
