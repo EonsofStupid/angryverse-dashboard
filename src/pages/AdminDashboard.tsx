@@ -11,10 +11,13 @@ import { CategoriesManagement } from "@/components/admin/content/CategoriesManag
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { PortalContent } from "@/components/portal/PortalContent";
+import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
+
+// ... keep existing code (imports and initial setup)
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
@@ -76,6 +79,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="comments">Comments</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
+              <TabsTrigger value="database">Database</TabsTrigger>
               <TabsTrigger value="themes">Themes</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
               <TabsTrigger value="portal">Portal</TabsTrigger>
@@ -103,6 +107,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="users">
               <UserManagement />
+            </TabsContent>
+
+            <TabsContent value="database">
+              <DatabaseManagement />
             </TabsContent>
             
             <TabsContent value="themes">
