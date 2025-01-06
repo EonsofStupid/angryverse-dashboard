@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, LogOut, Database, User, Portal } from "lucide-react";
+import { Settings, LogOut, Database, User, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -75,7 +75,7 @@ export const UserProfile = ({ onClose, isAdmin, isCheckingRole }: UserProfilePro
               onClose();
             }}
           >
-            <Portal className="h-5 w-5" />
+            <LayoutDashboard className="h-5 w-5" />
             Portal
           </Button>
           <Button
