@@ -9,6 +9,80 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      analytics_post_views: {
+        Row: {
+          id: string
+          post_id: string | null
+          referrer: string | null
+          source: string | null
+          viewed_at: string | null
+          viewer_id: string | null
+        }
+        Insert: {
+          id?: string
+          post_id?: string | null
+          referrer?: string | null
+          source?: string | null
+          viewed_at?: string | null
+          viewer_id?: string | null
+        }
+        Update: {
+          id?: string
+          post_id?: string | null
+          referrer?: string | null
+          source?: string | null
+          viewed_at?: string | null
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_post_views_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_post_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_search_terms: {
+        Row: {
+          created_at: string | null
+          id: string
+          results_count: number | null
+          search_term: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          results_count?: number | null
+          search_term: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          results_count?: number | null
+          search_term?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_search_terms_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -351,23 +425,76 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          display_name: string | null
           id: string
+          last_active: string | null
+          location: string | null
           updated_at: string | null
           username: string | null
+          website: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          display_name?: string | null
           id: string
+          last_active?: string | null
+          location?: string | null
           updated_at?: string | null
           username?: string | null
+          website?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          display_name?: string | null
           id?: string
+          last_active?: string | null
+          location?: string | null
           updated_at?: string | null
           username?: string | null
+          website?: string | null
         }
         Relationships: []
+      }
+      site_settings: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          setting_key: string
+          setting_value: Json | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          id?: string
+          setting_key: string
+          setting_value?: Json | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       social_connections: {
         Row: {
@@ -572,6 +699,38 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      user_activity_logs: {
+        Row: {
+          action_details: Json | null
+          action_type: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action_details?: Json | null
+          action_type: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action_details?: Json | null
+          action_type?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_activity_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
