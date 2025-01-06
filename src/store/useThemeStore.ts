@@ -38,6 +38,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
   
   fetchPageTheme: async (path) => {
     set({ isLoading: true, error: null });
+    console.log('Fetching theme for path:', path);
     
     try {
       // First try to get the page-specific theme
@@ -50,9 +51,13 @@ export const useThemeStore = create<ThemeState>((set) => ({
         .eq('page_path', path)
         .maybeSingle();
 
-      if (pageError) throw pageError;
+      if (pageError) {
+        console.error('Error fetching page theme:', pageError);
+        throw pageError;
+      }
 
       if (pageTheme?.themes) {
+        console.log('Found page-specific theme:', pageTheme.themes);
         set({ 
           currentTheme: convertDatabaseTheme(pageTheme.themes),
           isLoading: false 
@@ -60,25 +65,33 @@ export const useThemeStore = create<ThemeState>((set) => ({
         return;
       }
 
+      console.log('No page-specific theme found, fetching default theme...');
+
       // If no page-specific theme, get the default theme
       const { data: defaultTheme, error: defaultError } = await supabase
         .from('themes')
         .select('*')
         .eq('is_default', true)
+        .eq('status', 'active')
         .maybeSingle();
 
-      if (defaultError) throw defaultError;
-
-      if (!defaultTheme) {
-        throw new Error('No default theme found');
+      if (defaultError) {
+        console.error('Error fetching default theme:', defaultError);
+        throw defaultError;
       }
 
+      if (!defaultTheme) {
+        console.error('No active default theme found in database');
+        throw new Error('No active default theme found');
+      }
+
+      console.log('Found default theme:', defaultTheme);
       set({ 
         currentTheme: convertDatabaseTheme(defaultTheme),
         isLoading: false 
       });
     } catch (error) {
-      console.error('Error fetching theme:', error);
+      console.error('Error in fetchPageTheme:', error);
       set({ 
         error: error instanceof Error ? error : new Error('Unknown error occurred'),
         isLoading: false 

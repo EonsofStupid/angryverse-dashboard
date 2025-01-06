@@ -5,6 +5,7 @@ import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { useTheme } from "@/hooks/useTheme";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { currentTheme, fetchPageTheme, isLoading, error } = useTheme();
@@ -24,15 +25,26 @@ const Index = () => {
       }
     };
 
-    if (!currentTheme && !isLoading) {
-      loadTheme();
-    }
-  }, [currentTheme, fetchPageTheme, isLoading, toast]);
+    loadTheme();
+  }, [fetchPageTheme, toast]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
-        <div className="animate-pulse text-xl font-cyber">Loading theme...</div>
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="text-xl font-cyber">Loading theme...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <div className="text-xl text-destructive">
+          Error loading theme: {error.message}
+        </div>
       </div>
     );
   }
