@@ -7,6 +7,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import type { Theme, ThemeConfiguration } from "@/types/theme";
 
+const isValidThemeConfiguration = (config: unknown): config is ThemeConfiguration => {
+  if (typeof config !== 'object' || !config) return false;
+  
+  const conf = config as any;
+  return (
+    conf.colors?.cyber &&
+    conf.typography?.fonts &&
+    conf.effects?.glass &&
+    typeof conf.effects.glass.background === 'string' &&
+    typeof conf.effects.glass.blur === 'string' &&
+    typeof conf.effects.glass.border === 'string'
+  );
+};
+
 export const ThemeSettings = () => {
   const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
   const { toast } = useToast();
@@ -22,13 +36,17 @@ export const ThemeSettings = () => {
       if (error) throw error;
 
       if (defaultTheme) {
+        if (!isValidThemeConfiguration(defaultTheme.configuration)) {
+          throw new Error('Invalid theme configuration structure');
+        }
+
         const updatedTheme: Theme = {
           id: currentTheme?.id || 'default',
           name: 'Default Theme',
           description: 'Default application theme',
           is_default: true,
           status: 'active',
-          configuration: defaultTheme.configuration as ThemeConfiguration,
+          configuration: defaultTheme.configuration,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
