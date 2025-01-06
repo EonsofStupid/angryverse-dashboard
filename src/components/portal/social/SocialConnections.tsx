@@ -7,16 +7,7 @@ import { Facebook, Instagram, Twitter, Linkedin, Youtube, Video } from "lucide-r
 import { SocialConnection } from "@/types/social";
 import { useState } from "react";
 import { ConnectionWizard } from "./ConnectionWizard";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DisconnectConfirmDialog } from "./DisconnectConfirmDialog";
 
 export const SocialConnections = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
@@ -210,23 +201,11 @@ export const SocialConnections = () => {
         onClose={() => setSelectedPlatform(null)}
       />
 
-      <AlertDialog open={!!connectionToDelete} onOpenChange={() => setConnectionToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Disconnect Account</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to disconnect this account? This will remove all associated posts and data.
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Disconnect
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DisconnectConfirmDialog
+        connection={connectionToDelete}
+        onClose={() => setConnectionToDelete(null)}
+        onConfirm={confirmDelete}
+      />
     </>
   );
 };
