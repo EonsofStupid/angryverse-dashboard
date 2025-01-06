@@ -3,9 +3,11 @@ import { Button } from "./ui/button";
 import { UserMenu } from "./UserMenu";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Link } from "react-router-dom";
+import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 export const Navbar = () => {
-  const { isAdmin, user } = useAuthStore();
+  const { user } = useAuthStore();
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
   return (
     <>
