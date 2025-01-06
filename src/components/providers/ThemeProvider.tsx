@@ -11,7 +11,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     fetchPageTheme, 
     setCurrentTheme,
+    theme,
+    setTheme,
   } = useThemeStore();
+  
   const location = useLocation();
   const { toast } = useToast();
   const { applyThemeVariables } = useThemeVariables();
@@ -27,14 +30,40 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
     
-    if (mounted) {
+    if (mounted && currentTheme) {
       applyTheme();
     }
 
     return () => {
       mounted = false;
     };
-  }, [applyTheme]);
+  }, [applyTheme, currentTheme]);
+
+  // Initialize with a default theme if none is present
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeTheme = async () => {
+      if (!currentTheme && mounted) {
+        try {
+          await fetchPageTheme('/');
+        } catch (error) {
+          console.error('Failed to initialize theme:', error);
+          toast({
+            title: "Theme Error",
+            description: "Failed to load theme. Using default theme.",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    initializeTheme();
+
+    return () => {
+      mounted = false;
+    };
+  }, [currentTheme, fetchPageTheme, toast]);
 
   const value = {
     currentTheme,
@@ -42,6 +71,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     setCurrentTheme,
     fetchPageTheme,
+    theme,
+    setTheme,
   };
 
   return (
