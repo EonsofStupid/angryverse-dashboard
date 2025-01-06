@@ -17,6 +17,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<AdminDashboard />}>
               <Route path="posts" element={<PostsManagement />} />
+              <Route path="portal" element={<PortalContent />} />
             </Route>
           </Routes>
         </Router>
