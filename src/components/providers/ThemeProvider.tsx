@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
-import { ThemeContext, useThemeVariables } from '@/hooks/useTheme';
+import { ThemeContext, createThemeVariables } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
@@ -17,27 +17,26 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   
   const location = useLocation();
   const { toast } = useToast();
-  const { applyThemeVariables } = useThemeVariables();
 
   // Memoize theme application to prevent unnecessary re-renders
-  const applyTheme = useCallback(() => {
+  const applyThemeVariables = useCallback(() => {
     if (currentTheme) {
-      applyThemeVariables();
+      createThemeVariables(currentTheme);
     }
-  }, [currentTheme, applyThemeVariables]);
+  }, [currentTheme]);
 
   // Apply theme variables when the current theme changes
   useEffect(() => {
     let mounted = true;
     
     if (mounted && currentTheme) {
-      applyTheme();
+      applyThemeVariables();
     }
 
     return () => {
       mounted = false;
     };
-  }, [applyTheme, currentTheme]);
+  }, [applyThemeVariables, currentTheme]);
 
   // Initialize with a default theme if none is present
   useEffect(() => {
@@ -73,6 +72,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     fetchPageTheme,
     theme,
     setTheme,
+    applyThemeVariables,
   };
 
   return (

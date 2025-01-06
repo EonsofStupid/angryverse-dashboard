@@ -10,6 +10,7 @@ export interface ThemeContextType {
   fetchPageTheme: (path: string) => Promise<void>;
   theme: string;
   setTheme: (theme: string) => void;
+  applyThemeVariables: () => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -22,38 +23,32 @@ export const useTheme = () => {
   return context;
 };
 
-export const useThemeVariables = () => {
-  const { currentTheme } = useTheme();
+export const createThemeVariables = (currentTheme: Theme | null) => {
+  if (!currentTheme?.configuration) {
+    console.warn('No theme configuration available');
+    return;
+  }
 
-  const applyThemeVariables = () => {
-    if (!currentTheme?.configuration) {
-      console.warn('No theme configuration available');
-      return;
+  const root = document.documentElement;
+  const { colors, effects } = currentTheme.configuration;
+
+  // Apply color variables
+  Object.entries(colors.cyber).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      root.style.setProperty(`--cyber-${key}`, value);
+    } else if (typeof value === 'object' && value !== null) {
+      Object.entries(value).forEach(([subKey, subValue]) => {
+        if (typeof subValue === 'string') {
+          root.style.setProperty(`--cyber-${key}-${subKey}`, subValue);
+        }
+      });
     }
+  });
 
-    const root = document.documentElement;
-    const { colors, effects } = currentTheme.configuration;
-
-    // Apply color variables
-    Object.entries(colors.cyber).forEach(([key, value]) => {
-      if (typeof value === 'string') {
-        root.style.setProperty(`--cyber-${key}`, value);
-      } else if (typeof value === 'object' && value !== null) {
-        Object.entries(value).forEach(([subKey, subValue]) => {
-          if (typeof subValue === 'string') {
-            root.style.setProperty(`--cyber-${key}-${subKey}`, subValue);
-          }
-        });
-      }
-    });
-
-    // Apply glass effect variables
-    Object.entries(effects.glass).forEach(([key, value]) => {
-      if (typeof value === 'string') {
-        root.style.setProperty(`--glass-${key}`, value);
-      }
-    });
-  };
-
-  return { applyThemeVariables };
+  // Apply glass effect variables
+  Object.entries(effects.glass).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      root.style.setProperty(`--glass-${key}`, value);
+    }
+  });
 };
