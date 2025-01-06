@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PostForm } from "./posts/PostForm";
+import { EnhancedPostForm } from "./posts/EnhancedPostForm";
 import { PostsTable } from "./posts/PostsTable";
 import { usePostsQuery } from "./posts/usePostsQuery";
 
@@ -41,7 +41,11 @@ export const PostsManagement = () => {
         .insert([{
           title: newPost.title,
           content: newPost.content,
+          excerpt: newPost.excerpt,
           status: newPost.status,
+          meta_title: newPost.meta_title,
+          meta_description: newPost.meta_description,
+          featured_image: newPost.featured_image,
           author_id: (await supabase.auth.getUser()).data.user?.id,
         }])
         .select();
@@ -73,7 +77,11 @@ export const PostsManagement = () => {
         .update({
           title: post.title,
           content: post.content,
+          excerpt: post.excerpt,
           status: post.status,
+          meta_title: post.meta_title,
+          meta_description: post.meta_description,
+          featured_image: post.featured_image,
           updated_at: new Date().toISOString(),
         })
         .eq('id', post.id)
@@ -124,6 +132,19 @@ export const PostsManagement = () => {
     },
   });
 
+  const handleBulkAction = async (action: 'publish' | 'archive' | 'delete', ids: string[]) => {
+    if (action === 'delete') {
+      ids.forEach(id => deletePostMutation.mutate(id));
+    } else {
+      ids.forEach(id => {
+        updatePostMutation.mutate({
+          id,
+          status: action === 'publish' ? 'published' : 'archived'
+        });
+      });
+    }
+  };
+
   // Add this new function to handle post editing
   const handleEditPost = (post: Post) => {
     // Ensure all required fields are present before setting the state
@@ -171,24 +192,28 @@ export const PostsManagement = () => {
               New Post
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[725px]">
+          <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>Create New Post</DialogTitle>
             </DialogHeader>
-            <PostForm onSubmit={(data) => createPostMutation.mutate(data)} />
+            <EnhancedPostForm
+              onSubmit={(data) => createPostMutation.mutate(data)}
+              onCancel={() => setIsCreateDialogOpen(false)}
+            />
           </DialogContent>
         </Dialog>
       </div>
 
       <Dialog open={selectedPost !== null} onOpenChange={(open) => !open && setSelectedPost(null)}>
-        <DialogContent className="sm:max-w-[725px]">
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>Edit Post</DialogTitle>
           </DialogHeader>
           {selectedPost && (
-            <PostForm
+            <EnhancedPostForm
               post={selectedPost}
               onSubmit={(data) => updatePostMutation.mutate(data)}
+              onCancel={() => setSelectedPost(null)}
             />
           )}
         </DialogContent>
@@ -199,6 +224,7 @@ export const PostsManagement = () => {
         isLoading={isLoading}
         onEdit={handleEditPost}
         onDelete={(id) => deletePostMutation.mutate(id)}
+        onBulkAction={handleBulkAction}
       />
     </div>
   );
