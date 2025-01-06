@@ -3,17 +3,45 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useThemeStore } from "@/store/useThemeStore";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export const ThemeSettings = () => {
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
   const { toast } = useToast();
 
-  const handleSave = () => {
-    toast({
-      title: "Theme updated",
-      description: "Your theme settings have been saved successfully.",
-    });
+  const restoreDefaultTheme = async () => {
+    try {
+      const { data: defaultTheme, error } = await supabase
+        .from('themes')
+        .select('*')
+        .eq('is_default', true)
+        .single();
+
+      if (error) throw error;
+
+      if (defaultTheme) {
+        setCurrentTheme(defaultTheme);
+        toast({
+          title: "Default theme restored",
+          description: "Your theme has been reset to the default configuration.",
+        });
+      }
+    } catch (error) {
+      console.error('Error restoring default theme:', error);
+      toast({
+        title: "Error",
+        description: "Failed to restore default theme.",
+        variant: "destructive",
+      });
+    }
   };
+
+  useEffect(() => {
+    if (!currentTheme) {
+      restoreDefaultTheme();
+    }
+  }, []);
 
   return (
     <Card className="glass">
@@ -51,7 +79,9 @@ export const ThemeSettings = () => {
           </div>
         </div>
         
-        <Button onClick={handleSave} className="w-full">Save Changes</Button>
+        <Button onClick={restoreDefaultTheme} className="w-full hover-glow">
+          Restore Default Theme
+        </Button>
       </CardContent>
     </Card>
   );
