@@ -182,36 +182,45 @@ export type Database = {
       media: {
         Row: {
           alt_text: string | null
+          category: string | null
           created_at: string | null
           description: string | null
+          dimensions: Json | null
           filename: string
           id: string
           metadata: Json | null
           size: number
+          tags: string[] | null
           type: string
           uploaded_by: string | null
           url: string
         }
         Insert: {
           alt_text?: string | null
+          category?: string | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
           filename: string
           id?: string
           metadata?: Json | null
           size: number
+          tags?: string[] | null
           type: string
           uploaded_by?: string | null
           url: string
         }
         Update: {
           alt_text?: string | null
+          category?: string | null
           created_at?: string | null
           description?: string | null
+          dimensions?: Json | null
           filename?: string
           id?: string
           metadata?: Json | null
           size?: number
+          tags?: string[] | null
           type?: string
           uploaded_by?: string | null
           url?: string
