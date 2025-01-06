@@ -9,9 +9,11 @@ interface ThemeState {
   pageThemes: Map<string, Theme>;
   isLoading: boolean;
   error: string | null;
+  theme: 'light' | 'dark' | 'system';
   fetchTheme: (themeId: string) => Promise<void>;
   fetchPageTheme: (pagePath: string) => Promise<void>;
   setCurrentTheme: (theme: Theme) => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
   applyTheme: (theme: Theme) => void;
 }
 
@@ -22,20 +24,22 @@ export const useThemeStore = create<ThemeState>()(
       pageThemes: new Map(),
       isLoading: false,
       error: null,
+      theme: 'system',
 
       fetchTheme: async (themeId: string) => {
         try {
           set({ isLoading: true, error: null });
-          const { data: theme, error } = await supabase
+          const { data: themeData, error } = await supabase
             .from('themes')
             .select('*')
             .eq('id', themeId)
             .single();
 
           if (error) throw error;
-          if (theme) {
-            set({ currentTheme: theme as Theme });
-            get().applyTheme(theme as Theme);
+          if (themeData) {
+            const theme = themeData as unknown as Theme;
+            set({ currentTheme: theme });
+            get().applyTheme(theme);
           }
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch theme';
@@ -62,7 +66,7 @@ export const useThemeStore = create<ThemeState>()(
           if (pageThemeError) throw pageThemeError;
           
           if (pageTheme?.themes) {
-            const theme = pageTheme.themes as Theme;
+            const theme = pageTheme.themes as unknown as Theme;
             get().pageThemes.set(pagePath, theme);
             set({ currentTheme: theme });
             get().applyTheme(theme);
@@ -76,8 +80,9 @@ export const useThemeStore = create<ThemeState>()(
 
             if (defaultThemeError) throw defaultThemeError;
             if (defaultTheme) {
-              set({ currentTheme: defaultTheme as Theme });
-              get().applyTheme(defaultTheme as Theme);
+              const theme = defaultTheme as unknown as Theme;
+              set({ currentTheme: theme });
+              get().applyTheme(theme);
             }
           }
         } catch (error) {
@@ -96,6 +101,10 @@ export const useThemeStore = create<ThemeState>()(
       setCurrentTheme: (theme: Theme) => {
         set({ currentTheme: theme });
         get().applyTheme(theme);
+      },
+
+      setTheme: (theme: 'light' | 'dark' | 'system') => {
+        set({ theme });
       },
 
       applyTheme: (theme: Theme) => {
@@ -130,6 +139,7 @@ export const useThemeStore = create<ThemeState>()(
       partialize: (state) => ({
         currentTheme: state.currentTheme,
         pageThemes: Array.from(state.pageThemes.entries()),
+        theme: state.theme,
       }),
     }
   )
