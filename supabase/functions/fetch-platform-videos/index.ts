@@ -8,32 +8,41 @@ const corsHeaders = {
 
 async function fetchYouTubeVideos(accessToken: string) {
   try {
-    console.log('Attempting to fetch YouTube videos...');
+    console.log('Starting YouTube video fetch process...');
     
-    // Try to fetch user's channel info first to validate token
+    if (!accessToken) {
+      throw new Error('No access token provided');
+    }
+
+    console.log('Access token present, attempting to fetch channel data...');
+    
+    // First try to fetch user's channel info to validate token
     const channelResponse = await fetch(
       'https://youtube.googleapis.com/youtube/v3/channels?part=snippet&mine=true',
       {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${accessToken.trim()}`,
           'Accept': 'application/json',
         },
       }
     );
 
     if (!channelResponse.ok) {
-      const errorText = await channelResponse.text();
-      console.error('Channel validation failed:', errorText);
-      throw new Error(`YouTube API authentication failed: ${errorText}`);
+      const errorData = await channelResponse.text();
+      console.error('Channel validation failed:', errorData);
+      throw new Error(`YouTube API authentication failed: ${errorData}`);
     }
 
-    console.log('Token validated successfully, fetching videos...');
+    const channelData = await channelResponse.json();
+    console.log('Channel validation successful:', channelData?.items?.[0]?.snippet?.title);
     
+    // Now fetch the videos
+    console.log('Fetching videos...');
     const response = await fetch(
       'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true',
       {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${accessToken.trim()}`,
           'Accept': 'application/json',
         },
       }
@@ -59,7 +68,7 @@ async function fetchYouTubeVideos(accessToken: string) {
       `https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}`,
       {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${accessToken.trim()}`,
           'Accept': 'application/json',
         },
       }
