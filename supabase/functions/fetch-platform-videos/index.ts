@@ -9,9 +9,9 @@ const corsHeaders = {
 // Split out YouTube specific logic
 async function fetchYouTubeVideos(accessToken: string) {
   try {
-    console.log('Fetching YouTube videos with access token');
+    console.log('Fetching YouTube videos with access token:', accessToken.substring(0, 10) + '...');
     const response = await fetch(
-      `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true`,
+      'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&mine=true',
       {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -29,6 +29,28 @@ async function fetchYouTubeVideos(accessToken: string) {
     const data = await response.json();
     console.log('Successfully fetched YouTube videos:', data.items?.length || 0);
     
+    // Get video statistics in a separate call
+    const videoIds = data.items.map((item: any) => item.id.videoId).join(',');
+    const statsResponse = await fetch(
+      `https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Accept': 'application/json',
+        },
+      }
+    );
+
+    if (!statsResponse.ok) {
+      console.error('Failed to fetch video statistics');
+      throw new Error('Failed to fetch video statistics');
+    }
+
+    const statsData = await statsResponse.json();
+    const statsMap = new Map(
+      statsData.items.map((item: any) => [item.id, item.statistics])
+    );
+
     return data.items.map((item: any) => ({
       id: item.id.videoId,
       title: item.snippet.title,
@@ -36,9 +58,9 @@ async function fetchYouTubeVideos(accessToken: string) {
       thumbnailUrl: item.snippet.thumbnails.high.url,
       publishedAt: item.snippet.publishedAt,
       metrics: {
-        views: 0,
-        likes: 0,
-        comments: 0
+        views: parseInt(statsMap.get(item.id.videoId)?.viewCount || '0'),
+        likes: parseInt(statsMap.get(item.id.videoId)?.likeCount || '0'),
+        comments: parseInt(statsMap.get(item.id.videoId)?.commentCount || '0')
       },
       platformId: item.id.videoId,
       url: `https://youtube.com/watch?v=${item.id.videoId}`
@@ -87,49 +109,26 @@ serve(async (req) => {
     let videos = [];
     console.log(`Fetching videos for platform: ${platform}`);
     
-    try {
-      switch (platform) {
-        case 'youtube':
-          videos = await fetchYouTubeVideos(connection.access_token);
-          break;
+    switch (platform) {
+      case 'youtube':
+        videos = await fetchYouTubeVideos(connection.access_token);
+        break;
 
-        case 'twitch':
-          if (!connection.platform_user_id) {
-            throw new Error('No Twitch user ID available');
-          }
-          videos = await fetchTwitchVideos(connection.access_token, connection.platform_user_id);
-          break;
-
-        case 'facebook_video':
-          if (!connection.platform_user_id) {
-            throw new Error('No Facebook page ID available');
-          }
-          videos = await fetchFacebookVideos(connection.access_token, connection.platform_user_id);
-          break;
-
-        case 'tiktok':
-          videos = await fetchTikTokVideos(connection.access_token);
-          break;
-
-        default:
-          throw new Error(`Unsupported platform: ${platform}`);
-      }
-
-      console.log(`Successfully fetched ${videos.length} videos for ${platform}`);
-      
-      return new Response(
-        JSON.stringify({ videos }),
-        { 
-          headers: { 
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    } catch (error) {
-      console.error(`Error fetching ${platform} videos:`, error);
-      throw error;
+      default:
+        throw new Error(`Unsupported platform: ${platform}`);
     }
+
+    console.log(`Successfully fetched ${videos.length} videos for ${platform}`);
+    
+    return new Response(
+      JSON.stringify({ videos }),
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   } catch (error) {
     console.error('Error in edge function:', error);
     return new Response(
@@ -138,7 +137,7 @@ serve(async (req) => {
         details: error.stack
       }),
       { 
-        status: 400,
+        status: 500,
         headers: { 
           ...corsHeaders,
           'Content-Type': 'application/json'
