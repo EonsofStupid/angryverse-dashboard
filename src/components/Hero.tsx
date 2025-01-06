@@ -6,8 +6,8 @@ import { HeroContent } from "./hero/HeroContent";
 export const Hero = () => {
   return (
     <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-cyber-pink/5 via-cyber-cyan/5 to-cyber-purple/5 animate-pulse" />
+      {/* Enhanced gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyber-pink/10 via-cyber-cyan/5 to-cyber-purple/10 animate-pulse" />
       
       <ScrollingCode />
       <DataStream />
@@ -42,8 +42,8 @@ export const Hero = () => {
           }
 
           @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1.2); }
-            50% { transform: translateY(-20px) translateX(-10px) scale(1.2); }
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+            50% { transform: translateY(-20px) translateX(-10px) scale(1.05); }
           }
         `}
       </style>
