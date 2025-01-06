@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AdminLayout } from "@/components/admin/AdminLayout";
@@ -23,7 +23,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   
   // Extract the current section from the path
-  const currentPath = location.pathname.split('/').pop() || '';
+  const currentPath = location.pathname.split('/').pop() || 'dashboard';
   const isPortal = location.pathname === '/portal';
 
   console.log('AdminDashboard render:', {
@@ -101,12 +101,13 @@ const AdminDashboard = () => {
       <Navbar />
       <AdminLayout>
         <Tabs 
-          defaultValue={currentPath || 'dashboard'} 
-          value={currentPath || 'dashboard'}
+          defaultValue={currentPath} 
+          value={currentPath}
           className="w-full"
           onValueChange={(value) => {
-            const newPath = value ? `/admin/${value}` : '/admin';
-            console.log('Tab change, navigating to:', newPath);
+            console.log('Tab change:', value);
+            const newPath = value === 'dashboard' ? '/admin' : `/admin/${value}`;
+            console.log('Navigating to:', newPath);
             navigate(newPath);
           }}
         >
