@@ -25,16 +25,6 @@ const AdminDashboard = () => {
   const currentPath = location.pathname.split('/').pop() || 'dashboard';
   const isPortal = location.pathname === '/portal';
 
-  console.log('AdminDashboard render:', {
-    userId: user?.id,
-    isAdmin,
-    authLoading,
-    roleLoading,
-    currentPath,
-    isPortal,
-    fullPath: location.pathname
-  });
-
   useEffect(() => {
     if (!authLoading && !roleLoading) {
       if (!user) {
