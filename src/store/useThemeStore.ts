@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Theme, PageTheme } from '@/types/theme';
+import { Theme, ThemeConfiguration } from '@/types/theme';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
@@ -16,6 +16,22 @@ interface ThemeState {
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   applyTheme: (theme: Theme) => void;
 }
+
+// Helper function to convert database theme to Theme type
+const convertDatabaseTheme = (dbTheme: any): Theme => {
+  const configuration = dbTheme.configuration as ThemeConfiguration;
+  return {
+    id: dbTheme.id,
+    name: dbTheme.name,
+    description: dbTheme.description,
+    is_default: dbTheme.is_default,
+    status: dbTheme.status,
+    configuration,
+    created_by: dbTheme.created_by,
+    created_at: dbTheme.created_at,
+    updated_at: dbTheme.updated_at,
+  };
+};
 
 export const useThemeStore = create<ThemeState>()(
   persist(
@@ -37,7 +53,7 @@ export const useThemeStore = create<ThemeState>()(
 
           if (error) throw error;
           if (themeData) {
-            const theme = themeData as Theme;
+            const theme = convertDatabaseTheme(themeData);
             set({ currentTheme: theme });
             get().applyTheme(theme);
           }
@@ -73,7 +89,7 @@ export const useThemeStore = create<ThemeState>()(
           if (pageThemeError) throw pageThemeError;
 
           if (pageThemeData?.theme) {
-            const theme = pageThemeData.theme as Theme;
+            const theme = convertDatabaseTheme(pageThemeData.theme);
             get().pageThemes.set(pagePath, theme);
             set({ currentTheme: theme });
             get().applyTheme(theme);
@@ -90,7 +106,7 @@ export const useThemeStore = create<ThemeState>()(
           if (defaultThemeError) throw defaultThemeError;
 
           if (defaultTheme) {
-            const theme = defaultTheme as Theme;
+            const theme = convertDatabaseTheme(defaultTheme);
             set({ currentTheme: theme });
             get().applyTheme(theme);
           } else {
