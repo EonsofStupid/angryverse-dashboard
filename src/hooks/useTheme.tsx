@@ -7,6 +7,7 @@ interface ThemeContextValue {
   isLoading: boolean;
   error: string | null;
   setCurrentTheme: (theme: Theme) => void;
+  fetchPageTheme: (pagePath: string) => Promise<void>;
 }
 
 export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
