@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useEffect } from "react";
 import { AuthError } from "@supabase/supabase-js";
 
 interface AuthFormProps {
@@ -14,6 +14,8 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session);
+      
       if (event === 'SIGNED_OUT') {
         setError(null);
       }
@@ -26,19 +28,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
 
   const handleError = (error: AuthError) => {
     console.error("Auth error:", error);
-    switch (error.message) {
-      case 'Invalid login credentials':
-        setError('Invalid email or password. Please try again.');
-        break;
-      case 'User not found':
-        setError('No account found with these credentials.');
-        break;
-      case 'Email not confirmed':
-        setError('Please verify your email address before signing in.');
-        break;
-      default:
-        setError(error.message);
-    }
+    setError(error.message);
   };
 
   return (
@@ -67,8 +57,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
           }
         }}
         theme={theme === "dark" ? "dark" : "light"}
-        providers={["google", "github"]}
-        magicLink={true}
+        providers={[]}
         redirectTo={window.location.origin}
         localization={{
           variables: {
@@ -77,14 +66,12 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
               password_label: "Password",
               button_label: "Sign In",
               loading_button_label: "Signing in...",
-              social_provider_text: "Continue with",
             },
             sign_up: {
               email_label: "Email",
               password_label: "Password",
               button_label: "Sign Up",
               loading_button_label: "Signing up...",
-              social_provider_text: "Sign up with",
             },
           },
         }}
