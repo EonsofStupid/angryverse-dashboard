@@ -58,11 +58,17 @@ export const UserList = () => {
       const transformedUsers = profiles.map((profile) => {
         const userRole = userRoles.find(r => r.user_id === profile.id);
         
+        // Ensure status is a valid UserStatus
+        let status: UserStatus = 'active'; // Default value
+        if (userRole?.status === 'suspended' || userRole?.status === 'banned') {
+          status = userRole.status;
+        }
+        
         return {
           id: profile.id,
           email: '', // We can't get emails directly, but that's okay for the list view
-          role: userRole?.role || 'user',
-          status: userRole?.status || 'active',
+          role: (userRole?.role || 'user') as UserRole,
+          status,
           profile: {
             id: profile.id,
             username: profile.username,
