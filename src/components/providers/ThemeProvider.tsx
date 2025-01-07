@@ -1,9 +1,10 @@
 import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
-import { ThemeContext, createThemeVariables } from '@/hooks/useTheme';
+import { ThemeContext } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -19,25 +20,78 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const { toast } = useToast();
 
-  // Memoize theme application to prevent unnecessary re-renders
+  // Apply theme variables based on configuration
   const applyThemeVariables = useCallback(() => {
-    if (currentTheme) {
-      createThemeVariables(currentTheme);
+    if (!currentTheme?.configuration) return;
+
+    const root = document.documentElement;
+    const { colors, effects } = currentTheme.configuration;
+
+    // Apply glass effect variables
+    if (effects?.glass) {
+      const { blur_levels, opacity_levels, border_styles } = effects.glass;
+      
+      // Set glass effect CSS variables
+      root.style.setProperty('--glass-blur', blur_levels?.[2] || 'md'); // Default to medium blur
+      root.style.setProperty('--glass-opacity', String(opacity_levels?.[2] || 0.3)); // Default to medium opacity
+      
+      if (border_styles?.light) {
+        root.style.setProperty('--glass-border', border_styles.light);
+      }
+    }
+
+    // Apply color variables
+    if (colors?.cyber) {
+      Object.entries(colors.cyber).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          root.style.setProperty(`--cyber-${key}`, value);
+        } else if (typeof value === 'object' && value !== null) {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            if (typeof subValue === 'string') {
+              root.style.setProperty(
+                `--cyber-${key}-${subKey.toLowerCase()}`,
+                subValue
+              );
+            }
+          });
+        }
+      });
     }
   }, [currentTheme]);
-
-  // Apply theme variables when the current theme changes
-  useEffect(() => {
-    if (currentTheme) {
-      applyThemeVariables();
-    }
-  }, [applyThemeVariables, currentTheme]);
 
   // Initialize theme on mount and route changes
   useEffect(() => {
     const initializeTheme = async () => {
       try {
-        await fetchPageTheme(location.pathname);
+        // First try to get page-specific theme
+        const { data: pageTheme, error: pageError } = await supabase
+          .from('page_themes')
+          .select(`
+            theme_id,
+            themes (*)
+          `)
+          .eq('page_path', location.pathname)
+          .maybeSingle();
+
+        if (pageError) throw pageError;
+
+        // If no page theme, get default theme
+        if (!pageTheme) {
+          const { data: defaultTheme, error: defaultError } = await supabase
+            .from('themes')
+            .select('*')
+            .eq('is_default', true)
+            .maybeSingle();
+
+          if (defaultError) throw defaultError;
+          if (defaultTheme) {
+            setCurrentTheme(defaultTheme);
+          }
+        } else if (pageTheme.themes) {
+          setCurrentTheme(pageTheme.themes);
+        }
+
+        applyThemeVariables();
       } catch (error) {
         console.error('Failed to initialize theme:', error);
         toast({
@@ -49,7 +103,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeTheme();
-  }, [location.pathname, fetchPageTheme, toast]);
+  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables]);
 
   // Show loading state
   if (isLoading) {

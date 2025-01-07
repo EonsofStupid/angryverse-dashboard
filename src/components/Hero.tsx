@@ -2,12 +2,15 @@ import { ScrollingCode } from "./hero/ScrollingCode";
 import { DataStream } from "./hero/DataStream";
 import { GlowingLines } from "./hero/GlowingLines";
 import { HeroContent } from "./hero/HeroContent";
+import { useTheme } from "@/hooks/useTheme";
 
 export const Hero = () => {
+  const { currentTheme } = useTheme();
+
   return (
     <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
-      {/* Enhanced gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 animate-pulse" />
+      {/* Enhanced gradient background using theme colors */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--cyber-primary-default)]/10 via-[var(--cyber-secondary-default)]/5 to-[var(--cyber-accent-default)]/10 animate-pulse" />
       
       <ScrollingCode />
       <DataStream />
@@ -37,8 +40,8 @@ export const Hero = () => {
           }
 
           @keyframes pulse {
-            0%, 100% { opacity: 0.1; }
-            50% { opacity: 0.3; }
+            0%, 100% { opacity: var(--glass-opacity); }
+            50% { opacity: calc(var(--glass-opacity) + 0.2); }
           }
 
           @keyframes float {
