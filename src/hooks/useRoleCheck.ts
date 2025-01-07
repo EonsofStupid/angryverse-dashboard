@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuthStore } from '@/store/useAuthStore';
-import { UserRole } from '@/types/user';
 
-export const useRoleCheck = (user: User | null, requiredRole: UserRole) => {
-  const { role: currentRole } = useAuthStore();
+export const useRoleCheck = (user: User | null, requiredRole: string) => {
   const [hasRole, setHasRole] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,14 +15,6 @@ export const useRoleCheck = (user: User | null, requiredRole: UserRole) => {
       }
 
       try {
-        // First check the store
-        if (currentRole) {
-          setHasRole(currentRole === requiredRole);
-          setIsLoading(false);
-          return;
-        }
-
-        // Fallback to database check
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -43,7 +32,7 @@ export const useRoleCheck = (user: User | null, requiredRole: UserRole) => {
     };
 
     checkRole();
-  }, [user, requiredRole, currentRole]);
+  }, [user, requiredRole]);
 
   return { hasRole, isLoading };
 };
