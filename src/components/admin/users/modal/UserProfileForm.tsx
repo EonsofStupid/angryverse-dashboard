@@ -17,7 +17,7 @@ export const UserProfileForm = ({ user, formData, setFormData }: UserProfileForm
         tooltip="Public username for the user"
         value={formData.username}
         onChange={(value) => setFormData({ ...formData, username: value })}
-        className="glass hover-lift"
+        className="bg-background/50 border-primary/20"
       />
 
       <UserEditField
@@ -26,7 +26,7 @@ export const UserProfileForm = ({ user, formData, setFormData }: UserProfileForm
         tooltip="Full name shown on profile"
         value={formData.display_name}
         onChange={(value) => setFormData({ ...formData, display_name: value })}
-        className="glass hover-lift"
+        className="bg-background/50 border-primary/20"
       />
 
       <UserEditField
@@ -36,7 +36,7 @@ export const UserProfileForm = ({ user, formData, setFormData }: UserProfileForm
         value={formData.email}
         onChange={(value) => setFormData({ ...formData, email: value })}
         type="email"
-        className="glass hover-lift"
+        className="bg-background/50 border-primary/20"
       />
     </div>
   );

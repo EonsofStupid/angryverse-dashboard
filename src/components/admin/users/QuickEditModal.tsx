@@ -25,6 +25,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
     email: '',
   });
 
+  // Set form data when user or modal state changes
   useEffect(() => {
     if (user && isOpen) {
       setFormData({
@@ -37,7 +38,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
 
   const updateUserMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      if (!user) return;
+      if (!user) throw new Error("No user selected");
 
       const updates: Record<string, any> = {};
       const emailUpdates: Record<string, any> = {};
@@ -102,7 +103,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] neo-blur">
+      <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-sm border-primary/20">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold flex items-center gap-2">
             <UserIcon className="w-5 h-5 text-primary" />
@@ -111,7 +112,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="bg-muted/10 rounded-lg p-4 space-y-2 neo-blur">
+          <div className="bg-muted/10 rounded-lg p-4 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">User Status</span>
               <UserStatusBadge status={user.status} />
@@ -135,7 +136,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
                   variant="outline"
                   onClick={onClose}
                   disabled={updateUserMutation.isPending}
-                  className="hover-lift active-scale neo-blur"
+                  className="hover:bg-background/80"
                 >
                   <X className="w-4 h-4 mr-1" />
                   Cancel
@@ -143,7 +144,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
                 <Button 
                   type="submit"
                   disabled={updateUserMutation.isPending}
-                  className="hover-lift active-scale success-gradient"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   {updateUserMutation.isPending ? (
                     <span className="animate-pulse">Saving...</span>
