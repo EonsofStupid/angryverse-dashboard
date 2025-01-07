@@ -46,7 +46,7 @@ export const UserList = () => {
           website,
           last_active,
           updated_at
-        `);
+        `) as { data: Profile[] | null, error: any };
 
       if (profilesError) {
         console.error('Error fetching profiles:', profilesError);
@@ -64,7 +64,7 @@ export const UserList = () => {
       }
 
       // Combine the data
-      const combinedUsers: User[] = (profiles || []).map(profile => {
+      const combinedUsers = (profiles || []).map((profile: Profile) => {
         const authUser = authUsers.find(u => u.id === profile.id);
         const userRole = userRoles?.find(r => r.user_id === profile.id);
         
