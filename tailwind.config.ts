@@ -19,6 +19,9 @@ export default {
       },
     },
     extend: {
+      backgroundImage: {
+        'glass-gradient': 'linear-gradient(to right bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1))',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
