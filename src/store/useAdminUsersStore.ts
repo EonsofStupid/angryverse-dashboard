@@ -30,13 +30,27 @@ export const useAdminUsersStore = create<AdminUsersState>((set, get) => ({
   fetchUsers: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { data: users, error } = await supabase
+      const { data: adminUsers, error } = await supabase
         .from('admin_user_overview')
         .select('*');
 
       if (error) throw error;
       
-      set({ users: users || [] });
+      // Map the admin overview data to match the User type
+      const users: User[] = (adminUsers || []).map(user => ({
+        id: user.id,
+        email: '', // This will be empty as it's not in the view for security
+        role: user.role,
+        status: user.user_status as UserStatus,
+        profile: {
+          username: user.username,
+          display_name: user.display_name,
+          avatar_url: user.avatar_url,
+          last_active: user.last_active,
+        }
+      }));
+      
+      set({ users });
       console.log('Fetched users:', users);
     } catch (error) {
       console.error('Error fetching users:', error);
