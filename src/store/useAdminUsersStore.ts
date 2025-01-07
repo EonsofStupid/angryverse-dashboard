@@ -31,22 +31,27 @@ export const useAdminUsersStore = create<AdminUsersState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data: adminUsers, error } = await supabase
-        .from('admin_user_overview')
+        .from('admin_user_details')
         .select('*');
 
       if (error) throw error;
       
-      // Map the admin overview data to match the User type
+      // Map the admin details data to match the User type
       const users: User[] = (adminUsers || []).map(user => ({
-        id: user.id,
-        email: '', // This will be empty as it's not in the view for security
-        role: user.role,
-        status: user.user_status as UserStatus,
+        id: user.id!,
+        email: user.email || '',
+        role: 'user', // This will be overridden by the role from user_roles
+        status: 'active', // This will be overridden by the status from user_roles
         profile: {
-          username: user.username,
-          display_name: user.display_name,
-          avatar_url: user.avatar_url,
-          last_active: user.last_active,
+          id: user.id!,
+          username: user.username || null,
+          display_name: user.display_name || null,
+          avatar_url: user.avatar_url || null,
+          updated_at: user.updated_at || null,
+          bio: user.bio || null,
+          location: user.location || null,
+          website: user.website || null,
+          last_active: user.last_active || null,
         }
       }));
       
