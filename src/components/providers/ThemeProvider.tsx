@@ -98,7 +98,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         if (pageError) throw pageError;
 
         if (pageTheme?.themes) {
-          const themeData = pageTheme.themes as Theme;
+          const themeData = pageTheme.themes as unknown as Theme;
+          if (!isValidThemeConfiguration(themeData.configuration)) {
+            throw new Error('Invalid theme configuration structure');
+          }
           setCurrentTheme(themeData);
         } else {
           const { data: defaultThemeData, error: defaultError } = await supabase
@@ -110,10 +113,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (defaultError) throw defaultError;
           
           if (defaultThemeData) {
-            const themeConfig = defaultThemeData.configuration as ThemeConfiguration;
+            const themeConfig = defaultThemeData.configuration as unknown;
+            if (!isValidThemeConfiguration(themeConfig)) {
+              throw new Error('Invalid theme configuration structure');
+            }
             const dbTheme: Theme = {
               ...defaultThemeData,
-              configuration: themeConfig
+              configuration: themeConfig as ThemeConfiguration
             };
             setCurrentTheme(dbTheme);
           } else {
@@ -153,5 +159,20 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
+  );
+};
+
+// Helper function to validate theme configuration
+const isValidThemeConfiguration = (config: unknown): config is ThemeConfiguration => {
+  if (typeof config !== 'object' || !config) return false;
+  
+  const conf = config as any;
+  return (
+    conf.colors?.cyber &&
+    conf.typography?.fonts &&
+    conf.effects?.glass &&
+    typeof conf.effects.glass.background === 'string' &&
+    typeof conf.effects.glass.blur === 'string' &&
+    typeof conf.effects.glass.border === 'string'
   );
 };
