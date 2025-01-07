@@ -24,7 +24,29 @@ export const UserMenu = () => {
   const navigate = useNavigate();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
+  // Handle cross-tab sync and session persistence
   useEffect(() => {
+    // Initialize session from localStorage if available
+    const initializeSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          setError(error);
+          return;
+        }
+        if (session?.user) {
+          setUser(session.user);
+        }
+      } catch (err) {
+        if (err instanceof AuthError) {
+          setError(err);
+        }
+      }
+    };
+
+    initializeSession();
+
+    // Listen for auth changes across tabs/windows
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
       
@@ -63,6 +85,9 @@ export const UserMenu = () => {
           break;
         case 'TOKEN_REFRESHED':
           console.log("Token refreshed successfully");
+          if (session?.user) {
+            setUser(session.user);
+          }
           break;
         case 'USER_UPDATED':
           if (session?.user) {
@@ -81,25 +106,6 @@ export const UserMenu = () => {
           break;
       }
     });
-
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          setError(error);
-          return;
-        }
-        if (session?.user) {
-          setUser(session.user);
-        }
-      } catch (err) {
-        if (err instanceof AuthError) {
-          setError(err);
-        }
-      }
-    };
-    
-    checkSession();
 
     return () => {
       subscription.unsubscribe();
