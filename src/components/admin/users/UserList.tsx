@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
-import { UserStatus, User, UserRole } from "@/types/user";
-import { Profile } from "@/types/profile";
+import { UserStatus, User } from "@/types/user";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserListContent } from "./UserListContent";
 import { QuickEditModal } from "./QuickEditModal";
+import { Loader2 } from "lucide-react";
 
 export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
@@ -22,7 +22,7 @@ export const UserList = () => {
     queryFn: async () => {
       console.log('Fetching users data...');
       
-      // Get profiles
+      // Get profiles with roles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
@@ -34,7 +34,11 @@ export const UserList = () => {
           location,
           website,
           last_active,
-          updated_at
+          updated_at,
+          user_roles!inner (
+            role,
+            status
+          )
         `);
 
       if (profilesError) {
@@ -43,32 +47,14 @@ export const UserList = () => {
         throw profilesError;
       }
 
-      // Get user roles
-      const { data: userRoles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role, status');
-
-      if (rolesError) {
-        console.error('Error fetching roles:', rolesError);
-        toast.error('Error fetching user roles');
-        throw rolesError;
-      }
-
-      // Transform and combine the data
+      // Transform the data
       const transformedUsers = profiles.map((profile) => {
-        const userRole = userRoles.find(r => r.user_id === profile.id);
-        
-        // Ensure status is a valid UserStatus
-        let status: UserStatus = 'active'; // Default value
-        if (userRole?.status === 'suspended' || userRole?.status === 'banned') {
-          status = userRole.status;
-        }
-        
+        const userRole = profile.user_roles?.[0];
         return {
           id: profile.id,
-          email: '', // We can't get emails directly, but that's okay for the list view
+          email: '', // We'll get this from admin_user_details
           role: (userRole?.role || 'user') as UserRole,
-          status,
+          status: (userRole?.status || 'active') as UserStatus,
           profile: {
             id: profile.id,
             username: profile.username,
@@ -83,8 +69,22 @@ export const UserList = () => {
         };
       });
 
-      console.log('Combined users data:', transformedUsers);
-      return transformedUsers;
+      // Get admin user details for emails
+      const { data: adminDetails, error: adminError } = await supabase
+        .from('admin_user_details')
+        .select('id, email');
+
+      if (adminError) {
+        console.error('Error fetching admin details:', adminError);
+        toast.error('Error fetching user emails');
+        throw adminError;
+      }
+
+      // Merge email information
+      return transformedUsers.map(user => ({
+        ...user,
+        email: adminDetails?.find(d => d.id === user.id)?.email || ''
+      }));
     }
   });
 
@@ -118,56 +118,79 @@ export const UserList = () => {
     setEditingUser(user);
   };
 
-  if (isLoading) return <div>Loading users...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-admin-primary" />
+      </div>
+    );
+  }
 
   return (
-    <Card>
-      <CardContent>
-        <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="all">All Users</TabsTrigger>
-            <TabsTrigger value="active">Active Users</TabsTrigger>
-          </TabsList>
+    <div className="space-y-6">
+      <Card className="admin-glass">
+        <CardContent className="p-6">
+          <Tabs 
+            defaultValue="all" 
+            value={activeTab} 
+            onValueChange={setActiveTab} 
+            className="w-full"
+          >
+            <TabsList className="mb-4 bg-admin-background/50">
+              <TabsTrigger 
+                value="all"
+                className="data-[state=active]:bg-admin-primary data-[state=active]:text-admin-foreground"
+              >
+                All Users
+              </TabsTrigger>
+              <TabsTrigger 
+                value="active"
+                className="data-[state=active]:bg-admin-primary data-[state=active]:text-admin-foreground"
+              >
+                Active Users
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="all">
-            <UserFilter
-              selectedStatus={selectedStatus}
-              onStatusChange={setSelectedStatus}
-            />
-            
-            {selectedUsers.length > 0 && (
-              <UserActions
-                selectedUsers={selectedUsers}
-                onActionComplete={() => setSelectedUsers([])}
+            <TabsContent value="all" className="space-y-4">
+              <UserFilter
+                selectedStatus={selectedStatus}
+                onStatusChange={setSelectedStatus}
               />
-            )}
-            
-            <UserListContent
-              users={filteredUsers || []}
-              selectedUsers={selectedUsers}
-              onSelectUser={handleSelectUser}
-              onSelectAll={handleSelectAll}
-              onQuickEdit={handleQuickEdit}
-            />
-          </TabsContent>
+              
+              {selectedUsers.length > 0 && (
+                <UserActions
+                  selectedUsers={selectedUsers}
+                  onActionComplete={() => setSelectedUsers([])}
+                />
+              )}
+              
+              <UserListContent
+                users={filteredUsers || []}
+                selectedUsers={selectedUsers}
+                onSelectUser={handleSelectUser}
+                onSelectAll={handleSelectAll}
+                onQuickEdit={handleQuickEdit}
+              />
+            </TabsContent>
 
-          <TabsContent value="active">
-            <UserListContent
-              users={filteredUsers || []}
-              selectedUsers={selectedUsers}
-              onSelectUser={handleSelectUser}
-              onSelectAll={handleSelectAll}
-              onQuickEdit={handleQuickEdit}
-            />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="active" className="space-y-4">
+              <UserListContent
+                users={filteredUsers || []}
+                selectedUsers={selectedUsers}
+                onSelectUser={handleSelectUser}
+                onSelectAll={handleSelectAll}
+                onQuickEdit={handleQuickEdit}
+              />
+            </TabsContent>
+          </Tabs>
 
-        <QuickEditModal
-          user={editingUser}
-          isOpen={!!editingUser}
-          onClose={() => setEditingUser(null)}
-        />
-      </CardContent>
-    </Card>
+          <QuickEditModal
+            user={editingUser}
+            isOpen={!!editingUser}
+            onClose={() => setEditingUser(null)}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 };

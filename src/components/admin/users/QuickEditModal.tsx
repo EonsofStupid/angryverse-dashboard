@@ -10,6 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { UserStatusBadge } from "./modal/UserStatusBadge";
 import { UserProfileForm } from "./modal/UserProfileForm";
 import { FormData } from "./modal/types";
+import { cn } from "@/lib/utils";
 
 interface QuickEditModalProps {
   user: User | null;
@@ -25,7 +26,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
     email: '',
   });
 
-  // Set form data when user or modal state changes
   useEffect(() => {
     if (user && isOpen) {
       setFormData({
@@ -43,7 +43,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
       const updates: Record<string, any> = {};
       const emailUpdates: Record<string, any> = {};
 
-      // Profile updates
       if (data.username !== user.profile?.username || data.display_name !== user.profile?.display_name) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -59,7 +58,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
         updates.display_name = data.display_name;
       }
 
-      // Email update
       if (data.email !== user.email) {
         const { error: emailError } = await supabase.auth.admin.updateUserById(
           user.id,
@@ -70,7 +68,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
         emailUpdates.email = data.email;
       }
 
-      // Log the activity
       await supabase.from('user_activity_logs').insert({
         user_id: user.id,
         action_type: 'profile_update',
@@ -103,21 +100,25 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-sm border-primary/20">
+      <DialogContent className={cn(
+        "sm:max-w-[425px] admin-glass",
+        "border border-admin-primary/20",
+        "backdrop-blur-md shadow-xl"
+      )}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-            <UserIcon className="w-5 h-5 text-primary" />
+          <DialogTitle className="text-xl font-semibold flex items-center gap-2 text-admin-foreground">
+            <UserIcon className="w-5 h-5 text-admin-primary" />
             Edit User Profile
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div className="bg-muted/10 rounded-lg p-4 space-y-2">
+        <div className="space-y-6">
+          <div className="bg-admin-background/10 rounded-lg p-4 space-y-2 border border-admin-primary/10">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">User Status</span>
+              <span className="text-sm text-admin-foreground/80">User Status</span>
               <UserStatusBadge status={user.status} />
             </div>
-            <div className="font-mono text-xs text-muted-foreground/80">
+            <div className="font-mono text-xs text-admin-foreground/60">
               ID: {user.id}
             </div>
           </div>
@@ -130,13 +131,17 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
                 setFormData={setFormData}
               />
 
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 pt-4 border-t border-admin-primary/10">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={onClose}
                   disabled={updateUserMutation.isPending}
-                  className="hover:bg-background/80"
+                  className={cn(
+                    "hover:bg-admin-background/80",
+                    "border-admin-primary/20",
+                    "text-admin-foreground"
+                  )}
                 >
                   <X className="w-4 h-4 mr-1" />
                   Cancel
@@ -144,7 +149,10 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
                 <Button 
                   type="submit"
                   disabled={updateUserMutation.isPending}
-                  className="bg-primary hover:bg-primary/90"
+                  className={cn(
+                    "bg-admin-primary hover:bg-admin-primary/90",
+                    "text-admin-foreground"
+                  )}
                 >
                   {updateUserMutation.isPending ? (
                     <span className="animate-pulse">Saving...</span>

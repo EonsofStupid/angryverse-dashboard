@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface UserEditFieldProps {
   id: string;
@@ -27,27 +28,36 @@ export const UserEditField = ({
   className,
 }: UserEditFieldProps) => {
   return (
-    <div className="space-y-4">
-      {/* Label with Tooltip */}
-      <Label htmlFor={id} className="flex items-center gap-2 text-sm font-medium text-foreground">
+    <div className="space-y-2">
+      <Label 
+        htmlFor={id} 
+        className={cn(
+          "flex items-center gap-2",
+          "text-sm font-medium",
+          "text-admin-foreground/80"
+        )}
+      >
         {label}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Info className="w-5 h-5 text-muted-foreground cursor-pointer hover-scale" />
+            <Info className="w-4 h-4 text-admin-foreground/60 cursor-help transition-colors hover:text-admin-primary" />
           </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-sm text-muted-foreground">{tooltip}</p>
+          <TooltipContent className="bg-admin-background/95 border-admin-primary/20">
+            <p className="text-sm text-admin-foreground/80">{tooltip}</p>
           </TooltipContent>
         </Tooltip>
       </Label>
 
-      {/* Input Field */}
       <Input
         id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`glass transition-transform duration-200 focus:outline-none focus:ring focus:ring-primary focus:ring-opacity-50 ${className}`}
+        className={cn(
+          "transition-all duration-200",
+          "focus:ring-2 focus:ring-admin-primary/20",
+          className
+        )}
       />
     </div>
   );
