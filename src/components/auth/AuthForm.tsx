@@ -67,8 +67,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
           }
         }}
         theme={theme === "dark" ? "dark" : "light"}
-        providers={["google", "github"]}
-        magicLink={true}
+        providers={[]}
         redirectTo={window.location.origin}
         localization={{
           variables: {
@@ -77,14 +76,12 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
               password_label: "Password",
               button_label: "Sign In",
               loading_button_label: "Signing in...",
-              social_provider_text: "Continue with",
             },
             sign_up: {
               email_label: "Email",
               password_label: "Password",
               button_label: "Sign Up",
               loading_button_label: "Signing up...",
-              social_provider_text: "Sign up with",
             },
           },
         }}

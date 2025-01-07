@@ -53,13 +53,6 @@ export type Database = {
             foreignKeyName: "analytics_post_views_viewer_id_fkey"
             columns: ["viewer_id"]
             isOneToOne: false
-            referencedRelation: "admin_user_overview"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "analytics_post_views_viewer_id_fkey"
-            columns: ["viewer_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -93,13 +86,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "admin_user_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "analytics_search_terms_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "admin_user_overview"
             referencedColumns: ["id"]
           },
           {
@@ -258,13 +244,6 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "admin_user_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comments_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
-            referencedRelation: "admin_user_overview"
             referencedColumns: ["id"]
           },
           {
@@ -454,13 +433,6 @@ export type Database = {
             foreignKeyName: "post_revisions_author_id_fkey"
             columns: ["author_id"]
             isOneToOne: false
-            referencedRelation: "admin_user_overview"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "post_revisions_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -522,13 +494,6 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "admin_user_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "posts_author_id_fkey"
-            columns: ["author_id"]
-            isOneToOne: false
-            referencedRelation: "admin_user_overview"
             referencedColumns: ["id"]
           },
           {
@@ -653,13 +618,6 @@ export type Database = {
             foreignKeyName: "site_settings_updated_by_fkey"
             columns: ["updated_by"]
             isOneToOne: false
-            referencedRelation: "admin_user_overview"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "site_settings_updated_by_fkey"
-            columns: ["updated_by"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -726,13 +684,6 @@ export type Database = {
             foreignKeyName: "social_connections_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "admin_user_overview"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "social_connections_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -772,13 +723,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "admin_user_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "social_posts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "admin_user_overview"
             referencedColumns: ["id"]
           },
           {
@@ -903,8 +847,6 @@ export type Database = {
           action_type: string
           created_at: string | null
           id: string
-          processed_at: string | null
-          status: string | null
           user_id: string | null
         }
         Insert: {
@@ -912,8 +854,6 @@ export type Database = {
           action_type: string
           created_at?: string | null
           id?: string
-          processed_at?: string | null
-          status?: string | null
           user_id?: string | null
         }
         Update: {
@@ -921,8 +861,6 @@ export type Database = {
           action_type?: string
           created_at?: string | null
           id?: string
-          processed_at?: string | null
-          status?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -931,13 +869,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "admin_user_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_activity_logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "admin_user_overview"
             referencedColumns: ["id"]
           },
           {
@@ -983,13 +914,6 @@ export type Database = {
             foreignKeyName: "user_roles_profile_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
-            referencedRelation: "admin_user_overview"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_roles_profile_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1009,19 +933,6 @@ export type Database = {
           updated_at: string | null
           username: string | null
           website: string | null
-        }
-        Relationships: []
-      }
-      admin_user_overview: {
-        Row: {
-          activity_count: number | null
-          avatar_url: string | null
-          display_name: string | null
-          id: string | null
-          last_active: string | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          user_status: string | null
-          username: string | null
         }
         Relationships: []
       }
