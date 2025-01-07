@@ -27,7 +27,7 @@ interface AuthState {
   signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
   loadUserProfile: () => Promise<void>;
-  subscribeToUpdates: () => () => void; // Returns cleanup function
+  subscribeToUpdates: () => () => void;
 }
 
 interface UserRoleRecord {
@@ -120,9 +120,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (roleError) throw roleError;
       
       if (roleData) {
+        const defaultRole: UserRole = 'user';
+        const defaultStatus: UserStatus = 'active';
+        
         set({ 
-          role: roleData.role || 'user',
-          status: roleData.status || 'active'
+          role: roleData.role ?? defaultRole,
+          status: roleData.status ?? defaultStatus
         });
       }
 
@@ -176,9 +179,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         },
         async (payload) => {
           if (payload.new) {
+            const roleData = payload.new as UserRoleRecord;
             set({ 
-              role: payload.new.role as UserRole,
-              status: payload.new.status as UserStatus 
+              role: roleData.role,
+              status: roleData.status
             });
           }
         }
