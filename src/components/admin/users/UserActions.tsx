@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Trash2, UserX, Ban, ShieldBan } from "lucide-react";
+import { Trash2, UserX, Ban } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { UserStatus } from "@/types/user";
 

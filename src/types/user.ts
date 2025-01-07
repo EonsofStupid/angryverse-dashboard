@@ -10,3 +10,11 @@ export interface User {
   status: UserStatus;
   profile?: Profile;
 }
+
+export interface UserRoleRecord {
+  id?: string;
+  user_id?: string;
+  role?: UserRole;
+  status?: UserStatus;
+  created_at?: string;
+}
