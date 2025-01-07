@@ -77,7 +77,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
               password_label: "Password",
               button_label: "Sign In",
               loading_button_label: "Signing in...",
-              magic_link_label: "Send Magic Link",
               social_provider_text: "Continue with",
             },
             sign_up: {
