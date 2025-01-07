@@ -84,18 +84,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-
-        admin: {
-          background: "hsl(var(--admin-background))",
-          foreground: "hsl(var(--admin-foreground))",
-          primary: "hsl(var(--admin-primary))",
-          secondary: "hsl(var(--admin-secondary))",
-          accent: "hsl(var(--admin-accent))",
-          error: "hsl(var(--admin-error))",
-          warning: "hsl(var(--admin-warning))",
-          success: "hsl(var(--admin-success))",
-          info: "hsl(var(--admin-info))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",

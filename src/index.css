@@ -73,6 +73,11 @@
     
     /* Border radius */
     --radius: 0.5rem;
+
+    /* Glass Effect Variables */
+    --glass-background: rgba(255, 255, 255, 0.1);
+    --glass-blur: 8px;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   * {
