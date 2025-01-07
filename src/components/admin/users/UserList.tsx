@@ -10,18 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserListContent } from "./UserListContent";
 import { QuickEditModal } from "./QuickEditModal";
 
-interface ProfileWithRoles {
-  id: string;
-  username: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  location: string | null;
-  website: string | null;
-  last_active: string | null;
-  display_name: string | null;
-  updated_at: string | null;
-}
-
 export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -31,60 +19,67 @@ export const UserList = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      // First, get all profiles
+      console.log('Fetching users data...');
+      
+      // Get user roles
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role, status');
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+        toast.error('Error fetching user roles');
+        throw rolesError;
+      }
+
+      // Get profiles with auth data
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           id,
           username,
+          display_name,
           avatar_url,
           bio,
           location,
           website,
           last_active,
-          display_name,
           updated_at
-        `) as { data: ProfileWithRoles[] | null, error: any };
+        `);
 
       if (profilesError) {
-        toast.error('Error fetching users');
+        console.error('Error fetching profiles:', profilesError);
+        toast.error('Error fetching user profiles');
         throw profilesError;
       }
 
-      // Then, get user roles for each profile
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
-
-      if (rolesError) {
-        toast.error('Error fetching user roles');
-        throw rolesError;
+      // Get auth users for email
+      const { data: { users: authUsers }, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) {
+        console.error('Error fetching auth users:', authError);
+        toast.error('Error fetching user emails');
+        throw authError;
       }
 
-      // Create a map of user_id to role
-      const userRoles = new Map<string, UserRole>();
-      roles?.forEach(role => {
-        userRoles.set(role.user_id, role.role as UserRole);
+      // Combine the data
+      const combinedUsers = profiles?.map(profile => {
+        const authUser = authUsers.find(u => u.id === profile.id);
+        const userRole = userRoles?.find(r => r.user_id === profile.id);
+        
+        return {
+          id: profile.id,
+          email: authUser?.email || '',
+          role: (userRole?.role as UserRole) || 'user',
+          status: (userRole?.status as UserStatus) || 'active',
+          profile: {
+            ...profile
+          }
+        };
       });
 
-      // Transform the data to match our User type
-      return (profiles || []).map(profile => ({
-        id: profile.id,
-        email: profile.username || 'No username',
-        role: userRoles.get(profile.id) || 'user' as UserRole,
-        status: 'active' as UserStatus,
-        profile: {
-          id: profile.id,
-          username: profile.username,
-          display_name: profile.display_name,
-          avatar_url: profile.avatar_url,
-          bio: profile.bio,
-          location: profile.location,
-          website: profile.website,
-          last_active: profile.last_active,
-          updated_at: profile.updated_at
-        }
-      }));
+      console.log('Combined users data:', combinedUsers);
+      return combinedUsers || [];
     }
   });
 
@@ -114,6 +109,7 @@ export const UserList = () => {
   };
 
   const handleQuickEdit = (user: User) => {
+    console.log('Opening quick edit for user:', user);
     setEditingUser(user);
   };
 
