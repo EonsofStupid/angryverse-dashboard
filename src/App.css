@@ -98,6 +98,10 @@
   filter: drop-shadow(0 0 2em hsl(var(--primary)));
 }
 
+.card {
+  @apply glass-card;
+}
+
 .read-the-docs {
   @apply text-muted-foreground;
 }

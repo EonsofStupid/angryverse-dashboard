@@ -90,7 +90,11 @@
 
 @layer components {
   .glass {
-    @apply bg-glass-gradient backdrop-blur-lg border border-white/10 shadow-lg;
+    @apply bg-black/10 backdrop-blur-lg border border-white/10 shadow-lg;
+  }
+
+  .glass-card {
+    @apply glass rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
   }
 
   .btn {
