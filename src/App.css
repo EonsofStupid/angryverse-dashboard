@@ -107,7 +107,7 @@
 }
 
 .card {
-  @apply glass p-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
+  @apply glass-morphism p-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
 }
 
 .read-the-docs {
