@@ -90,7 +90,7 @@
 
 @layer components {
   .glass {
-    @apply bg-glass-gradient backdrop-blur-lg border border-white/10 shadow-lg;
+    @apply bg-black/10 backdrop-blur-lg border border-white/10 shadow-lg;
   }
 
   .glass-card {
