@@ -1,42 +1,78 @@
-import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
+import { BookOpen, Newspaper, Rss, Video, Settings, Users, BarChart3, Share2 } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useRoleCheck } from "@/hooks/useRoleCheck";
 
-const features = [
-  {
-    title: "Guides",
-    description: "Detailed guides on pop culture topics",
-    icon: BookOpen,
-    color: "text-primary",
-    gradient: "from-primary/20 to-secondary/20",
-  },
-  {
-    title: "Updates",
-    description: "Latest news and personal updates",
-    icon: Rss,
-    color: "text-primary",
-    gradient: "from-primary/20 to-accent/20",
-  },
-  {
-    title: "Blog",
-    description: "In-depth articles and opinions",
-    icon: Newspaper,
-    color: "text-primary",
-    gradient: "from-primary/20 to-secondary/20",
-  },
-  {
-    title: "Videos",
-    description: "Video content and highlights",
-    icon: Video,
-    color: "text-primary",
-    gradient: "from-primary/20 to-accent/20",
-  },
-];
+const getFeatures = (isAuthenticated: boolean, isAdmin: boolean) => {
+  const baseFeatures = [
+    {
+      title: "Guides",
+      description: "Detailed guides on pop culture topics",
+      icon: BookOpen,
+      color: "text-primary",
+      gradient: "from-primary/20 to-secondary/20",
+    },
+    {
+      title: "Updates",
+      description: "Latest news and personal updates",
+      icon: Rss,
+      color: "text-primary",
+      gradient: "from-primary/20 to-accent/20",
+    },
+  ];
+
+  const userFeatures = [
+    {
+      title: "Social Sharing",
+      description: "Schedule and manage your posts",
+      icon: Share2,
+      color: "text-primary",
+      gradient: "from-primary/20 to-secondary/20",
+    },
+    {
+      title: "Analytics",
+      description: "Track your content performance",
+      icon: BarChart3,
+      color: "text-primary",
+      gradient: "from-primary/20 to-accent/20",
+    },
+  ];
+
+  const adminFeatures = [
+    {
+      title: "User Management",
+      description: "Manage user accounts and roles",
+      icon: Users,
+      color: "text-primary",
+      gradient: "from-primary/20 to-secondary/20",
+    },
+    {
+      title: "Settings",
+      description: "Configure platform settings",
+      icon: Settings,
+      color: "text-primary",
+      gradient: "from-primary/20 to-accent/20",
+    },
+  ];
+
+  if (!isAuthenticated) return baseFeatures;
+  if (isAdmin) return [...userFeatures, ...adminFeatures];
+  return userFeatures;
+};
 
 export const Features = () => {
+  const { user } = useAuthStore();
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const features = getFeatures(!!user, isAdmin);
+
   return (
     <section className="py-20 relative">
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Latest <span className="text-gradient animate-glow">Content</span>
+          {user ? (
+            <>Your <span className="text-gradient animate-glow">Features</span></>
+          ) : (
+            <>Latest <span className="text-gradient animate-glow">Content</span></>
+          )}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature) => (
