@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Mail, Save, X, User as UserIcon, Shield, Info } from "lucide-react";
-import { Tooltip } from "@/components/ui/tooltip";
+import { Mail, Save, X, User as UserIcon, Shield } from "lucide-react";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { UserEditField } from "./UserEditField";
 
 interface QuickEditModalProps {
   user: User | null;
@@ -29,7 +28,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
   });
   const [sendNotification, setSendNotification] = useState(false);
 
-  // Reset form when user changes or modal opens/closes
   useEffect(() => {
     if (user && isOpen) {
       setFormData({
@@ -48,7 +46,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
       const emailUpdates: Record<string, any> = {};
       let emailUpdated = false;
 
-      // Only update username if it has changed
       if (username !== user.profile?.username) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -59,7 +56,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
         updates.username = username;
       }
 
-      // Only update email if it has changed
       if (email !== user.email) {
         const { error: emailError } = await supabase.auth.admin.updateUserById(
           user.id,
@@ -71,7 +67,6 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
         emailUpdates.email = email;
       }
 
-      // Send notification email only if requested and there are changes
       if (sendNotification && (Object.keys(updates).length > 0 || emailUpdated)) {
         const { error: notificationError } = await supabase.functions.invoke('send-profile-update-email', {
           body: {
@@ -128,84 +123,72 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username" className="flex items-center gap-2">
-                Username
-                <Tooltip content="Publicly visible name">
-                  <Info className="w-4 h-4 text-muted-foreground" />
-                </Tooltip>
-              </Label>
-              <Input
+        <TooltipProvider>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <UserEditField
                 id="username"
+                label="Username"
+                tooltip="Publicly visible name"
                 value={formData.username}
-                onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
+                onChange={(value) => setFormData(prev => ({ ...prev, username: value }))}
                 className="glass"
-                placeholder="Enter username"
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
-                Email
-                <Tooltip content="Admin only - Requires verification">
-                  <Info className="w-4 h-4 text-muted-foreground" />
-                </Tooltip>
-              </Label>
-              <Input
+              <UserEditField
                 id="email"
-                type="email"
+                label="Email"
+                tooltip="Admin only - Requires verification"
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(value) => setFormData(prev => ({ ...prev, email: value }))}
+                type="email"
                 className="glass"
-                placeholder="Enter email"
               />
+
+              <div className="flex items-center space-x-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="notify"
+                  checked={sendNotification}
+                  onChange={(e) => setSendNotification(e.target.checked)}
+                  className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <Label htmlFor="notify" className="text-sm text-muted-foreground">
+                  Notify user about changes
+                </Label>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-2 pt-2">
-              <input
-                type="checkbox"
-                id="notify"
-                checked={sendNotification}
-                onChange={(e) => setSendNotification(e.target.checked)}
-                className="rounded border-gray-300 text-primary focus:ring-primary"
-              />
-              <Label htmlFor="notify" className="text-sm text-muted-foreground">
-                Notify user about changes
-              </Label>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={updateUserMutation.isPending}
+                className="hover-lift active-scale"
+              >
+                <X className="w-4 h-4 mr-1" />
+                Cancel
+              </Button>
+              <Button 
+                type="submit"
+                disabled={updateUserMutation.isPending}
+                className="hover-lift active-scale success-gradient"
+              >
+                {updateUserMutation.isPending ? (
+                  <>
+                    <span className="animate-pulse">Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
             </div>
-          </div>
-
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={updateUserMutation.isPending}
-              className="hover-lift active-scale"
-            >
-              <X className="w-4 h-4 mr-1" />
-              Cancel
-            </Button>
-            <Button 
-              type="submit"
-              disabled={updateUserMutation.isPending}
-              className="hover-lift active-scale success-gradient"
-            >
-              {updateUserMutation.isPending ? (
-                <>
-                  <span className="animate-pulse">Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  Save Changes
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
+          </form>
+        </TooltipProvider>
       </DialogContent>
     </Dialog>
   );
