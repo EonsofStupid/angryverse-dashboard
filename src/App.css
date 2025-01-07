@@ -99,7 +99,7 @@
 }
 
 .card {
-  @apply glass-card;
+  @apply glass;
 }
 
 .read-the-docs {
