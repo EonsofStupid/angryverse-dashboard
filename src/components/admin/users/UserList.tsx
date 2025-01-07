@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserFilter } from "./UserFilter";
 import { UserActions } from "./UserActions";
-import { UserStatus, User } from "@/types/user";
+import { UserStatus, User, UserRole } from "@/types/user";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserListContent } from "./UserListContent";
@@ -48,7 +48,7 @@ export const UserList = () => {
       }
 
       // Transform the data
-      const transformedUsers = profiles.map((profile) => {
+      const transformedUsers = profiles.map((profile: any) => {
         const userRole = profile.user_roles?.[0];
         return {
           id: profile.id,
