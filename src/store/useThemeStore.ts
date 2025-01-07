@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '@/types/theme';
+import type { Theme, ThemeConfiguration } from '@/types/theme';
 
 interface ThemeState {
   currentTheme: Theme | null;
@@ -59,6 +59,28 @@ const defaultTheme: Theme = {
   updated_at: new Date().toISOString()
 };
 
+// Helper function to safely convert database theme to our Theme type
+const convertDatabaseTheme = (dbTheme: any): Theme => {
+  const configuration = dbTheme.configuration as ThemeConfiguration;
+  
+  // Validate the configuration structure
+  if (!configuration?.colors?.cyber || !configuration?.typography?.fonts || !configuration?.effects?.glass) {
+    throw new Error('Invalid theme configuration structure');
+  }
+
+  return {
+    id: dbTheme.id,
+    name: dbTheme.name,
+    description: dbTheme.description || '',
+    is_default: !!dbTheme.is_default,
+    status: dbTheme.status || 'active',
+    configuration: configuration,
+    created_by: dbTheme.created_by,
+    created_at: dbTheme.created_at,
+    updated_at: dbTheme.updated_at
+  };
+};
+
 export const useThemeStore = create<ThemeState>((set) => ({
   currentTheme: null,
   isLoading: false,
@@ -87,8 +109,9 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // If we found a page-specific theme, use it
       if (pageThemeData?.themes) {
+        const convertedTheme = convertDatabaseTheme(pageThemeData.themes);
         set({ 
-          currentTheme: pageThemeData.themes as Theme,
+          currentTheme: convertedTheme,
           isLoading: false 
         });
         return;
@@ -105,7 +128,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // Use the fetched default theme or fall back to hardcoded default
       set({ 
-        currentTheme: defaultThemeData || defaultTheme,
+        currentTheme: defaultThemeData ? convertDatabaseTheme(defaultThemeData) : defaultTheme,
         isLoading: false 
       });
     } catch (error) {
