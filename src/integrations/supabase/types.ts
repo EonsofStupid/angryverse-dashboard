@@ -97,6 +97,75 @@ export type Database = {
           },
         ]
       }
+      auth_security_logs: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      auth_sessions: {
+        Row: {
+          created_at: string | null
+          device_id: string | null
+          expires_at: string
+          id: string
+          ip_address: string | null
+          last_active: string | null
+          refresh_token: string
+          remember_me: boolean | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_id?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          last_active?: string | null
+          refresh_token: string
+          remember_me?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_id?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          last_active?: string | null
+          refresh_token?: string
+          remember_me?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
@@ -869,6 +938,10 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_tables: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -876,6 +949,16 @@ export type Database = {
           schema: string
           is_updatable: boolean
         }[]
+      }
+      log_auth_event: {
+        Args: {
+          p_user_id: string
+          p_event_type: string
+          p_ip_address: string
+          p_user_agent: string
+          p_metadata?: Json
+        }
+        Returns: string
       }
     }
     Enums: {
