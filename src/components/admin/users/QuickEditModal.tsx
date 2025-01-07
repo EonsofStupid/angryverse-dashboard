@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Mail, Save, X } from "lucide-react";
+import { Mail, Save, X, User as UserIcon, Shield, Info } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface QuickEditModalProps {
   user: User | null;
@@ -43,6 +44,8 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
     mutationFn: async ({ username, email }: FormData) => {
       if (!user) return;
 
+      const updates: Record<string, any> = {};
+      const emailUpdates: Record<string, any> = {};
       let emailUpdated = false;
 
       // Only update username if it has changed
@@ -53,32 +56,33 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
           .eq('id', user.id);
 
         if (profileError) throw profileError;
+        updates.username = username;
       }
 
       // Only update email if it has changed
       if (email !== user.email) {
-        const { error: emailError } = await supabase.auth.updateUser({
-          email: email
-        });
+        const { error: emailError } = await supabase.auth.admin.updateUserById(
+          user.id,
+          { email: email }
+        );
 
         if (emailError) throw emailError;
         emailUpdated = true;
+        emailUpdates.email = email;
       }
 
-      // Send notification email if requested
-      if (sendNotification) {
+      // Send notification email only if requested and there are changes
+      if (sendNotification && (Object.keys(updates).length > 0 || emailUpdated)) {
         const { error: notificationError } = await supabase.functions.invoke('send-profile-update-email', {
           body: {
             userId: user.id,
-            updates: {
-              ...(username !== user.profile?.username && { username }),
-              ...(email !== user.email && { email })
-            }
+            updates: { ...updates, ...emailUpdates }
           }
         });
 
         if (notificationError) {
-          toast.error("Failed to send notification email");
+          console.error('Notification error:', notificationError);
+          toast.error("Profile updated but failed to send notification email");
         }
       }
 
@@ -87,7 +91,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
       if (data?.emailUpdated) {
-        toast.success("Email update confirmation sent to the new email address");
+        toast.success("Profile updated. Email verification sent.");
       } else {
         toast.success("Profile updated successfully");
       }
@@ -95,7 +99,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
     },
     onError: (error) => {
       console.error('Update error:', error);
-      toast.error("Failed to update user");
+      toast.error("Failed to update profile");
     }
   });
 
@@ -106,39 +110,60 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] neo-blur">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Edit User Profile</DialogTitle>
+          <DialogTitle className="text-xl font-semibold flex items-center gap-2">
+            <UserIcon className="w-5 h-5 text-primary" />
+            Edit User Profile
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="bg-muted/50 rounded-lg p-4 mb-4 text-sm">
-          <p className="text-muted-foreground">User ID: {user?.id}</p>
+        <div className="bg-muted/10 rounded-lg p-4 mb-4 space-y-2">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Shield className="w-4 h-4" />
+            <span>Admin View</span>
+          </div>
+          <div className="font-mono text-xs text-muted-foreground/80">
+            ID: {user?.id}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="flex items-center gap-2">
+                Username
+                <Tooltip content="Publicly visible name">
+                  <Info className="w-4 h-4 text-muted-foreground" />
+                </Tooltip>
+              </Label>
               <Input
                 id="username"
                 value={formData.username}
                 onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
-                className="bg-background"
+                className="glass"
+                placeholder="Enter username"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="flex items-center gap-2">
+                Email
+                <Tooltip content="Admin only - Requires verification">
+                  <Info className="w-4 h-4 text-muted-foreground" />
+                </Tooltip>
+              </Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="bg-background"
+                className="glass"
+                placeholder="Enter email"
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pt-2">
               <input
                 type="checkbox"
                 id="notify"
@@ -158,6 +183,7 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
               variant="outline"
               onClick={onClose}
               disabled={updateUserMutation.isPending}
+              className="hover-lift active-scale"
             >
               <X className="w-4 h-4 mr-1" />
               Cancel
@@ -165,10 +191,18 @@ export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) =
             <Button 
               type="submit"
               disabled={updateUserMutation.isPending}
-              className="gap-2"
+              className="hover-lift active-scale success-gradient"
             >
-              <Save className="w-4 h-4" />
-              {updateUserMutation.isPending ? "Saving..." : "Save Changes"}
+              {updateUserMutation.isPending ? (
+                <>
+                  <span className="animate-pulse">Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Save Changes
+                </>
+              )}
             </Button>
           </div>
         </form>
