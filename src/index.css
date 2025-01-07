@@ -71,10 +71,6 @@
     --input: 240 3.7% 15.9%;
     --ring: 142 72% 29%;
     
-    /* Gradient colors */
-    --gradient-start: 142 72% 29%;
-    --gradient-end: 200 98% 39%;
-    
     /* Border radius */
     --radius: 0.5rem;
   }
@@ -83,24 +79,38 @@
     @apply border-border;
   }
 
-  html, body {
-    @apply min-h-screen w-full;
-  }
-
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased min-h-screen w-full;
   }
 
   #root {
     @apply min-h-screen w-full;
   }
+}
 
-  .app {
-    @apply min-h-screen w-full relative bg-background text-foreground;
-  }
-
+@layer components {
   .glass {
     @apply bg-black/10 backdrop-blur-lg border border-white/10 shadow-lg;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm p-6 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
+  }
+
+  .section {
+    @apply py-20 px-4 md:px-8 lg:px-12 bg-background;
+  }
+
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .hover-glow {
@@ -110,32 +120,15 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary/60;
   }
+}
 
+@layer utilities {
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
 
-  .link-animation {
-    position: relative;
-    display: inline-block;
-    color: hsl(var(--muted-foreground));
-    transition: color 0.3s;
-  }
-
-  .link-animation::before {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    color: var(--link-hover-color);
-    overflow: hidden;
-    white-space: nowrap;
-    transition: width 0.3s ease-in-out;
-  }
-
-  .link-animation:hover::before {
-    width: 100%;
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 
   @keyframes glow {
@@ -154,46 +147,5 @@
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
-  }
-
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-}
-
-/* Base component styles */
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
-  }
-
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
-  }
-
-  .section {
-    @apply py-20 px-4 md:px-8 lg:px-12 bg-background;
-  }
-
-  .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .interactive-card {
-    @apply rounded-lg border bg-card p-4 transition-all duration-300
-           hover:shadow-lg hover:-translate-y-1 hover:border-primary/50;
-  }
-
-  .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r 
-           from-primary via-primary/80 to-primary/60;
-  }
-
-  .floating-element {
-    @apply animate-float transition-all duration-300;
   }
 }

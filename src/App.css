@@ -52,38 +52,30 @@
 
 /* Cyberpunk Hover Effect */
 @keyframes cyberpunk-hover {
-  0% {
-    background-size: 0% 100%;
-  }
-  100% {
-    background-size: 100% 100%;
-  }
+  0% { background-size: 0% 100%; }
+  100% { background-size: 100% 100%; }
 }
 
 @keyframes cyberpunk-reset {
-  0% {
-    background-size: 100% 100%;
-  }
-  100% {
-    background-size: 0% 100%;
-  }
+  0% { background-size: 100% 100%; }
+  100% { background-size: 0% 100%; }
 }
 
 .cyberpunk-text {
   position: relative;
   display: inline-block;
-  color: hsl(var(--foreground)); /* Default text color */
+  color: hsl(var(--foreground));
   background: linear-gradient(
     to right,
     transparent,
     hsl(var(--cyberpunk-aqua)),
     transparent
   );
-  background-size: 0% 100%; /* Initial gradient state */
+  background-size: 0% 100%;
   background-clip: text;
   -webkit-background-clip: text;
-  color: transparent; /* Hide the default text color */
-  transition: background-size 0.5s ease; /* Smooth gradient expansion */
+  color: transparent;
+  transition: background-size 0.5s ease;
 }
 
 .cyberpunk-text:hover {
@@ -106,18 +98,6 @@
   filter: drop-shadow(0 0 2em hsl(var(--primary)));
 }
 
-.card {
-  @apply glass p-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
-}
-
 .read-the-docs {
   @apply text-muted-foreground;
-}
-
-.section {
-  @apply py-20 px-4 md:px-8 lg:px-12;
-}
-
-.container {
-  @apply max-w-7xl mx-auto;
 }
