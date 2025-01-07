@@ -17,11 +17,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       if (event === 'SIGNED_OUT') {
         setError(null);
       }
-      
-      // Handle auth errors from session
-      if (session?.error) {
-        handleError(session.error as AuthError);
-      }
     });
 
     return () => {
