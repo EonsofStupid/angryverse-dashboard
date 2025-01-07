@@ -5,7 +5,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme, ThemeConfiguration } from '@/types/theme';
+import type { Theme } from '@/types/theme';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -25,52 +25,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (!currentTheme?.configuration) return;
 
     const root = document.documentElement;
-    const { colors, effects } = currentTheme.configuration;
+    const { effects } = currentTheme.configuration;
 
     // Apply glass effect variables
     if (effects?.glass) {
-      const { background, blur, border, blur_levels, opacity_levels, border_styles } = effects.glass;
-      
-      // Set glass effect CSS variables
-      root.style.setProperty('--glass-blur', blur || 'md');
-      root.style.setProperty('--glass-opacity', '0.3');
-      root.style.setProperty('--glass-border', border || '1px solid rgba(255, 255, 255, 0.1)');
-      
-      if (blur_levels) {
-        blur_levels.forEach((level, index) => {
-          root.style.setProperty(`--glass-blur-${index}`, level);
-        });
-      }
-      
-      if (opacity_levels) {
-        opacity_levels.forEach((level, index) => {
-          root.style.setProperty(`--glass-opacity-${index}`, String(level));
-        });
-      }
-      
-      if (border_styles) {
-        Object.entries(border_styles).forEach(([key, value]) => {
-          root.style.setProperty(`--glass-border-${key}`, value);
-        });
-      }
-    }
-
-    // Apply color variables
-    if (colors?.cyber) {
-      Object.entries(colors.cyber).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--cyber-${key}`, value);
-        } else if (typeof value === 'object' && value !== null) {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            if (typeof subValue === 'string') {
-              root.style.setProperty(
-                `--cyber-${key}-${subKey.toLowerCase()}`,
-                subValue
-              );
-            }
-          });
-        }
-      });
+      const { background, blur, border } = effects.glass;
+      root.style.setProperty('--theme-glass-background', background);
+      root.style.setProperty('--theme-glass-blur', blur);
+      root.style.setProperty('--theme-glass-border', border);
     }
   }, [currentTheme]);
 
