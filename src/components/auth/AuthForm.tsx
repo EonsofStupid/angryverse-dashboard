@@ -13,9 +13,14 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         setError(null);
+      }
+      
+      // Handle auth errors from session
+      if (session?.error) {
+        handleError(session.error as AuthError);
       }
     });
 
@@ -32,6 +37,9 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
         break;
       case 'User not found':
         setError('No account found with these credentials.');
+        break;
+      case 'Email not confirmed':
+        setError('Please verify your email address before signing in.');
         break;
       default:
         setError(error.message);
