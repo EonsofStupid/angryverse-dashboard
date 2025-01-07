@@ -75,10 +75,12 @@
     --radius: 0.5rem;
 
     /* Glass Effect Variables */
-    --glass-background: rgba(255, 255, 255, 0.1);
     --glass-opacity: 0.1;
     --glass-blur: 8px;
     --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --glass-gradient-start: rgba(255, 255, 255, var(--glass-opacity));
+    --glass-gradient-end: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.05));
+    --glass-shine-opacity: calc(var(--glass-opacity) + 0.1);
   }
 
   * {
@@ -96,7 +98,32 @@
 
 @layer components {
   .glass {
-    @apply glass-morphism;
+    @apply relative overflow-hidden;
+    backdrop-filter: blur(var(--glass-blur));
+    background: var(--glass-gradient-start);
+    border: var(--glass-border);
+    
+    &::before {
+      content: '';
+      @apply absolute inset-0 pointer-events-none;
+      background: linear-gradient(
+        to right bottom,
+        var(--glass-gradient-start),
+        var(--glass-gradient-end)
+      );
+    }
+    
+    &::after {
+      content: '';
+      @apply absolute inset-0 pointer-events-none;
+      background: linear-gradient(
+        45deg,
+        transparent 45%,
+        rgba(255, 255, 255, var(--glass-shine-opacity)) 50%,
+        transparent 55%
+      );
+      animation: shine 3s ease-in-out infinite;
+    }
   }
 
   .glass-card {
@@ -133,6 +160,23 @@
 }
 
 @layer utilities {
+  .bg-glass-gradient {
+    background: linear-gradient(
+      to right bottom,
+      var(--glass-gradient-start),
+      var(--glass-gradient-end)
+    );
+  }
+
+  .bg-glass-shine {
+    background: linear-gradient(
+      45deg,
+      transparent 45%,
+      rgba(255, 255, 255, var(--glass-shine-opacity)) 50%,
+      transparent 55%
+    );
+  }
+
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
