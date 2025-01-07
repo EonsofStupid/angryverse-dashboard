@@ -5,7 +5,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '@/types/theme';
+import type { Theme, ThemeConfiguration } from '@/types/theme';
 
 const defaultTheme: Theme = {
   id: 'default',
@@ -98,7 +98,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         if (pageError) throw pageError;
 
         if (pageTheme?.themes) {
-          const themeData = pageTheme.themes as unknown as Theme;
+          const themeData = pageTheme.themes as Theme;
           setCurrentTheme(themeData);
         } else {
           const { data: defaultThemeData, error: defaultError } = await supabase
@@ -109,21 +109,28 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
           if (defaultError) throw defaultError;
           
-          // If no theme is found in the database, use the fallback default theme
-          setCurrentTheme(defaultThemeData || defaultTheme);
+          if (defaultThemeData) {
+            const themeConfig = defaultThemeData.configuration as ThemeConfiguration;
+            const dbTheme: Theme = {
+              ...defaultThemeData,
+              configuration: themeConfig
+            };
+            setCurrentTheme(dbTheme);
+          } else {
+            setCurrentTheme(defaultTheme);
+          }
         }
 
         applyThemeVariables();
       } catch (error) {
         console.error('Failed to initialize theme:', error);
-        // Use fallback theme on error
         setCurrentTheme(defaultTheme);
         applyThemeVariables();
         
         toast({
-          title: "Theme Warning",
+          title: "Theme Error",
           description: "Using fallback theme due to connection issues.",
-          variant: "warning",
+          variant: "destructive",
         });
       }
     };
