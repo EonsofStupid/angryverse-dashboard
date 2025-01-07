@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { glassPlugin } from "./src/theme/plugins/glass";
+import { glassPlugin } from "./theme/plugins/glass";
 
 export default {
   darkMode: ["class"],
