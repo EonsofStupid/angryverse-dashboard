@@ -46,7 +46,7 @@ export const UserList = () => {
           website,
           last_active,
           updated_at
-        `) as { data: Profile[] | null, error: any };
+        `);
 
       if (profilesError) {
         console.error('Error fetching profiles:', profilesError);
@@ -64,7 +64,7 @@ export const UserList = () => {
       }
 
       // Combine the data
-      const combinedUsers = (profiles || []).map(profile => {
+      const combinedUsers: User[] = (profiles || []).map(profile => {
         const authUser = authUsers.find(u => u.id === profile.id);
         const userRole = userRoles?.find(r => r.user_id === profile.id);
         
@@ -73,9 +73,7 @@ export const UserList = () => {
           email: authUser?.email || '',
           role: (userRole?.role as UserRole) || 'user',
           status: (userRole?.status as UserStatus) || 'active',
-          profile: {
-            ...profile
-          }
+          profile: profile
         };
       });
 
