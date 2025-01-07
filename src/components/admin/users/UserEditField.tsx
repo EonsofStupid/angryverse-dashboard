@@ -28,14 +28,14 @@ export const UserEditField = ({
 }: UserEditFieldProps) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id} className="flex items-center gap-2">
+      <Label htmlFor={id} className="flex items-center gap-2 text-sm font-medium">
         {label}
         <Tooltip>
           <TooltipTrigger asChild>
             <Info className="w-4 h-4 text-muted-foreground cursor-help" />
           </TooltipTrigger>
           <TooltipContent>
-            <p>{tooltip}</p>
+            <p className="text-sm">{tooltip}</p>
           </TooltipContent>
         </Tooltip>
       </Label>
@@ -44,7 +44,7 @@ export const UserEditField = ({
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={className}
+        className={`${className} transition-all duration-200`}
       />
     </div>
   );
