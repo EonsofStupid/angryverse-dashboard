@@ -22,7 +22,7 @@ export const UserList = () => {
     queryFn: async () => {
       console.log('Fetching users data...');
       
-      // Get profiles with roles
+      // Get profiles with roles - using left join to get all profiles even without roles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
@@ -35,7 +35,7 @@ export const UserList = () => {
           website,
           last_active,
           updated_at,
-          user_roles!inner (
+          user_roles (
             role,
             status
           )
@@ -165,7 +165,9 @@ export const UserList = () => {
               )}
               
               <UserListContent
-                users={filteredUsers || []}
+                users={users?.filter(user => 
+                  selectedStatus === 'all' ? true : user.status === selectedStatus
+                ) || []}
                 selectedUsers={selectedUsers}
                 onSelectUser={handleSelectUser}
                 onSelectAll={handleSelectAll}
@@ -175,7 +177,7 @@ export const UserList = () => {
 
             <TabsContent value="active" className="space-y-4">
               <UserListContent
-                users={filteredUsers || []}
+                users={users?.filter(user => user.status === 'active') || []}
                 selectedUsers={selectedUsers}
                 onSelectUser={handleSelectUser}
                 onSelectAll={handleSelectAll}
