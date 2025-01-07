@@ -28,12 +28,21 @@ export interface ThemeTypography {
   };
 }
 
-export interface ThemeEffects {
-  glass: {
-    background: string;
-    blur: string;
-    border: string;
+export interface GlassEffects {
+  background: string;
+  blur: string;
+  border: string;
+  blur_levels?: string[];
+  opacity_levels?: number[];
+  border_styles?: {
+    light: string;
+    medium: string;
+    heavy: string;
   };
+}
+
+export interface ThemeEffects {
+  glass: GlassEffects;
 }
 
 export interface ThemeConfiguration {

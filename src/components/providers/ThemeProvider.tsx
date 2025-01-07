@@ -5,6 +5,7 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Theme, ThemeConfiguration } from '@/types/theme';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -20,7 +21,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const { toast } = useToast();
 
-  // Apply theme variables based on configuration
   const applyThemeVariables = useCallback(() => {
     if (!currentTheme?.configuration) return;
 
@@ -29,14 +29,29 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply glass effect variables
     if (effects?.glass) {
-      const { blur_levels, opacity_levels, border_styles } = effects.glass;
+      const { background, blur, border, blur_levels, opacity_levels, border_styles } = effects.glass;
       
       // Set glass effect CSS variables
-      root.style.setProperty('--glass-blur', blur_levels?.[2] || 'md'); // Default to medium blur
-      root.style.setProperty('--glass-opacity', String(opacity_levels?.[2] || 0.3)); // Default to medium opacity
+      root.style.setProperty('--glass-blur', blur || 'md');
+      root.style.setProperty('--glass-opacity', '0.3');
+      root.style.setProperty('--glass-border', border || '1px solid rgba(255, 255, 255, 0.1)');
       
-      if (border_styles?.light) {
-        root.style.setProperty('--glass-border', border_styles.light);
+      if (blur_levels) {
+        blur_levels.forEach((level, index) => {
+          root.style.setProperty(`--glass-blur-${index}`, level);
+        });
+      }
+      
+      if (opacity_levels) {
+        opacity_levels.forEach((level, index) => {
+          root.style.setProperty(`--glass-opacity-${index}`, String(level));
+        });
+      }
+      
+      if (border_styles) {
+        Object.entries(border_styles).forEach(([key, value]) => {
+          root.style.setProperty(`--glass-border-${key}`, value);
+        });
       }
     }
 
@@ -59,11 +74,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [currentTheme]);
 
-  // Initialize theme on mount and route changes
   useEffect(() => {
     const initializeTheme = async () => {
       try {
-        // First try to get page-specific theme
         const { data: pageTheme, error: pageError } = await supabase
           .from('page_themes')
           .select(`
@@ -75,8 +88,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (pageError) throw pageError;
 
-        // If no page theme, get default theme
-        if (!pageTheme) {
+        if (pageTheme?.themes) {
+          const themeData = pageTheme.themes as unknown as Theme;
+          setCurrentTheme(themeData);
+        } else {
           const { data: defaultTheme, error: defaultError } = await supabase
             .from('themes')
             .select('*')
@@ -85,10 +100,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
           if (defaultError) throw defaultError;
           if (defaultTheme) {
-            setCurrentTheme(defaultTheme);
+            const themeData = defaultTheme as unknown as Theme;
+            setCurrentTheme(themeData);
           }
-        } else if (pageTheme.themes) {
-          setCurrentTheme(pageTheme.themes);
         }
 
         applyThemeVariables();
@@ -105,7 +119,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     initializeTheme();
   }, [location.pathname, setCurrentTheme, toast, applyThemeVariables]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -114,7 +127,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  // Show error state
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
