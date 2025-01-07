@@ -16,9 +16,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
       
-      if (event === 'USER_NOT_FOUND' || event === 'INVALID_CREDENTIALS') {
-        setError('Invalid email or password. Please try again.');
-      } else {
+      if (event === 'SIGNED_OUT') {
         setError(null);
       }
     });
@@ -27,6 +25,11 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  const handleError = (error: AuthError) => {
+    console.error("Auth error:", error);
+    setError(error.message);
+  };
 
   return (
     <div className="space-y-4">
@@ -56,10 +59,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
         theme={theme === "dark" ? "dark" : "light"}
         providers={[]}
         redirectTo={window.location.origin}
-        onError={(error: AuthError) => {
-          console.error("Auth error:", error);
-          setError(error.message);
-        }}
         localization={{
           variables: {
             sign_in: {

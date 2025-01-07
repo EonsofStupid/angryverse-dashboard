@@ -62,13 +62,6 @@ export const UserMenu = () => {
             });
           }
           break;
-        case 'USER_DELETED':
-          setUser(null);
-          toast({
-            title: "Account deleted",
-            description: "Your account has been successfully deleted.",
-          });
-          break;
         case 'PASSWORD_RECOVERY':
           toast({
             title: "Password recovery",
