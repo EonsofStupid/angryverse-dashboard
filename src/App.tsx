@@ -6,26 +6,17 @@ import Index from "@/pages/Index";
 import AdminDashboard from "@/pages/AdminDashboard";
 import "./App.css";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="app">
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin/*" element={<AdminDashboard />} />
-          </Routes>
-          <Toaster position="top-right" />
-        </div>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Routes>
+        <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   );

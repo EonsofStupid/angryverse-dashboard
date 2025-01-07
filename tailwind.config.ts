@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { glassPlugin } from "./src/theme/plugins/glass";
+import { themeEffects } from "./src/theme";
 
 export default {
   darkMode: ["class"],
@@ -25,6 +25,7 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -36,6 +37,30 @@ export default {
           foreground: "hsl(var(--secondary-foreground))",
           light: "hsl(var(--secondary-light))",
           dark: "hsl(var(--secondary-dark))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+          light: "hsl(var(--success-light))",
+          dark: "hsl(var(--success-dark))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          light: "hsl(var(--warning-light))",
+          dark: "hsl(var(--warning-dark))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+          light: "hsl(var(--info-light))",
+          dark: "hsl(var(--info-dark))",
+        },
+        error: {
+          DEFAULT: "hsl(var(--error))",
+          foreground: "hsl(var(--error-foreground))",
+          light: "hsl(var(--error-light))",
+          dark: "hsl(var(--error-dark))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -57,6 +82,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        admin: {
+          background: "hsl(var(--admin-background))",
+          foreground: "hsl(var(--admin-foreground))",
+          primary: "hsl(var(--admin-primary))",
+          secondary: "hsl(var(--admin-secondary))",
+          accent: "hsl(var(--admin-accent))",
+          error: "hsl(var(--admin-error))",
+          warning: "hsl(var(--admin-warning))",
+          success: "hsl(var(--admin-success))",
+          info: "hsl(var(--admin-info))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -66,10 +103,11 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
+      ...themeEffects.theme?.extend,
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    glassPlugin,
+    ...themeEffects.plugins || [],
   ],
 } satisfies Config;
