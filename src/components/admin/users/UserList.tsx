@@ -22,8 +22,8 @@ export const UserList = () => {
     queryFn: async () => {
       console.log('Fetching users data...');
       
-      // Get profiles with user roles in a single query
-      const { data: profilesWithRoles, error } = await supabase
+      // Get profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -34,37 +34,48 @@ export const UserList = () => {
           location,
           website,
           last_active,
-          updated_at,
-          user_roles (
-            role,
-            status
-          )
+          updated_at
         `);
 
-      if (error) {
-        console.error('Error fetching profiles:', error);
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
         toast.error('Error fetching user profiles');
-        throw error;
+        throw profilesError;
       }
 
-      // Transform the data to match our User type
-      const transformedUsers = profilesWithRoles.map((profile: any) => ({
-        id: profile.id,
-        email: '', // We can't get emails directly, but that's okay for the list view
-        role: profile.user_roles?.[0]?.role || 'user',
-        status: profile.user_roles?.[0]?.status || 'active',
-        profile: {
+      // Get user roles
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role, status');
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+        toast.error('Error fetching user roles');
+        throw rolesError;
+      }
+
+      // Transform and combine the data
+      const transformedUsers = profiles.map((profile) => {
+        const userRole = userRoles.find(r => r.user_id === profile.id);
+        
+        return {
           id: profile.id,
-          username: profile.username,
-          display_name: profile.display_name,
-          avatar_url: profile.avatar_url,
-          bio: profile.bio,
-          location: profile.location,
-          website: profile.website,
-          last_active: profile.last_active,
-          updated_at: profile.updated_at
-        }
-      }));
+          email: '', // We can't get emails directly, but that's okay for the list view
+          role: userRole?.role || 'user',
+          status: userRole?.status || 'active',
+          profile: {
+            id: profile.id,
+            username: profile.username,
+            display_name: profile.display_name,
+            avatar_url: profile.avatar_url,
+            bio: profile.bio,
+            location: profile.location,
+            website: profile.website,
+            last_active: profile.last_active,
+            updated_at: profile.updated_at
+          }
+        };
+      });
 
       console.log('Combined users data:', transformedUsers);
       return transformedUsers;
