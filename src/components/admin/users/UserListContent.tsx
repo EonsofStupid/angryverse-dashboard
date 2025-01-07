@@ -7,13 +7,15 @@ interface UserListContentProps {
   selectedUsers: string[];
   onSelectUser: (userId: string, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
+  onQuickEdit: (user: User) => void;
 }
 
 export const UserListContent = ({ 
   users, 
   selectedUsers, 
   onSelectUser, 
-  onSelectAll 
+  onSelectAll,
+  onQuickEdit
 }: UserListContentProps) => {
   return (
     <div className="space-y-4">
@@ -32,6 +34,7 @@ export const UserListContent = ({
           onSelect={(checked) => {
             onSelectUser(user.id, checked);
           }}
+          onQuickEdit={onQuickEdit}
         />
       ))}
     </div>

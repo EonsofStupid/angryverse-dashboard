@@ -8,6 +8,7 @@ import { UserStatus, User, UserRole } from "@/types/user";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserListContent } from "./UserListContent";
+import { QuickEditModal } from "./QuickEditModal";
 
 interface ProfileWithRoles {
   id: string;
@@ -25,6 +26,7 @@ export const UserList = () => {
   const [selectedStatus, setSelectedStatus] = useState<UserStatus | 'all'>('all');
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
@@ -111,6 +113,10 @@ export const UserList = () => {
     }
   };
 
+  const handleQuickEdit = (user: User) => {
+    setEditingUser(user);
+  };
+
   if (isLoading) return <div>Loading users...</div>;
 
   return (
@@ -140,6 +146,7 @@ export const UserList = () => {
               selectedUsers={selectedUsers}
               onSelectUser={handleSelectUser}
               onSelectAll={handleSelectAll}
+              onQuickEdit={handleQuickEdit}
             />
           </TabsContent>
 
@@ -149,9 +156,16 @@ export const UserList = () => {
               selectedUsers={selectedUsers}
               onSelectUser={handleSelectUser}
               onSelectAll={handleSelectAll}
+              onQuickEdit={handleQuickEdit}
             />
           </TabsContent>
         </Tabs>
+
+        <QuickEditModal
+          user={editingUser}
+          isOpen={!!editingUser}
+          onClose={() => setEditingUser(null)}
+        />
       </CardContent>
     </Card>
   );

@@ -9,9 +9,10 @@ interface UserListItemProps {
   user: User;
   isSelected: boolean;
   onSelect: (checked: boolean) => void;
+  onQuickEdit: (user: User) => void;
 }
 
-export const UserListItem = ({ user, isSelected, onSelect }: UserListItemProps) => {
+export const UserListItem = ({ user, isSelected, onSelect, onQuickEdit }: UserListItemProps) => {
   const navigate = useNavigate();
 
   const handleEditUser = (userId: string) => {
@@ -26,13 +27,22 @@ export const UserListItem = ({ user, isSelected, onSelect }: UserListItemProps) 
           onCheckedChange={onSelect}
         />
         <div>
-          <button 
-            onClick={() => handleEditUser(user.id)}
-            className="flex items-center gap-2 hover:text-primary"
-          >
-            <p className="font-medium">{user.profile?.display_name || user.profile?.username || 'No username'}</p>
-            <Pencil className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => onQuickEdit(user)}
+              className="font-medium hover:text-primary"
+            >
+              {user.profile?.display_name || user.profile?.username || 'No username'}
+            </button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => handleEditUser(user.id)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </div>
           {user.profile?.location && (
             <p className="text-sm text-muted-foreground">{user.profile.location}</p>
           )}
