@@ -30,6 +30,11 @@ interface AuthState {
   subscribeToUpdates: () => () => void; // Returns cleanup function
 }
 
+interface UserRoleRecord {
+  role: UserRole;
+  status: UserStatus;
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
@@ -110,13 +115,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .from('user_roles')
         .select('role, status')
         .eq('user_id', user.id)
-        .single();
+        .single<UserRoleRecord>();
       
       if (roleError) throw roleError;
-      set({ 
-        role: roleData?.role || 'user',
-        status: roleData?.status as UserStatus || 'active'
-      });
+      
+      if (roleData) {
+        set({ 
+          role: roleData.role || 'user',
+          status: roleData.status || 'active'
+        });
+      }
 
       // Log security event
       await supabase.rpc('log_auth_event', {
