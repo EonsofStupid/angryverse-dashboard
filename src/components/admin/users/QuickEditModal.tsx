@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Mail, Save, X, User as UserIcon, Shield } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { UserEditField } from "./UserEditField";
+import { Label } from "@/components/ui/label";
 
 interface QuickEditModalProps {
   user: User | null;
