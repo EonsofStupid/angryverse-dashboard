@@ -4,34 +4,25 @@ export const glassPlugin = plugin(
   function({ addUtilities }) {
     addUtilities({
       '.glass': {
-        '@apply backdrop-blur-[var(--glass-blur)] bg-white/[var(--glass-opacity)] border-[var(--glass-border)] shadow-lg relative overflow-hidden': {},
+        '@apply backdrop-blur-[var(--glass-blur)] relative overflow-hidden': {},
+        'background': 'var(--glass-bg)',
+        'border': 'var(--glass-border)',
         '&::before': {
           content: '""',
           '@apply absolute inset-0 pointer-events-none': {},
-          background: 'linear-gradient(to right bottom, var(--glass-gradient-start), var(--glass-gradient-end))',
+          background: 'var(--glass-gradient)',
         },
         '&::after': {
           content: '""',
           '@apply absolute inset-0 pointer-events-none': {},
-          background: 'linear-gradient(45deg, transparent 45%, var(--glass-shine) 50%, transparent 55%)',
+          background: 'var(--glass-shine)',
           animation: 'shine 3s ease-in-out infinite',
         },
       },
       '.glass-card': {
-        '@apply glass rounded-lg p-6 transition-all duration-300 hover:shadow-lg': {},
+        '@apply glass rounded-lg p-6 transition-all duration-300': {},
+        'box-shadow': '0 8px 32px rgba(0, 0, 0, 0.1)',
       },
     });
-  },
-  {
-    theme: {
-      extend: {
-        keyframes: {
-          shine: {
-            '0%': { transform: 'translateX(-100%)' },
-            '100%': { transform: 'translateX(100%)' },
-          },
-        },
-      },
-    },
   }
 );

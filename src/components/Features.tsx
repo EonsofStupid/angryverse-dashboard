@@ -45,10 +45,10 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="glass-card hover-glow group transition-all duration-500 cursor-pointer relative overflow-hidden"
+              className="glass group transition-all duration-500 cursor-pointer p-6"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              <div className="relative z-10 p-6">
+              <div className="relative z-10">
                 <feature.icon
                   className={`h-12 w-12 ${feature.color} mb-4 group-hover:scale-110 transition-transform duration-500`}
                 />
