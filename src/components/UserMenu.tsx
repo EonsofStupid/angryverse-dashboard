@@ -24,7 +24,7 @@ export const UserMenu = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event);
+      console.log("Auth state changed:", event, session);
       
       switch (event) {
         case 'INITIAL_SESSION':
@@ -56,17 +56,34 @@ export const UserMenu = () => {
         case 'USER_UPDATED':
           if (session?.user) {
             setUser(session.user);
+            toast({
+              title: "Profile updated",
+              description: "Your profile has been successfully updated.",
+            });
           }
+          break;
+        case 'USER_DELETED':
+          setUser(null);
           toast({
-            title: "Profile updated",
-            description: "Your profile has been successfully updated.",
+            title: "Account deleted",
+            description: "Your account has been successfully deleted.",
+          });
+          break;
+        case 'PASSWORD_RECOVERY':
+          toast({
+            title: "Password recovery",
+            description: "Check your email for password reset instructions.",
           });
           break;
       }
     });
 
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Session check error:", error);
+        return;
+      }
       if (session?.user) {
         setUser(session.user);
       }
