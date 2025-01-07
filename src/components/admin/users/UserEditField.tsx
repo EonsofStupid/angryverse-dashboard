@@ -27,24 +27,27 @@ export const UserEditField = ({
   className,
 }: UserEditFieldProps) => {
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id} className="flex items-center gap-2 text-sm font-medium">
+    <div className="space-y-4">
+      {/* Label with Tooltip */}
+      <Label htmlFor={id} className="flex items-center gap-2 text-sm font-medium text-foreground">
         {label}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+            <Info className="w-5 h-5 text-muted-foreground cursor-pointer hover-scale" />
           </TooltipTrigger>
           <TooltipContent>
-            <p className="text-sm">{tooltip}</p>
+            <p className="text-sm text-muted-foreground">{tooltip}</p>
           </TooltipContent>
         </Tooltip>
       </Label>
+
+      {/* Input Field */}
       <Input
         id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`${className} transition-all duration-200`}
+        className={`glass transition-transform duration-200 focus:outline-none focus:ring focus:ring-primary focus:ring-opacity-50 ${className}`}
       />
     </div>
   );
