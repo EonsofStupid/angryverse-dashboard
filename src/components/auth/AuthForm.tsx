@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useEffect } from "react";
 import { AuthError } from "@supabase/supabase-js";
 
 interface AuthFormProps {
@@ -14,7 +14,11 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
+      console.log("Auth state changed:", event, session);
+      
+      if (event === 'USER_NOT_FOUND' || event === 'INVALID_CREDENTIALS') {
+        setError('Invalid email or password. Please try again.');
+      } else {
         setError(null);
       }
     });
@@ -23,23 +27,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       subscription.unsubscribe();
     };
   }, []);
-
-  const handleError = (error: AuthError) => {
-    console.error("Auth error:", error);
-    switch (error.message) {
-      case 'Invalid login credentials':
-        setError('Invalid email or password. Please try again.');
-        break;
-      case 'User not found':
-        setError('No account found with these credentials.');
-        break;
-      case 'Email not confirmed':
-        setError('Please verify your email address before signing in.');
-        break;
-      default:
-        setError(error.message);
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -69,6 +56,10 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
         theme={theme === "dark" ? "dark" : "light"}
         providers={[]}
         redirectTo={window.location.origin}
+        onError={(error: AuthError) => {
+          console.error("Auth error:", error);
+          setError(error.message);
+        }}
         localization={{
           variables: {
             sign_in: {

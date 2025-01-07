@@ -13,12 +13,10 @@ import { useNavigate } from "react-router-dom";
 import { AuthForm } from "./auth/AuthForm";
 import { UserProfile } from "./auth/UserProfile";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AuthError } from "@supabase/supabase-js";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, setUser, error, setError, clearError } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -27,15 +25,6 @@ export const UserMenu = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
-      
-      if (error) {
-        toast({
-          title: "Authentication Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        clearError();
-      }
       
       switch (event) {
         case 'INITIAL_SESSION':
@@ -73,6 +62,13 @@ export const UserMenu = () => {
             });
           }
           break;
+        case 'USER_DELETED':
+          setUser(null);
+          toast({
+            title: "Account deleted",
+            description: "Your account has been successfully deleted.",
+          });
+          break;
         case 'PASSWORD_RECOVERY':
           toast({
             title: "Password recovery",
@@ -83,19 +79,13 @@ export const UserMenu = () => {
     });
 
     const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          setError(error);
-          return;
-        }
-        if (session?.user) {
-          setUser(session.user);
-        }
-      } catch (err) {
-        if (err instanceof AuthError) {
-          setError(err);
-        }
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Session check error:", error);
+        return;
+      }
+      if (session?.user) {
+        setUser(session.user);
       }
     };
     
@@ -104,7 +94,7 @@ export const UserMenu = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, toast, setUser, setError, clearError, error]);
+  }, [navigate, toast, setUser]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -125,11 +115,6 @@ export const UserMenu = () => {
           </DialogDescription>
         </VisuallyHidden>
         <div className="flex flex-col gap-4 mt-8">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
           {!user ? (
             <AuthForm theme={theme} />
           ) : (
