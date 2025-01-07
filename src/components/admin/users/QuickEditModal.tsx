@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -16,45 +16,52 @@ interface QuickEditModalProps {
 
 export const QuickEditModal = ({ user, isOpen, onClose }: QuickEditModalProps) => {
   const queryClient = useQueryClient();
-  const [username, setUsername] = useState(user?.profile?.username || '');
-  const [email, setEmail] = useState(user?.email || '');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+
+  // Reset form when user changes or modal opens/closes
+  useEffect(() => {
+    if (user && isOpen) {
+      setUsername(user.profile?.username || '');
+      setEmail(user.email || '');
+    }
+  }, [user, isOpen]);
 
   const updateUserMutation = useMutation({
     mutationFn: async ({ username, email }: { username: string; email: string }) => {
       if (!user) return;
 
-      const updates: Record<string, any> = {};
-      const emailUpdates: Record<string, any> = {};
+      let emailUpdated = false;
 
+      // Only update username if it has changed
       if (username !== user.profile?.username) {
-        updates.username = username;
-      }
-
-      if (email !== user.email) {
-        emailUpdates.email = email;
-      }
-
-      if (Object.keys(updates).length > 0) {
         const { error: profileError } = await supabase
           .from('profiles')
-          .update(updates)
+          .update({ username })
           .eq('id', user.id);
 
         if (profileError) throw profileError;
       }
 
-      if (Object.keys(emailUpdates).length > 0) {
-        const { error: emailError } = await supabase.auth.admin.updateUserById(
-          user.id,
-          emailUpdates
-        );
+      // Only update email if it has changed
+      if (email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: email
+        });
 
         if (emailError) throw emailError;
+        emailUpdated = true;
       }
+
+      return { emailUpdated };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-      toast.success("User updated successfully");
+      if (data?.emailUpdated) {
+        toast.success("Email update confirmation sent to the new email address");
+      } else {
+        toast.success("Profile updated successfully");
+      }
       onClose();
     },
     onError: (error) => {
