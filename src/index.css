@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import './theme/css/glass.css';
 
 @tailwind base;
 @tailwind components;
@@ -6,81 +7,30 @@
 
 @layer base {
   :root {
-    /* Base colors */
     --background: 222 47% 11%;
     --foreground: 0 0% 95%;
-    
-    /* Card colors */
     --card: 24 9.8% 10%;
     --card-foreground: 0 0% 95%;
-    
-    /* Popover colors */
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
-    
-    /* Primary colors */
     --primary: 142 72% 29%;
     --primary-foreground: 144 72% 95%;
     --primary-light: 142 72% 39%;
     --primary-dark: 142 72% 19%;
-    
-    /* Secondary colors */
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --secondary-light: 240 3.7% 25.9%;
     --secondary-dark: 240 3.7% 5.9%;
-    
-    /* Success colors */
-    --success: 145 58% 55%;
-    --success-foreground: 145 58% 95%;
-    --success-light: 145 58% 65%;
-    --success-dark: 145 58% 45%;
-    
-    /* Warning colors */
-    --warning: 38 92% 50%;
-    --warning-foreground: 38 92% 95%;
-    --warning-light: 38 92% 60%;
-    --warning-dark: 38 92% 40%;
-    
-    /* Info colors */
-    --info: 200 98% 39%;
-    --info-foreground: 200 98% 95%;
-    --info-light: 200 98% 49%;
-    --info-dark: 200 98% 29%;
-    
-    /* Error colors */
-    --error: 0 84% 60%;
-    --error-foreground: 0 84% 95%;
-    --error-light: 0 84% 70%;
-    --error-dark: 0 84% 50%;
-    
-    /* Destructive colors */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    
-    /* Muted colors */
     --muted: 0 0% 15%;
     --muted-foreground: 240 5% 64.9%;
-    
-    /* Accent colors */
     --accent: 12 6.5% 15.1%;
     --accent-foreground: 0 0% 98%;
-    
-    /* Utility colors */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 142 72% 29%;
-    
-    /* Border radius */
     --radius: 0.5rem;
-
-    /* Glass Effect Variables */
-    --glass-opacity: 0.1;
-    --glass-blur: 8px;
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-gradient-start: rgba(255, 255, 255, var(--glass-opacity));
-    --glass-gradient-end: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.05));
-    --glass-shine-opacity: calc(var(--glass-opacity) + 0.1);
   }
 
   * {
@@ -97,49 +47,12 @@
 }
 
 @layer components {
-  .glass {
-    @apply relative overflow-hidden;
-    backdrop-filter: blur(var(--glass-blur));
-    background: var(--glass-gradient-start);
-    border: var(--glass-border);
-    
-    &::before {
-      content: '';
-      @apply absolute inset-0 pointer-events-none;
-      background: linear-gradient(
-        to right bottom,
-        var(--glass-gradient-start),
-        var(--glass-gradient-end)
-      );
-    }
-    
-    &::after {
-      content: '';
-      @apply absolute inset-0 pointer-events-none;
-      background: linear-gradient(
-        45deg,
-        transparent 45%,
-        rgba(255, 255, 255, var(--glass-shine-opacity)) 50%,
-        transparent 55%
-      );
-      animation: shine 3s ease-in-out infinite;
-    }
-  }
-
-  .glass-card {
-    @apply glass rounded-lg p-6 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
-  }
-
   .btn {
     @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
   }
 
   .input {
     @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm p-6 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
   }
 
   .section {
@@ -160,23 +73,6 @@
 }
 
 @layer utilities {
-  .bg-glass-gradient {
-    background: linear-gradient(
-      to right bottom,
-      var(--glass-gradient-start),
-      var(--glass-gradient-end)
-    );
-  }
-
-  .bg-glass-shine {
-    background: linear-gradient(
-      45deg,
-      transparent 45%,
-      rgba(255, 255, 255, var(--glass-shine-opacity)) 50%,
-      transparent 55%
-    );
-  }
-
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
@@ -201,10 +97,5 @@
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
-  }
-
-  @keyframes shine {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
   }
 }

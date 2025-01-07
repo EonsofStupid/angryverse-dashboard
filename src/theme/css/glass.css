@@ -1,0 +1,14 @@
+:root {
+  /* Glass Effect Variables */
+  --glass-opacity: 0.1;
+  --glass-blur: 8px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-gradient-start: rgba(255, 255, 255, var(--glass-opacity));
+  --glass-gradient-end: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.05));
+  --glass-shine: rgba(255, 255, 255, calc(var(--glass-opacity) + 0.1));
+}
+
+@keyframes shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
