@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthForm } from "./auth/AuthForm";
 import { UserProfile } from "./auth/UserProfile";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
+import { AuthError } from "@supabase/supabase-js";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
@@ -61,13 +62,6 @@ export const UserMenu = () => {
               description: "Your profile has been successfully updated.",
             });
           }
-          break;
-        case 'USER_DELETED':
-          setUser(null);
-          toast({
-            title: "Account deleted",
-            description: "Your account has been successfully deleted.",
-          });
           break;
         case 'PASSWORD_RECOVERY':
           toast({
