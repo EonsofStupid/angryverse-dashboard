@@ -7,10 +7,14 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkRole = async () => {
       if (!user) {
-        setHasRole(false);
-        setIsLoading(false);
+        if (isMounted) {
+          setHasRole(false);
+          setIsLoading(false);
+        }
         return;
       }
 
@@ -19,19 +23,40 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) throw error;
-        setHasRole(data?.role === requiredRole);
+        if (error) {
+          console.error('Error checking role:', error);
+          if (isMounted) {
+            setHasRole(false);
+          }
+          return;
+        }
+
+        if (isMounted) {
+          setHasRole(data?.role === requiredRole);
+        }
       } catch (err) {
-        console.error('Error checking role:', err);
-        setHasRole(false);
+        console.error('Error in role check:', err);
+        if (isMounted) {
+          setHasRole(false);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    checkRole();
+    // Add a small delay to prevent rapid re-renders
+    const timeoutId = setTimeout(() => {
+      checkRole();
+    }, 100);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, [user, requiredRole]);
 
   return { hasRole, isLoading };
