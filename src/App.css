@@ -1,78 +1,24 @@
-/* Root Variables */
-:root {
-  /* Site Variables */
-  --primary: 220 60% 50%;
-  --primary-foreground: 220 28% 95%;
-  --secondary: 340 60% 50%;
-  --success: 120 60% 50%;
-  --warning: 35 90% 58%;
-  --info: 208 90% 60%;
-  --error: 0 85% 54%;
-  --background: 220 15% 8%;
-  --foreground: 220 28% 95%;
-
-  /* Admin Theme Variables */
-  --admin-background: 220 15% 8%;
-  --admin-foreground: 220 28% 95%;
-  --admin-primary: 280 70% 50%;
-  --admin-secondary: 320 70% 50%;
-  --admin-accent: 190 80% 48%;
-  --admin-error: 0 85% 54%;
-  --admin-warning: 35 90% 58%;
-  --admin-success: 145 63% 42%;
-  --admin-info: 208 90% 60%;
-
-  /* Cyberpunk Aqua Gradient */
-  --cyberpunk-aqua: 180 90% 60%;
-}
-
-/* Base Styles */
-#root {
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.app {
-  @apply min-h-screen w-full relative bg-background text-foreground;
-}
-
 /* Admin-Specific Styling */
 .admin-container {
-  @apply bg-[hsl(var(--admin-background))] text-[hsl(var(--admin-foreground))] p-6 rounded-lg shadow-md;
+  @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] p-6 rounded-lg shadow-md;
 }
 
 .admin-header {
-  @apply text-[hsl(var(--admin-primary))] font-bold text-xl mb-4;
+  @apply text-[hsl(var(--primary))] font-bold text-xl mb-4;
 }
 
 .admin-card {
-  @apply bg-[hsl(var(--admin-secondary))] text-[hsl(var(--admin-foreground))] p-4 rounded-lg hover:shadow-lg transition-all;
+  @apply bg-[hsl(var(--secondary))] text-[hsl(var(--foreground))] p-4 rounded-lg hover:shadow-lg transition-all;
 }
 
-/* Glass Effect Variables */
+/* Glass Effect */
 .glass {
   @apply bg-opacity-10 backdrop-blur-md border border-white/10;
 }
 
 /* Utility Classes */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em hsl(var(--primary)));
-}
-
 .card {
   @apply glass;
-}
-
-.read-the-docs {
-  @apply text-muted-foreground;
 }
 
 .section {

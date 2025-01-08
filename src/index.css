@@ -7,34 +7,16 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 142 72% 29%;
-    --primary-foreground: 144 72% 95%;
-    --primary-light: 142 72% 39%;
-    --primary-dark: 142 72% 19%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --secondary-light: 240 3.7% 25.9%;
-    --secondary-dark: 240 3.7% 5.9%;
+    /* Unified Variables */
+    --background: 220 15% 8%;
+    --foreground: 220 28% 95%;
+    --primary: 220 60% 50%;
+    --primary-foreground: 220 28% 95%;
+    --secondary: 340 60% 50%;
+    --accent: 12 6.5% 15.1%;
+    --radius: 0.5rem;
     --muted: 0 0% 15%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142 72% 29%;
-    --radius: 0.5rem;
-  }
-
-  * {
-    @apply border-border;
   }
 
   body {
@@ -48,11 +30,11 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
   }
 
   .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .section {
@@ -73,6 +55,10 @@
 }
 
 @layer utilities {
+  .glass {
+    @apply bg-opacity-10 backdrop-blur-md border border-white/10;
+  }
+
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
