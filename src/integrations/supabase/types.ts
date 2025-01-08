@@ -792,6 +792,7 @@ export type Database = {
       }
       theme_backups: {
         Row: {
+          advanced_effects: Json | null
           configuration: Json
           created_at: string | null
           created_by: string | null
@@ -801,6 +802,7 @@ export type Database = {
           version: number
         }
         Insert: {
+          advanced_effects?: Json | null
           configuration: Json
           created_at?: string | null
           created_by?: string | null
@@ -810,6 +812,7 @@ export type Database = {
           version: number
         }
         Update: {
+          advanced_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
@@ -830,6 +833,7 @@ export type Database = {
       }
       theme_presets: {
         Row: {
+          advanced_effects: Json | null
           category: string | null
           configuration: Json
           created_at: string | null
@@ -841,6 +845,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          advanced_effects?: Json | null
           category?: string | null
           configuration: Json
           created_at?: string | null
@@ -852,6 +857,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          advanced_effects?: Json | null
           category?: string | null
           configuration?: Json
           created_at?: string | null
@@ -866,6 +872,7 @@ export type Database = {
       }
       themes: {
         Row: {
+          advanced_effects: Json | null
           configuration: Json
           created_at: string | null
           created_by: string | null
@@ -877,6 +884,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          advanced_effects?: Json | null
           configuration: Json
           created_at?: string | null
           created_by?: string | null
@@ -888,6 +896,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          advanced_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
