@@ -24,6 +24,11 @@
 
   /* Cyberpunk Aqua Gradient */
   --cyberpunk-aqua: 180 90% 60%;
+
+  /* Glass Effect Variables */
+  --theme-glass-background: rgba(255, 255, 255, 0.1);
+  --theme-glass-blur: 8px;
+  --theme-glass-border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Base Styles */
@@ -50,9 +55,40 @@
   @apply bg-[hsl(var(--admin-secondary))] text-[hsl(var(--admin-foreground))] p-4 rounded-lg hover:shadow-lg transition-all;
 }
 
-/* Glass Effect Variables */
-.glass {
-  @apply bg-opacity-10 backdrop-blur-md border border-white/10;
+/* Cyberpunk Hover Effect */
+@keyframes cyberpunk-hover {
+  0% { background-size: 0% 100%; }
+  100% { background-size: 100% 100%; }
+}
+
+@keyframes cyberpunk-reset {
+  0% { background-size: 100% 100%; }
+  100% { background-size: 0% 100%; }
+}
+
+.cyberpunk-text {
+  position: relative;
+  display: inline-block;
+  color: hsl(var(--foreground));
+  background: linear-gradient(
+    to right,
+    transparent,
+    hsl(var(--cyberpunk-aqua)),
+    transparent
+  );
+  background-size: 0% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: background-size 0.5s ease;
+}
+
+.cyberpunk-text:hover {
+  animation: cyberpunk-hover 1.5s ease-in-out forwards;
+}
+
+.cyberpunk-text[data-reset="true"] {
+  animation: cyberpunk-reset 1.5s ease-in-out forwards;
 }
 
 /* Utility Classes */
