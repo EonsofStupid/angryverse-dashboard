@@ -35,6 +35,10 @@ export default {
         warning: "hsl(var(--warning))",
         info: "hsl(var(--info))",
         error: "hsl(var(--error))",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
