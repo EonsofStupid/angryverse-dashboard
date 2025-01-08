@@ -4,14 +4,28 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const loadAdminTheme = async (): Promise<Theme> => {
   try {
-    const { data: theme, error } = await supabase
+    const { data: themeData, error } = await supabase
       .from('themes')
       .select('*')
       .eq('name', 'Admin Theme')
       .maybeSingle();
 
     if (error) throw error;
-    return theme || adminTheme;
+    
+    if (themeData) {
+      // Ensure the configuration matches our ThemeConfiguration type
+      const theme: Theme = {
+        ...adminTheme,
+        ...themeData,
+        configuration: {
+          ...adminTheme.configuration,
+          ...(typeof themeData.configuration === 'object' ? themeData.configuration : {})
+        }
+      };
+      return theme;
+    }
+    
+    return adminTheme;
   } catch (error) {
     console.error('Error loading admin theme:', error);
     return adminTheme;
@@ -28,10 +42,12 @@ export const applyAdminTheme = (theme: Theme) => {
       root.style.setProperty(`--admin-${key}`, value);
     } else if (typeof value === 'object' && value !== null) {
       Object.entries(value).forEach(([subKey, subValue]) => {
-        root.style.setProperty(
-          `--admin-${key}-${subKey.toLowerCase()}`,
-          subValue as string
-        );
+        if (typeof subValue === 'string') {
+          root.style.setProperty(
+            `--admin-${key}-${subKey.toLowerCase()}`,
+            subValue
+          );
+        }
       });
     }
   });

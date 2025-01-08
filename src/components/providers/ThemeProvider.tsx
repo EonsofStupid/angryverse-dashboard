@@ -5,54 +5,9 @@ import { ThemeContext } from '@/hooks/useTheme';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme, ThemeConfiguration } from '@/types/theme';
-
-const defaultTheme: Theme = {
-  id: 'default',
-  name: 'Default Theme',
-  description: 'Default system theme',
-  is_default: true,
-  status: 'active',
-  configuration: {
-    colors: {
-      cyber: {
-        dark: '#1a1b26',
-        pink: {
-          DEFAULT: '#ff007f',
-          hover: '#ff1a8c'
-        },
-        cyan: {
-          DEFAULT: '#00fff5',
-          hover: '#1affff'
-        },
-        purple: '#7928ca',
-        green: {
-          DEFAULT: '#4ade80',
-          hover: '#22c55e'
-        },
-        yellow: {
-          DEFAULT: '#fde047',
-          hover: '#facc15'
-        }
-      }
-    },
-    typography: {
-      fonts: {
-        sans: ['Inter', 'sans-serif'],
-        cyber: ['Inter', 'sans-serif']
-      }
-    },
-    effects: {
-      glass: {
-        background: 'rgba(0, 0, 0, 0.1)',
-        blur: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
-      }
-    }
-  },
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
-};
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRoleCheck } from '@/hooks/useRoleCheck';
+import type { Theme } from '@/types/theme';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -64,16 +19,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     theme,
     setTheme,
   } = useThemeStore();
+
+  const { user } = useAuthStore();
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
   
   const location = useLocation();
   const { toast } = useToast();
 
   const applyThemeVariables = useCallback(() => {
-    const themeToApply = currentTheme || defaultTheme;
-    if (!themeToApply?.configuration) return;
-
+    if (!currentTheme?.configuration) return;
     const root = document.documentElement;
-    const { effects } = themeToApply.configuration;
+    const { effects } = currentTheme.configuration;
 
     if (effects?.glass) {
       const { background, blur, border } = effects.glass;
@@ -86,24 +42,27 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeTheme = async () => {
       try {
-        const { data: pageTheme, error: pageError } = await supabase
-          .from('page_themes')
-          .select(`
-            theme_id,
-            themes (*)
-          `)
-          .eq('page_path', location.pathname)
-          .maybeSingle();
+        // Only admins can set page-specific themes
+        if (isAdmin) {
+          const { data: pageTheme, error: pageError } = await supabase
+            .from('page_themes')
+            .select(`
+              theme_id,
+              themes (*)
+            `)
+            .eq('page_path', location.pathname)
+            .maybeSingle();
 
-        if (pageError) throw pageError;
+          if (pageError) throw pageError;
 
-        if (pageTheme?.themes) {
-          const themeData = pageTheme.themes as unknown as Theme;
-          if (!isValidThemeConfiguration(themeData.configuration)) {
-            throw new Error('Invalid theme configuration structure');
+          if (pageTheme?.themes) {
+            const themeData = pageTheme.themes as unknown as Theme;
+            setCurrentTheme(themeData);
           }
-          setCurrentTheme(themeData);
-        } else {
+        }
+
+        // If no page theme or not admin, load default theme
+        if (!currentTheme) {
           const { data: defaultThemeData, error: defaultError } = await supabase
             .from('themes')
             .select('*')
@@ -113,26 +72,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (defaultError) throw defaultError;
           
           if (defaultThemeData) {
-            const themeConfig = defaultThemeData.configuration as unknown;
-            if (!isValidThemeConfiguration(themeConfig)) {
-              throw new Error('Invalid theme configuration structure');
-            }
-            const dbTheme: Theme = {
-              ...defaultThemeData,
-              configuration: themeConfig as ThemeConfiguration
-            };
-            setCurrentTheme(dbTheme);
-          } else {
-            setCurrentTheme(defaultTheme);
+            setCurrentTheme(defaultThemeData as Theme);
           }
         }
 
         applyThemeVariables();
       } catch (error) {
         console.error('Failed to initialize theme:', error);
-        setCurrentTheme(defaultTheme);
-        applyThemeVariables();
-        
         toast({
           title: "Theme Error",
           description: "Using fallback theme due to connection issues.",
@@ -142,10 +88,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeTheme();
-  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables]);
+  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdmin, currentTheme]);
 
   const value = {
-    currentTheme: currentTheme || defaultTheme,
+    currentTheme,
     isLoading,
     error,
     setCurrentTheme,
@@ -153,26 +99,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     theme,
     setTheme,
     applyThemeVariables,
+    isAdmin,
   };
 
   return (
     <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
-  );
-};
-
-// Helper function to validate theme configuration
-const isValidThemeConfiguration = (config: unknown): config is ThemeConfiguration => {
-  if (typeof config !== 'object' || !config) return false;
-  
-  const conf = config as any;
-  return (
-    conf.colors?.cyber &&
-    conf.typography?.fonts &&
-    conf.effects?.glass &&
-    typeof conf.effects.glass.background === 'string' &&
-    typeof conf.effects.glass.blur === 'string' &&
-    typeof conf.effects.glass.border === 'string'
   );
 };
