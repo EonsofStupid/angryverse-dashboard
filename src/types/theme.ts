@@ -66,10 +66,10 @@ export interface Theme {
 }
 
 // Helper type for database operations
-export type DatabaseTheme = Omit<Theme, 'configuration'> & {
+export interface DatabaseTheme extends Omit<Theme, 'configuration'> {
   configuration: Json;
   advanced_effects?: Json;
-};
+}
 
 // Type guard to check if a JSON object matches ThemeConfiguration
 export function isThemeConfiguration(obj: Json): obj is ThemeConfiguration {

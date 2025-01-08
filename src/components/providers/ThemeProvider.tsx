@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
-import type { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
+import { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 

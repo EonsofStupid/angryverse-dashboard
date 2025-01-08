@@ -1,6 +1,7 @@
-import type { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
-import { defaultTheme } from '../config/defaultTheme';
+import type { Theme } from '@/types/theme';
 import { supabase } from '@/integrations/supabase/client';
+import { defaultTheme } from '../config/defaultTheme';
+import { convertDatabaseTheme } from '@/types/theme';
 
 export const mergeThemes = (base: Theme, override: Partial<Theme>): Theme => {
   return {
@@ -69,7 +70,7 @@ export const getThemeFromPath = async (path: string): Promise<Theme> => {
       .maybeSingle();
 
     if (pageTheme?.themes) {
-      return convertDatabaseTheme(pageTheme.themes as DatabaseTheme);
+      return convertDatabaseTheme(pageTheme.themes);
     }
 
     return defaultTheme;
