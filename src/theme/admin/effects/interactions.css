@@ -1,0 +1,28 @@
+.admin-hover-glow {
+  transition: filter 0.3s ease;
+}
+
+.admin-hover-glow:hover {
+  filter: drop-shadow(0 0 5px hsl(var(--admin-primary)));
+}
+
+.admin-magnetic {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.admin-tilt {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.admin-scroll-trigger {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.admin-scroll-trigger.visible {
+  opacity: 1;
+}

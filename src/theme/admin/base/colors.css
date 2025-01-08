@@ -1,0 +1,22 @@
+/* Admin Theme - HSL Color System */
+:root {
+  /* Core Colors */
+  --admin-primary-hue: 280;
+  --admin-primary-saturation: 70%;
+  --admin-primary-lightness: 50%;
+  --admin-primary: var(--admin-primary-hue) var(--admin-primary-saturation) var(--admin-primary-lightness);
+  
+  --admin-secondary-hue: 320;
+  --admin-secondary-saturation: 70%;
+  --admin-secondary-lightness: 50%;
+  --admin-secondary: var(--admin-secondary-hue) var(--admin-secondary-saturation) var(--admin-secondary-lightness);
+  
+  --admin-accent-hue: 190;
+  --admin-accent-saturation: 80%;
+  --admin-accent-lightness: 48%;
+  --admin-accent: var(--admin-accent-hue) var(--admin-accent-saturation) var(--admin-accent-lightness);
+  
+  /* Background & Foreground */
+  --admin-background: 220 15% 8%;
+  --admin-foreground: 220 28% 95%;
+}

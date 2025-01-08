@@ -1,0 +1,37 @@
+.admin-cyber-glow {
+  --admin-glow-color: hsl(var(--admin-primary));
+  filter: drop-shadow(0 0 5px var(--admin-glow-color))
+          drop-shadow(0 0 10px var(--admin-glow-color));
+}
+
+.admin-matrix-rain {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-holographic {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-holographic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255,255,255,0.1) 45%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0.1) 55%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: admin-holographic-shine 3s infinite;
+}
+
+@keyframes admin-holographic-shine {
+  to {
+    transform: translateX(100%);
+  }
+}

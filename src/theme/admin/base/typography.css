@@ -1,0 +1,4 @@
+:root {
+  --admin-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --admin-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

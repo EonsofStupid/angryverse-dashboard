@@ -1,0 +1,22 @@
+/* Site Theme - HSL Color System */
+:root {
+  /* Core Colors */
+  --site-primary-hue: 220;
+  --site-primary-saturation: 60%;
+  --site-primary-lightness: 50%;
+  --site-primary: var(--site-primary-hue) var(--site-primary-saturation) var(--site-primary-lightness);
+  
+  --site-secondary-hue: 280;
+  --site-secondary-saturation: 70%;
+  --site-secondary-lightness: 50%;
+  --site-secondary: var(--site-secondary-hue) var(--site-secondary-saturation) var(--site-secondary-lightness);
+  
+  --site-accent-hue: 190;
+  --site-accent-saturation: 80%;
+  --site-accent-lightness: 48%;
+  --site-accent: var(--site-accent-hue) var(--site-accent-saturation) var(--site-accent-lightness);
+  
+  /* Background & Foreground */
+  --site-background: 220 15% 8%;
+  --site-foreground: 220 28% 95%;
+}

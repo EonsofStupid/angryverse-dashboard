@@ -1,0 +1,37 @@
+.cyber-glow {
+  --glow-color: hsl(var(--site-primary));
+  filter: drop-shadow(0 0 5px var(--glow-color))
+          drop-shadow(0 0 10px var(--glow-color));
+}
+
+.matrix-rain {
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic {
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255,255,255,0.1) 45%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0.1) 55%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: holographic-shine 3s infinite;
+}
+
+@keyframes holographic-shine {
+  to {
+    transform: translateX(100%);
+  }
+}

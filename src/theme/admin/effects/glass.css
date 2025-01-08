@@ -1,0 +1,28 @@
+.admin-glass {
+  @apply bg-opacity-10 backdrop-blur-md border border-white/10;
+  background: var(--admin-glass-background, rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(var(--admin-glass-blur, 8px));
+  border: var(--admin-glass-border, 1px solid rgba(255, 255, 255, 0.1));
+}
+
+.admin-glass-frost {
+  --admin-glass-background: rgba(255, 255, 255, 0.15);
+  --admin-glass-blur: 16px;
+}
+
+.admin-glass-tint {
+  --admin-glass-background: rgba(var(--admin-primary), 0.2);
+  --admin-glass-blur: 12px;
+}
+
+.admin-glass-reflect {
+  --admin-glass-background: rgba(255, 255, 255, 0.2);
+  --admin-glass-blur: 8px;
+  position: relative;
+}
+
+.admin-glass-pattern {
+  --admin-glass-background: rgba(255, 255, 255, 0.1);
+  --admin-glass-blur: 8px;
+  background-size: 20px 20px;
+}
