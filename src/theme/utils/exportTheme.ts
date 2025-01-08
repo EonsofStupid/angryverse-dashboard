@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '../config/types';
+import type { Theme } from '@/types/theme';
 
 export const exportThemeToDatabase = async (theme: Theme): Promise<void> => {
   try {
@@ -32,7 +32,7 @@ export const createThemeBackup = async (theme: Theme): Promise<void> => {
       .eq('theme_id', theme.id)
       .order('version', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (fetchError && fetchError.message !== 'No rows found') throw fetchError;
 

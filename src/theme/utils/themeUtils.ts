@@ -1,5 +1,6 @@
-import type { Theme, ThemeConfiguration } from '../config/types';
+import type { Theme, ThemeConfiguration } from '@/types/theme';
 import { defaultTheme } from '../config/defaultTheme';
+import { supabase } from '@/integrations/supabase/client';
 
 export const mergeThemes = (base: Theme, override: Partial<Theme>): Theme => {
   return {

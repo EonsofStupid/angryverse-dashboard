@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '../config/types';
+import type { Theme } from '@/types/theme';
 import { defaultTheme } from '../config/defaultTheme';
 
 export const importThemeFromDatabase = async (themeId: string): Promise<Theme> => {
@@ -12,7 +12,20 @@ export const importThemeFromDatabase = async (themeId: string): Promise<Theme> =
 
     if (error) throw error;
     
-    return theme ? theme as Theme : defaultTheme;
+    if (theme) {
+      // Ensure type safety by validating the configuration structure
+      const validatedTheme: Theme = {
+        ...defaultTheme,
+        ...theme,
+        configuration: {
+          ...defaultTheme.configuration,
+          ...theme.configuration
+        }
+      };
+      return validatedTheme;
+    }
+
+    return defaultTheme;
   } catch (error) {
     console.error('Error importing theme:', error);
     return defaultTheme;
@@ -30,14 +43,17 @@ export const importThemePreset = async (presetId: string): Promise<Theme> => {
     if (error) throw error;
     
     if (preset) {
-      return {
+      const validatedTheme: Theme = {
         ...defaultTheme,
-        ...preset,
+        id: preset.id,
+        name: preset.name,
+        description: preset.description || '',
         configuration: {
           ...defaultTheme.configuration,
           ...preset.configuration
         }
       };
+      return validatedTheme;
     }
 
     return defaultTheme;

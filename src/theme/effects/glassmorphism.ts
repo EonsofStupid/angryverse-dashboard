@@ -29,14 +29,6 @@ export const glassmorphismEffects: Partial<Config> = {
             '@apply absolute inset-0 bg-glass-shine animate-shine pointer-events-none': {},
           },
         },
-        '.glass-card': {
-          '@apply backdrop-blur-[var(--glass-blur)] bg-white/[var(--glass-opacity)] border-[var(--glass-border)] shadow-xl': {},
-          'background': 'linear-gradient(145deg, rgba(255,255,255,var(--glass-opacity)) 0%, rgba(255,255,255,calc(var(--glass-opacity) + 0.05)) 100%)',
-        },
-        '.glass-border': {
-          '@apply border border-transparent': {},
-          'border-image': 'var(--glass-border)',
-        },
       });
     },
   ],
