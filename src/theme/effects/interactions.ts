@@ -11,36 +11,34 @@ export const interactionEffects: Partial<Config> = {
   plugins: [
     function({ addUtilities }) {
       addUtilities({
-        '.hover-magnetic': {
+        '.magnetic': {
           '@apply transition-transform duration-300 ease-magnetic': {},
-          '&:hover': {
-            '@apply scale-105 -translate-y-1': {},
+          'transform-style': 'preserve-3d',
+          'perspective': '1000px',
+        },
+        '.tilt': {
+          '@apply transition-transform duration-300': {},
+          'transform-style': 'preserve-3d',
+          'perspective': '1000px',
+        },
+        '.scroll-trigger': {
+          '@apply opacity-0 transition-all duration-500': {},
+          '&.visible': {
+            '@apply opacity-100': {},
           },
         },
-        '.hover-glow': {
-          '@apply transition-all duration-300': {},
-          '&:hover': {
-            '@apply shadow-lg': {},
-            'box-shadow': '0 0 20px hsl(var(--admin-primary) / 0.3)',
-          },
-        },
-        '.particle-effect': {
+        '.cursor-effect': {
           'position': 'relative',
-          'overflow': 'hidden',
           '&::before': {
             content: '""',
             'position': 'absolute',
-            'top': '50%',
-            'left': '50%',
-            'width': '300%',
-            'height': '300%',
-            'background': 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%)',
+            'width': '20px',
+            'height': '20px',
+            'border-radius': '50%',
+            'background': 'var(--cursor-color, rgba(255, 255, 255, 0.2))',
             'transform': 'translate(-50%, -50%)',
-            'opacity': '0',
-            'transition': 'opacity 0.3s',
-          },
-          '&:hover::before': {
-            'opacity': '1',
+            'pointer-events': 'none',
+            'z-index': '1000',
           },
         },
       });
