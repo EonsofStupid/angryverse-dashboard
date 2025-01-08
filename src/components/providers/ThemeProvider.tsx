@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
-import type { Theme } from '@/types/theme';
+import type { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -56,7 +56,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (pageError) throw pageError;
 
           if (pageTheme?.themes) {
-            const themeData = pageTheme.themes as unknown as Theme;
+            const themeData = convertDatabaseTheme(pageTheme.themes as DatabaseTheme);
             setCurrentTheme(themeData);
           }
         }
@@ -72,7 +72,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (defaultError) throw defaultError;
           
           if (defaultThemeData) {
-            setCurrentTheme(defaultThemeData as Theme);
+            setCurrentTheme(convertDatabaseTheme(defaultThemeData as DatabaseTheme));
           }
         }
 

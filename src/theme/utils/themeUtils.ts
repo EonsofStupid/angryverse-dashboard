@@ -1,4 +1,4 @@
-import type { Theme, ThemeConfiguration } from '@/types/theme';
+import type { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
 import { defaultTheme } from '../config/defaultTheme';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -69,7 +69,7 @@ export const getThemeFromPath = async (path: string): Promise<Theme> => {
       .maybeSingle();
 
     if (pageTheme?.themes) {
-      return mergeThemes(defaultTheme, pageTheme.themes as Theme);
+      return convertDatabaseTheme(pageTheme.themes as DatabaseTheme);
     }
 
     return defaultTheme;

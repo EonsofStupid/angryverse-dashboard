@@ -1,3 +1,5 @@
+import type { Json } from '@/integrations/supabase/types';
+
 export interface ThemeColors {
   cyber: {
     dark: string;
@@ -63,10 +65,35 @@ export interface Theme {
   updated_at?: string;
 }
 
-export interface PageTheme {
-  id: string;
-  page_path: string;
-  theme_id: string;
-  created_by?: string;
-  created_at?: string;
+// Helper type for database operations
+export type DatabaseTheme = Omit<Theme, 'configuration'> & {
+  configuration: Json;
+  advanced_effects?: Json;
+};
+
+// Type guard to check if a JSON object matches ThemeConfiguration
+export function isThemeConfiguration(obj: Json): obj is ThemeConfiguration {
+  if (typeof obj !== 'object' || obj === null) return false;
+  
+  const config = obj as any;
+  return (
+    config.colors?.cyber &&
+    config.typography?.fonts &&
+    config.effects?.glass &&
+    typeof config.effects.glass.background === 'string' &&
+    typeof config.effects.glass.blur === 'string' &&
+    typeof config.effects.glass.border === 'string'
+  );
+}
+
+// Conversion function for database operations
+export function convertDatabaseTheme(dbTheme: DatabaseTheme): Theme {
+  if (!isThemeConfiguration(dbTheme.configuration)) {
+    throw new Error('Invalid theme configuration structure');
+  }
+
+  return {
+    ...dbTheme,
+    configuration: dbTheme.configuration as ThemeConfiguration
+  };
 }

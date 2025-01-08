@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '@/types/theme';
+import type { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
 import { defaultTheme } from '../config/defaultTheme';
 
 export const importThemeFromDatabase = async (themeId: string): Promise<Theme> => {
@@ -13,16 +13,7 @@ export const importThemeFromDatabase = async (themeId: string): Promise<Theme> =
     if (error) throw error;
     
     if (theme) {
-      // Ensure type safety by validating the configuration structure
-      const validatedTheme: Theme = {
-        ...defaultTheme,
-        ...theme,
-        configuration: {
-          ...defaultTheme.configuration,
-          ...theme.configuration
-        }
-      };
-      return validatedTheme;
+      return convertDatabaseTheme(theme as DatabaseTheme);
     }
 
     return defaultTheme;
@@ -43,17 +34,16 @@ export const importThemePreset = async (presetId: string): Promise<Theme> => {
     if (error) throw error;
     
     if (preset) {
-      const validatedTheme: Theme = {
-        ...defaultTheme,
+      return convertDatabaseTheme({
         id: preset.id,
         name: preset.name,
         description: preset.description || '',
-        configuration: {
-          ...defaultTheme.configuration,
-          ...preset.configuration
-        }
-      };
-      return validatedTheme;
+        is_default: false,
+        status: 'active',
+        configuration: preset.configuration,
+        created_at: preset.created_at,
+        updated_at: preset.updated_at
+      } as DatabaseTheme);
     }
 
     return defaultTheme;
