@@ -1,0 +1,76 @@
+/* Base interaction styles */
+.hover-glow {
+  transition: filter 0.3s ease;
+}
+
+.hover-glow:hover {
+  filter: drop-shadow(0 0 5px hsl(var(--primary)));
+}
+
+.magnetic {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.tilt {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.scroll-trigger {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.scroll-trigger.visible {
+  opacity: 1;
+}
+
+/* Admin-specific interaction styles */
+.admin-hover-glow {
+  transition: filter 0.3s ease;
+}
+
+.admin-hover-glow:hover {
+  filter: drop-shadow(0 0 5px hsl(var(--admin-primary)));
+}
+
+.admin-magnetic {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.admin-tilt {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.admin-scroll-trigger {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.admin-scroll-trigger.visible {
+  opacity: 1;
+}
+
+/* Cursor effects */
+.cursor-effect {
+  position: relative;
+}
+
+.cursor-effect::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--cursor-color, rgba(255, 255, 255, 0.2));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1000;
+}
