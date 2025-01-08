@@ -21,20 +21,57 @@
   #root {
     @apply min-h-screen w-full;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
 }
 
 @layer components {
-  .section {
-    @apply py-20 px-4 md:px-8 lg:px-12 bg-background;
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
+           disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
   }
 
-  .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  .btn-primary {
+    background: var(--theme-colors-cyber-pink);
+    @apply text-white hover:brightness-110;
   }
 
+  .btn-secondary {
+    background: var(--theme-colors-cyber-cyan);
+    @apply text-black hover:brightness-110;
+  }
+
+  .card {
+    @apply glass rounded-lg p-6;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
+           ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium 
+           placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 
+           focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed 
+           disabled:opacity-50;
+  }
+}
+
+@layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r 
-           from-[hsl(var(--primary))] via-[hsl(var(--secondary))] 
-           to-[hsl(var(--accent))];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-pink)] 
+           via-[var(--theme-colors-cyber-purple)] to-[var(--theme-colors-cyber-cyan)];
   }
 }

@@ -1,29 +1,26 @@
 /* Root Variables */
 :root {
   /* Site Variables */
-  --primary: 220 60% 50%;
+  --primary: var(--theme-colors-cyber-pink);
   --primary-foreground: 220 28% 95%;
-  --secondary: 340 60% 50%;
-  --success: 120 60% 50%;
-  --warning: 35 90% 58%;
+  --secondary: var(--theme-colors-cyber-cyan);
+  --success: var(--theme-colors-cyber-green);
+  --warning: var(--theme-colors-cyber-yellow);
   --info: 208 90% 60%;
   --error: 0 85% 54%;
-  --background: 220 15% 8%;
+  --background: var(--theme-colors-cyber-dark);
   --foreground: 220 28% 95%;
 
   /* Admin Theme Variables */
-  --admin-background: 220 15% 8%;
+  --admin-background: var(--theme-colors-cyber-dark);
   --admin-foreground: 220 28% 95%;
-  --admin-primary: 280 70% 50%;
-  --admin-secondary: 320 70% 50%;
+  --admin-primary: var(--theme-colors-cyber-purple);
+  --admin-secondary: var(--theme-colors-cyber-cyan);
   --admin-accent: 190 80% 48%;
   --admin-error: 0 85% 54%;
-  --admin-warning: 35 90% 58%;
-  --admin-success: 145 63% 42%;
+  --admin-warning: var(--theme-colors-cyber-yellow);
+  --admin-success: var(--theme-colors-cyber-green);
   --admin-info: 208 90% 60%;
-
-  /* Cyberpunk Aqua Gradient */
-  --cyberpunk-aqua: 180 90% 60%;
 }
 
 /* Base Styles */
@@ -31,52 +28,88 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
+  background: var(--background);
+  color: hsl(var(--foreground));
 }
 
 .app {
-  @apply min-h-screen w-full relative bg-background text-foreground;
+  @apply min-h-screen w-full relative;
+  background: var(--background);
+  color: hsl(var(--foreground));
 }
 
-/* Admin-Specific Styling */
-.admin-container {
-  @apply bg-[hsl(var(--admin-background))] text-[hsl(var(--admin-foreground))] p-6 rounded-lg shadow-md;
-}
-
-.admin-header {
-  @apply text-[hsl(var(--admin-primary))] font-bold text-xl mb-4;
-}
-
-.admin-card {
-  @apply bg-[hsl(var(--admin-secondary))] text-[hsl(var(--admin-foreground))] p-4 rounded-lg hover:shadow-lg transition-all;
-}
-
-/* Glass Effect Variables */
+/* Glass Effect Base */
 .glass {
-  @apply bg-opacity-10 backdrop-blur-md border border-white/10;
+  background: var(--glass-background);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animation Classes */
+.animate-glow {
+  animation: glow var(--animation-slow) ease-in-out infinite alternate;
+}
+
+.animate-float {
+  animation: float var(--animation-very-slow) ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse var(--animation-slow) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Keyframes */
+@keyframes glow {
+  from {
+    box-shadow: 0 0 var(--glow-strength-sm) var(--glow-color-primary);
+  }
+  to {
+    box-shadow: 0 0 var(--glow-strength-lg) var(--glow-color-primary),
+                0 0 var(--glow-strength-md) var(--glow-color-secondary);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Utility Classes */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.text-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(
+    to right,
+    var(--theme-colors-cyber-pink),
+    var(--theme-colors-cyber-cyan)
+  );
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em hsl(var(--primary)));
+.hover-glow {
+  transition: all var(--animation-normal) ease-in-out;
 }
 
-.card {
-  @apply glass;
+.hover-glow:hover {
+  box-shadow: 0 0 var(--glow-strength-md) var(--glow-color-primary);
 }
 
-.read-the-docs {
-  @apply text-muted-foreground;
-}
-
+/* Section Layouts */
 .section {
   @apply py-20 px-4 md:px-8 lg:px-12;
+  background: var(--background);
 }
 
 .container {
