@@ -1,45 +1,75 @@
+/* Keyframe Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 @keyframes glow {
-  from {
-    text-shadow: 
-      0 0 10px rgba(255, 255, 255, 0.2),
-      0 0 20px rgba(255, 255, 255, 0.2),
-      0 0 30px rgba(255, 255, 255, 0.2);
+  0%, 100% { 
+    text-shadow: 0 0 10px hsla(var(--primary), 0.2),
+                 0 0 20px hsla(var(--primary), 0.2);
   }
-  to {
-    text-shadow: 
-      0 0 20px rgba(255, 255, 255, 0.4),
-      0 0 30px rgba(255, 255, 255, 0.4),
-      0 0 40px rgba(255, 255, 255, 0.4);
+  50% { 
+    text-shadow: 0 0 20px hsla(var(--primary), 0.4),
+                 0 0 30px hsla(var(--primary), 0.4);
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Animation Utilities */
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out forwards;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
 }
 
 .animate-glow {
-  animation: glow 2s ease-in-out infinite alternate;
+  animation: glow 2s ease-in-out infinite;
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+/* Transition Utilities */
+.transition-transform {
+  transition: transform 0.2s ease-out;
 }
 
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.transition-opacity {
+  transition: opacity 0.2s ease-out;
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+.transition-colors {
+  transition: background-color 0.2s ease-out,
+              border-color 0.2s ease-out,
+              color 0.2s ease-out;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.2s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-glow {
+  transition: box-shadow 0.2s ease-out;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px hsla(var(--primary), 0.3);
 }

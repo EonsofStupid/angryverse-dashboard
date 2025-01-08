@@ -1,37 +1,76 @@
 :root {
-  /* Core Theme Colors */
-  --background: 222 47% 11%;
-  --foreground: 0 0% 95%;
-  --card: 24 9.8% 10%;
-  --card-foreground: 0 0% 95%;
-  --popover: 0 0% 9%;
-  --popover-foreground: 0 0% 95%;
-  
-  /* Primary Colors */
-  --primary: 142 72% 29%;
-  --primary-foreground: 144 72% 95%;
-  --primary-light: 142 72% 39%;
-  --primary-dark: 142 72% 19%;
+  /* Core Theme Colors - HSL format for dynamic manipulation */
+  --primary-hue: 220;
+  --primary-saturation: 60%;
+  --primary-lightness: 50%;
+  --primary: var(--primary-hue) var(--primary-saturation) var(--primary-lightness);
   
   /* Secondary Colors */
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --secondary-light: 240 3.7% 25.9%;
-  --secondary-dark: 240 3.7% 5.9%;
+  --secondary-hue: 280;
+  --secondary-saturation: 70%;
+  --secondary-lightness: 50%;
+  --secondary: var(--secondary-hue) var(--secondary-saturation) var(--secondary-lightness);
   
-  /* UI States */
-  --muted: 0 0% 15%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 12 6.5% 15.1%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 85.7% 97.3%;
+  /* Accent Colors */
+  --accent-hue: 190;
+  --accent-saturation: 80%;
+  --accent-lightness: 48%;
+  --accent: var(--accent-hue) var(--accent-saturation) var(--accent-lightness);
   
   /* System Colors */
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 142 72% 29%;
+  --success-hue: 145;
+  --success-saturation: 63%;
+  --success-lightness: 42%;
+  --success: var(--success-hue) var(--success-saturation) var(--success-lightness);
   
-  /* Radii */
-  --radius: 0.5rem;
+  --warning-hue: 35;
+  --warning-saturation: 90%;
+  --warning-lightness: 58%;
+  --warning: var(--warning-hue) var(--warning-saturation) var(--warning-lightness);
+  
+  --error-hue: 0;
+  --error-saturation: 85%;
+  --error-lightness: 54%;
+  --error: var(--error-hue) var(--error-saturation) var(--error-lightness);
+  
+  /* Background & Foreground */
+  --background-hue: 220;
+  --background-saturation: 15%;
+  --background-lightness: 8%;
+  --background: var(--background-hue) var(--background-saturation) var(--background-lightness);
+  
+  --foreground-hue: 220;
+  --foreground-saturation: 28%;
+  --foreground-lightness: 95%;
+  --foreground: var(--foreground-hue) var(--foreground-saturation) var(--foreground-lightness);
+  
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  
+  /* Z-index Scale */
+  --z-negative: -1;
+  --z-elevate: 1;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-dropdown: 300;
+  --z-modal: 400;
+  --z-toast: 500;
 }

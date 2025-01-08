@@ -1,17 +1,40 @@
-@layer utilities {
-  .hover-glow {
-    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
-  }
+/* Button Interactions */
+.btn {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium 
+         transition-colors focus-visible:outline-none focus-visible:ring-2 
+         focus-visible:ring-ring focus-visible:ring-offset-2 
+         disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+}
 
-  .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
-  }
+.btn:active {
+  transform: translateY(1px);
+}
 
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
-  }
+/* Input Interactions */
+.input {
+  @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 
+         text-sm ring-offset-background file:border-0 file:bg-transparent 
+         file:text-sm file:font-medium placeholder:text-muted-foreground 
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+         focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+}
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary/60;
-  }
+/* Card Interactions */
+.card {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.card-hover {
+  @apply hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300;
+}
+
+/* Link Interactions */
+.link {
+  @apply text-primary hover:text-primary/80 transition-colors duration-200;
+}
+
+.link-underline {
+  @apply relative after:absolute after:bottom-0 after:left-0 after:w-full 
+         after:h-[1px] after:bg-current after:origin-left after:scale-x-0 
+         hover:after:scale-x-100 after:transition-transform after:duration-300;
 }

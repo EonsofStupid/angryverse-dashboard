@@ -15,6 +15,7 @@
 
   body {
     @apply bg-background text-foreground antialiased min-h-screen w-full;
+    font-family: var(--font-sans);
   }
 
   #root {
@@ -23,19 +24,17 @@
 }
 
 @layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
-  }
-
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
   .section {
     @apply py-20 px-4 md:px-8 lg:px-12 bg-background;
   }
 
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r 
+           from-[hsl(var(--primary))] via-[hsl(var(--secondary))] 
+           to-[hsl(var(--accent))];
   }
 }
