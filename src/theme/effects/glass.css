@@ -1,0 +1,44 @@
+:root {
+  /* Glass Effect Base Variables */
+  --glass-opacity: 0.1;
+  --glass-blur: 8px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Glass Effect Gradients */
+  --glass-bg: rgba(255, 255, 255, var(--glass-opacity));
+  --glass-gradient: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, calc(var(--glass-opacity) + 0.05)),
+    rgba(255, 255, 255, calc(var(--glass-opacity) - 0.05))
+  );
+  --glass-shine: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, calc(var(--glass-opacity) + 0.1)) 50%,
+    transparent 55%
+  );
+}
+
+.glass {
+  @apply bg-opacity-10 backdrop-blur-md border border-white/10 relative overflow-hidden;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+}
+
+.glass::before {
+  content: '';
+  @apply absolute inset-0 pointer-events-none;
+  background: var(--glass-gradient);
+}
+
+.glass::after {
+  content: '';
+  @apply absolute inset-0 pointer-events-none;
+  background: var(--glass-shine);
+  animation: shine 8s linear infinite;
+}
+
+@keyframes shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
