@@ -71,19 +71,23 @@ export interface DatabaseTheme extends Omit<Theme, 'configuration'> {
   advanced_effects?: Json;
 }
 
-// Type guard to check if a JSON object matches ThemeConfiguration
-export function isThemeConfiguration(obj: Json): obj is ThemeConfiguration {
-  if (typeof obj !== 'object' || obj === null) return false;
-  
-  const config = obj as any;
+// Helper function to check if an object has the required ThemeConfiguration structure
+function hasThemeConfigurationStructure(obj: any): obj is Record<string, Json> {
   return (
-    config.colors?.cyber &&
-    config.typography?.fonts &&
-    config.effects?.glass &&
-    typeof config.effects.glass.background === 'string' &&
-    typeof config.effects.glass.blur === 'string' &&
-    typeof config.effects.glass.border === 'string'
+    obj &&
+    typeof obj === 'object' &&
+    'colors' in obj &&
+    'typography' in obj &&
+    'effects' in obj &&
+    obj.effects &&
+    typeof obj.effects === 'object' &&
+    'glass' in obj.effects
   );
+}
+
+// Type guard to check if a JSON object matches ThemeConfiguration
+export function isThemeConfiguration(obj: Json): obj is Record<string, Json> {
+  return hasThemeConfigurationStructure(obj);
 }
 
 // Conversion function for database operations
@@ -94,6 +98,6 @@ export function convertDatabaseTheme(dbTheme: DatabaseTheme): Theme {
 
   return {
     ...dbTheme,
-    configuration: dbTheme.configuration as ThemeConfiguration
+    configuration: dbTheme.configuration as unknown as ThemeConfiguration
   };
 }
