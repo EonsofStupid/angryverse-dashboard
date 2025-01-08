@@ -2,7 +2,7 @@
 @import './theme/base/variables.css';
 @import './theme/effects/glass.css';
 @import './theme/effects/animations.css';
-@import './theme/effects/interactions.css';
+@import './theme/utilities/interactions.css';
 
 @tailwind base;
 @tailwind components;
