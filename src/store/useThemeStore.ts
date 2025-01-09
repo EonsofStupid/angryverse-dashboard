@@ -12,6 +12,12 @@ interface ThemeState {
   fetchPageTheme: (path: string) => Promise<void>;
 }
 
+const baseEffectState = {
+  enabled: true,
+  priority: 'database' as const,
+  source: 'database' as const,
+};
+
 const defaultTheme: Theme = {
   id: 'default',
   name: 'Default Theme',
@@ -49,51 +55,10 @@ const defaultTheme: Theme = {
     },
     effects: {
       glass: {
+        ...baseEffectState,
         background: 'rgba(0, 0, 0, 0.1)',
         blur: '8px',
         border: '1px solid rgba(255, 255, 255, 0.1)'
-      },
-      glow: {
-        strengths: {
-          sm: '10px',
-          md: '20px',
-          lg: '30px'
-        },
-        colors: {
-          primary: 'var(--theme-colors-cyber-pink)',
-          secondary: 'var(--theme-colors-cyber-cyan)',
-          accent: 'var(--theme-colors-cyber-purple)'
-        },
-        animation: {
-          pulse_opacity: 0.7,
-          pulse_scale: 1.2,
-          pulse_duration: '2s'
-        }
-      },
-      matrix: {
-        core: {
-          speed: '1.5s',
-          density: 20,
-          direction: 'down',
-          scale: 1
-        },
-        visual: {
-          color_primary: 'var(--theme-colors-cyber-green)',
-          color_secondary: 'var(--theme-colors-cyber-cyan)',
-          opacity: 0.7,
-          blur: '2px',
-          glow_strength: '5px'
-        },
-        characters: {
-          charset: '⌬⎔⌘⌥⎈⚡☢↯⚔☠⚒⯐⯑⯒❖◈▣▤▥▦',
-          font_size: '14px',
-          font_weight: 500
-        },
-        animation: {
-          stagger: '0.1s',
-          fade_distance: '100px',
-          trail_length: 20
-        }
       }
     }
   },
@@ -108,6 +73,14 @@ const convertDatabaseTheme = (dbTheme: any): Theme => {
   // Validate the configuration structure
   if (!configuration?.colors?.cyber || !configuration?.typography?.fonts || !configuration?.effects?.glass) {
     throw new Error('Invalid theme configuration structure');
+  }
+
+  // Ensure effect state properties are present
+  if (!configuration.effects.glass.enabled) {
+    configuration.effects.glass = {
+      ...baseEffectState,
+      ...configuration.effects.glass
+    };
   }
 
   return {
