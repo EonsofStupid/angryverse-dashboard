@@ -9,32 +9,32 @@ const features = [
     description: "Detailed guides on pop culture topics",
     icon: BookOpen,
     color: "text-[var(--theme-primary)]",
-    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/20",
-    glowColor: "var(--theme-primary)",
+    gradient: "from-[var(--theme-gray-neutral)] to-[var(--theme-gray-soft)]",
+    glowColor: "var(--theme-gray-silver)",
   },
   {
     title: "Updates",
     description: "Latest news and personal updates",
     icon: Rss,
     color: "text-[var(--theme-primary)]",
-    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-accent)]/20",
-    glowColor: "var(--theme-accent)",
+    gradient: "from-[var(--theme-gray-medium)] to-[var(--theme-gray-light)]",
+    glowColor: "var(--theme-gray-neutral)",
   },
   {
     title: "Blog",
     description: "In-depth articles and opinions",
     icon: Newspaper,
     color: "text-[var(--theme-primary)]",
-    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/20",
-    glowColor: "var(--theme-secondary)",
+    gradient: "from-[var(--theme-gray-dark)] to-[var(--theme-gray-medium)]",
+    glowColor: "var(--theme-gray-silver)",
   },
   {
     title: "Videos",
     description: "Video content and highlights",
     icon: Video,
     color: "text-[var(--theme-primary)]",
-    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-accent)]/20",
-    glowColor: "var(--theme-accent)",
+    gradient: "from-[var(--theme-gray-mid)] to-[var(--theme-gray-dark)]",
+    glowColor: "var(--theme-gray-neutral)",
   },
 ];
 
@@ -42,14 +42,21 @@ export const Features = () => {
   const { currentTheme } = useTheme();
   const { effects } = useThemeEffects();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [activeGlowColor, setActiveGlowColor] = useState("var(--theme-primary)");
+  const [activeGlowColor, setActiveGlowColor] = useState("var(--theme-gray-neutral)");
   const containerRef = useRef<HTMLDivElement>(null);
   
   const glassStyle = {
     background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
     backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
     border: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
-    transition: `all ${effects?.animations?.timing?.normal || '200ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
+    transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+    boxShadow: effects?.hover?.shadow_normal || '0 4px 6px rgba(0, 0, 0, 0.1)',
+  };
+
+  const hoverStyle = {
+    transform: `scale(${effects?.hover?.scale || 1.05})`,
+    boxShadow: effects?.hover?.shadow_hover || '0 8px 12px rgba(0, 0, 0, 0.15)',
+    transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.hover?.timing_function || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
   };
 
   useEffect(() => {
@@ -96,10 +103,13 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group cursor-pointer p-6 rounded-lg transition-all hover:scale-105"
-              style={glassStyle}
+              className="group cursor-pointer p-6 rounded-lg transition-all"
+              style={{
+                ...glassStyle,
+                '&:hover': hoverStyle,
+              }}
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
-              onMouseLeave={() => setActiveGlowColor("var(--theme-primary)")}
+              onMouseLeave={() => setActiveGlowColor("var(--theme-gray-neutral)")}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity rounded-lg`} />
               <div className="relative z-10">
