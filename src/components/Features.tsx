@@ -56,7 +56,7 @@ export const Features = () => {
   const hoverStyle = {
     transform: `scale(${effects?.hover?.scale || 1.05})`,
     boxShadow: effects?.hover?.shadow_hover || '0 8px 12px rgba(0, 0, 0, 0.15)',
-    transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.hover?.timing_function || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+    transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
   };
 
   useEffect(() => {
@@ -104,10 +104,7 @@ export const Features = () => {
             <div
               key={feature.title}
               className="group cursor-pointer p-6 rounded-lg transition-all"
-              style={{
-                ...glassStyle,
-                '&:hover': hoverStyle,
-              }}
+              style={glassStyle}
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
               onMouseLeave={() => setActiveGlowColor("var(--theme-gray-neutral)")}
             >

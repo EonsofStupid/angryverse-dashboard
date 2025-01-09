@@ -51,7 +51,7 @@ export const VisualDatabase = () => {
             transition={{
               duration: 0.8,
               delay: node.id * 0.2,
-              ease: effects?.hover?.timing_function || 'cubic-bezier(0.43, 0.13, 0.23, 0.96)'
+              ease: effects?.animations?.curves?.ease_out || 'cubic-bezier(0.43, 0.13, 0.23, 0.96)'
             }}
             whileHover={{
               scale: effects?.hover?.scale || 1.05,
@@ -108,7 +108,7 @@ export const VisualDatabase = () => {
               className="mt-4"
               style={{
                 background: `linear-gradient(135deg, var(--theme-gray-neutral), var(--theme-gray-soft))`,
-                transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.hover?.timing_function || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+                transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
               }}
             >
               <UserPlus className="w-4 h-4 mr-2" />
