@@ -1,36 +1,24 @@
-import type { Json } from '@/integrations/supabase/types';
+// Base Types
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeStatus = 'active' | 'inactive' | 'draft';
+export type EffectPriority = 'database' | 'fallback' | 'hybrid';
 
-export interface ThemeColors {
-  cyber: {
-    dark: string;
-    pink: {
-      DEFAULT: string;
-      hover: string;
-    };
-    cyan: {
-      DEFAULT: string;
-      hover: string;
-    };
-    purple: string;
-    green: {
-      DEFAULT: string;
-      hover: string;
-    };
-    yellow: {
-      DEFAULT: string;
-      hover: string;
-    };
-  };
+// CSS & Style Types
+export type CSSUnit = 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%';
+export type CSSValue<T extends CSSUnit = 'px'> = `${number}${T}`;
+export type CSSColor = `#${string}` | `rgb(${number}, ${number}, ${number})` | `rgba(${number}, ${number}, ${number}, ${number})`;
+export type TimingFunction = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | `cubic-bezier(${number}, ${number}, ${number}, ${number})`;
+export type Duration = `${number}ms` | `${number}s`;
+
+// Effect Base State
+export interface EffectState {
+  enabled: boolean;
+  priority: EffectPriority;
+  source: 'database' | 'fallback';
 }
 
-export interface ThemeTypography {
-  fonts: {
-    sans: string[];
-    cyber: string[];
-  };
-}
-
-export interface GlassEffects {
+// Glass Effect
+export interface GlassEffects extends EffectState {
   background: string;
   blur: string;
   border: string;
@@ -43,7 +31,8 @@ export interface GlassEffects {
   };
 }
 
-export interface GlowEffects {
+// Glow Effect
+export interface GlowEffects extends EffectState {
   strengths: {
     sm: string;
     md: string;
@@ -53,7 +42,6 @@ export interface GlowEffects {
     primary: string;
     secondary: string;
     accent: string;
-    custom?: string;
   };
   animation: {
     pulse_opacity: number;
@@ -62,7 +50,8 @@ export interface GlowEffects {
   };
 }
 
-export interface MatrixEffects {
+// Matrix Effect
+export interface MatrixEffects extends EffectState {
   core: {
     speed: string;
     density: number;
@@ -88,38 +77,72 @@ export interface MatrixEffects {
   };
 }
 
-export interface ThemeEffects {
-  glass: GlassEffects;
-  glow: GlowEffects;
-  matrix: MatrixEffects;
+// Theme Colors
+export interface ThemeColors {
+  cyber: {
+    dark: string;
+    pink: {
+      DEFAULT: string;
+      hover: string;
+    };
+    cyan: {
+      DEFAULT: string;
+      hover: string;
+    };
+    purple: string;
+    green: {
+      DEFAULT: string;
+      hover: string;
+    };
+    yellow: {
+      DEFAULT: string;
+      hover: string;
+    };
+  };
 }
 
+// Theme Typography
+export interface ThemeTypography {
+  fonts: {
+    sans: string[];
+    cyber: string[];
+  };
+}
+
+// Theme Effects
+export interface ThemeEffects {
+  glass: GlassEffects;
+  glow?: GlowEffects;
+  matrix?: MatrixEffects;
+}
+
+// Theme Configuration
 export interface ThemeConfiguration {
   colors: ThemeColors;
   typography: ThemeTypography;
   effects: ThemeEffects;
 }
 
+// Complete Theme Type
 export interface Theme {
   id: string;
   name: string;
   description?: string;
   is_default: boolean;
-  status: 'active' | 'inactive' | 'draft';
+  status: ThemeStatus;
   configuration: ThemeConfiguration;
   created_by?: string;
   created_at?: string;
   updated_at?: string;
 }
 
-// Helper type for database operations
+// Database Theme Type
 export interface DatabaseTheme extends Omit<Theme, 'configuration'> {
-  configuration: Json;
-  advanced_effects?: Json;
+  configuration: Record<string, any>;
 }
 
-// Helper function to check if an object has the required ThemeConfiguration structure
-function hasThemeConfigurationStructure(obj: any): obj is Record<string, Json> {
+// Type Guards and Validation
+export function isThemeConfiguration(obj: any): obj is ThemeConfiguration {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -132,12 +155,7 @@ function hasThemeConfigurationStructure(obj: any): obj is Record<string, Json> {
   );
 }
 
-// Type guard to check if a JSON object matches ThemeConfiguration
-export function isThemeConfiguration(obj: Json): obj is Record<string, Json> {
-  return hasThemeConfigurationStructure(obj);
-}
-
-// Conversion function for database operations
+// Conversion Utility
 export function convertDatabaseTheme(dbTheme: DatabaseTheme): Theme {
   if (!isThemeConfiguration(dbTheme.configuration)) {
     throw new Error('Invalid theme configuration structure');
@@ -145,6 +163,26 @@ export function convertDatabaseTheme(dbTheme: DatabaseTheme): Theme {
 
   return {
     ...dbTheme,
-    configuration: dbTheme.configuration as unknown as ThemeConfiguration
+    configuration: dbTheme.configuration as ThemeConfiguration
   };
 }
+
+// CSS Variable Mapping Types
+export type ThemeVariableMap = {
+  [K in keyof ThemeConfiguration]: K extends 'effects'
+    ? {
+        [E in keyof ThemeConfiguration['effects']]: `--theme-${string}`;
+      }
+    : `--theme-${string}`;
+};
+
+// Utility Types for Theme Operations
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export type ThemeUpdate = DeepPartial<ThemeConfiguration>;
+
+export type ThemeValidator = {
+  [K in keyof ThemeConfiguration]: (value: ThemeConfiguration[K]) => boolean;
+};
