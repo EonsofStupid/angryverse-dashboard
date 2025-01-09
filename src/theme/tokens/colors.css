@@ -1,52 +1,29 @@
 :root {
-  /* Base Scale */
-  --base-1: hsl(240, 20%, 99.02%);
-  --base-2: hsl(240, 20%, 98.04%);
-  --base-3: hsl(240, 11.11%, 94.71%);
-  --base-4: hsl(240, 9.52%, 91.76%);
-  --base-5: hsl(230, 10.71%, 89.02%);
-  --base-6: hsl(240, 10.14%, 86.47%);
-  --base-7: hsl(233.33, 9.89%, 82.16%);
-  --base-8: hsl(230.77, 10.24%, 75.10%);
-  --base-9: hsl(230.77, 5.94%, 57.06%);
-  --base-10: hsl(226.15, 5.39%, 52.75%);
-  --base-11: hsl(220, 5.88%, 40%);
-  --base-12: hsl(210, 12.5%, 12.55%);
-
-  /* Accent Scale */
-  --accent-1: hsl(210, 100%, 99.22%);
-  --accent-2: hsl(207.27, 100%, 97.84%);
-  --accent-3: hsl(205, 92.31%, 94.90%);
-  --accent-4: hsl(202.86, 100%, 91.76%);
-  --accent-5: hsl(205.57, 100%, 88.04%);
-  --accent-6: hsl(207, 93.02%, 83.14%);
-  --accent-7: hsl(206.54, 85.25%, 76.08%);
-  --accent-8: hsl(205.66, 81.92%, 65.29%);
-  --accent-9: hsl(206.12, 100%, 50%);
-  --accent-10: hsl(206.55, 95.92%, 48.04%);
-  --accent-11: hsl(207.98, 88.13%, 42.94%);
-  --accent-12: hsl(216.14, 70.94%, 22.94%);
+  /* Core Theme Colors */
+  --theme-colors-cyber-dark: #0a0a0f;
+  --theme-colors-cyber-pink: hsl(330, 100%, 50%);
+  --theme-colors-cyber-pink-hover: hsl(330, 100%, 55%);
+  --theme-colors-cyber-cyan: hsl(180, 100%, 50%);
+  --theme-colors-cyber-cyan-hover: hsl(180, 100%, 60%);
+  --theme-colors-cyber-purple: hsl(280, 70%, 50%);
+  --theme-colors-cyber-green: hsl(145, 63%, 42%);
+  --theme-colors-cyber-green-hover: hsl(145, 63%, 47%);
+  --theme-colors-cyber-yellow: hsl(35, 90%, 58%);
+  --theme-colors-cyber-yellow-hover: hsl(35, 90%, 63%);
 
   /* Semantic Colors */
-  --background: hsl(240, 20%, 99.02%);
-  --foreground: hsl(210, 12.5%, 12.55%);
-  --card: hsl(240, 20%, 98.04%);
-  --card-foreground: hsl(210, 12.5%, 12.55%);
-  --popover: hsl(240, 20%, 99.02%);
-  --popover-foreground: hsl(210, 12.5%, 12.55%);
-  --primary: hsl(0, 0%, 0%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(240, 20%, 98.04%);
-  --secondary-foreground: hsl(220, 5.88%, 40%);
-  --muted: hsl(240, 20%, 98.04%);
-  --muted-foreground: hsl(220, 5.88%, 40%);
-  --accent: hsl(206.55, 95.92%, 48.04%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(358.48, 69.30%, 55.29%);
-  --destructive-foreground: hsl(350.65, 62.60%, 24.12%);
-  --border: hsl(240, 10.14%, 86.47%);
-  --input: hsl(240, 10.14%, 86.47%);
-  --ring: hsl(240, 10.14%, 86.47%);
-  --success: hsl(151, 55%, 45%);
-  --success-foreground: hsl(210, 40%, 98%);
+  --theme-primary: var(--theme-colors-cyber-pink);
+  --theme-primary-hover: var(--theme-colors-cyber-pink-hover);
+  --theme-secondary: var(--theme-colors-cyber-cyan);
+  --theme-secondary-hover: var(--theme-colors-cyber-cyan-hover);
+  --theme-accent: var(--theme-colors-cyber-purple);
+  --theme-success: var(--theme-colors-cyber-green);
+  --theme-warning: var(--theme-colors-cyber-yellow);
+  --theme-background: var(--theme-colors-cyber-dark);
+  --theme-foreground: 220 28% 95%;
+
+  /* Gradient Maps */
+  --gradient-primary: linear-gradient(to right, var(--theme-primary), var(--theme-secondary));
+  --gradient-accent: linear-gradient(to right, var(--theme-accent), var(--theme-primary));
+  --gradient-cyber: linear-gradient(45deg, var(--theme-primary), var(--theme-accent), var(--theme-secondary));
 }
