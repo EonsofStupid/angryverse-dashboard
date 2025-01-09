@@ -2,6 +2,8 @@ import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 import { useState, useRef, useEffect } from "react";
+import type { HoverConfig, FilterValue } from "@/types/theme/utils/interactions";
+import type { CSSColor } from "@/types/theme/utils/css";
 
 const features = [
   {
@@ -10,7 +12,7 @@ const features = [
     icon: BookOpen,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-neutral)] to-[var(--theme-gray-soft)]",
-    glowColor: "var(--theme-gray-silver)",
+    glowColor: "var(--theme-gray-silver)" as CSSColor,
   },
   {
     title: "Updates",
@@ -18,7 +20,7 @@ const features = [
     icon: Rss,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-medium)] to-[var(--theme-gray-light)]",
-    glowColor: "var(--theme-gray-neutral)",
+    glowColor: "var(--theme-gray-neutral)" as CSSColor,
   },
   {
     title: "Blog",
@@ -26,7 +28,7 @@ const features = [
     icon: Newspaper,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-dark)] to-[var(--theme-gray-medium)]",
-    glowColor: "var(--theme-gray-silver)",
+    glowColor: "var(--theme-gray-silver)" as CSSColor,
   },
   {
     title: "Videos",
@@ -34,7 +36,7 @@ const features = [
     icon: Video,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-mid)] to-[var(--theme-gray-dark)]",
-    glowColor: "var(--theme-gray-neutral)",
+    glowColor: "var(--theme-gray-neutral)" as CSSColor,
   },
 ];
 
@@ -42,21 +44,41 @@ export const Features = () => {
   const { currentTheme } = useTheme();
   const { effects } = useThemeEffects();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [activeGlowColor, setActiveGlowColor] = useState("var(--theme-gray-neutral)");
+  const [activeGlowColor, setActiveGlowColor] = useState<CSSColor>("var(--theme-gray-neutral)");
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
+  const hoverConfig: HoverConfig = {
+    scale: effects?.hover?.scale || 1.05,
+    transitions: [
+      {
+        property: 'transform',
+        duration: effects?.animations?.timing?.normal || '300ms',
+        easing: effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'
+      },
+      {
+        property: 'box-shadow',
+        duration: effects?.animations?.timing?.normal || '300ms',
+        easing: effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'
+      }
+    ]
+  };
+
+  const glowEffect: FilterValue = `drop-shadow(0 0 ${effects?.hover?.glow_strength || '10px'} ${activeGlowColor})`;
+
   const glassStyle = {
     background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
     backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
     border: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
-    transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+    transition: hoverConfig.transitions?.map(t => 
+      `${t.property} ${t.duration} ${t.easing}`
+    ).join(', '),
     boxShadow: effects?.hover?.shadow_normal || '0 4px 6px rgba(0, 0, 0, 0.1)',
   };
 
   const hoverStyle = {
-    transform: `scale(${effects?.hover?.scale || 1.05})`,
+    transform: `scale(${hoverConfig.scale})`,
     boxShadow: effects?.hover?.shadow_hover || '0 8px 12px rgba(0, 0, 0, 0.15)',
-    transition: `all ${effects?.hover?.transition_duration || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+    filter: glowEffect,
   };
 
   useEffect(() => {
