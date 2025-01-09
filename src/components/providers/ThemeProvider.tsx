@@ -86,6 +86,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeTheme = async () => {
       try {
+        console.log('Fetching theme...');
         // Fetch theme based on route type
         const { data: themeData, error: themeError } = await supabase
           .from('themes')
@@ -93,12 +94,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           .eq(isAdminRoute ? 'name' : 'is_default', isAdminRoute ? 'Admin Theme' : true)
           .maybeSingle();
 
-        if (themeError) throw themeError;
+        if (themeError) {
+          console.error('Error fetching theme:', themeError);
+          throw themeError;
+        }
 
         if (themeData) {
           console.log('Fetched theme data:', themeData);
           const convertedTheme = convertDatabaseTheme(themeData as DatabaseTheme);
           setCurrentTheme(convertedTheme);
+        } else {
+          console.log('No theme found, checking page-specific theme...');
         }
 
         // If no theme found, check for page-specific theme
@@ -112,7 +118,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
             .eq('page_path', location.pathname)
             .maybeSingle();
 
-          if (pageError) throw pageError;
+          if (pageError) {
+            console.error('Error fetching page theme:', pageError);
+            throw pageError;
+          }
 
           if (pageTheme?.themes) {
             console.log('Fetched page-specific theme:', pageTheme.themes);
