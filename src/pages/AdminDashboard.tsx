@@ -12,12 +12,11 @@ import { CommentsManagement } from "@/components/admin/content/CommentsManagemen
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { PortalContent } from "@/components/portal/PortalContent";
 import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
+import { Documentation } from "@/components/admin/documentation/Documentation";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
-
-// ... keep existing code (imports and initial setup)
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
@@ -55,7 +54,6 @@ const AdminDashboard = () => {
     return null;
   }
 
-  // Check if we're on the portal route
   const isPortalRoute = location.pathname.includes('/portal');
 
   return (
@@ -81,6 +79,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="database">Database</TabsTrigger>
               <TabsTrigger value="themes">Themes</TabsTrigger>
+              <TabsTrigger value="documentation">Documentation</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
               <TabsTrigger value="portal">Portal</TabsTrigger>
             </TabsList>
@@ -117,6 +116,10 @@ const AdminDashboard = () => {
               <ThemeManagement />
             </TabsContent>
             
+            <TabsContent value="documentation">
+              <Documentation />
+            </TabsContent>
+
             <TabsContent value="settings">
               <Settings />
             </TabsContent>

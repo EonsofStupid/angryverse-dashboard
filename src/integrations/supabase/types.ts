@@ -290,6 +290,86 @@ export type Database = {
           },
         ]
       }
+      documentation: {
+        Row: {
+          category: Database["public"]["Enums"]["doc_category"]
+          content: Json
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_published: boolean | null
+          metadata: Json | null
+          slug: string
+          title: string
+          updated_at: string | null
+          version: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["doc_category"]
+          content: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_published?: boolean | null
+          metadata?: Json | null
+          slug: string
+          title: string
+          updated_at?: string | null
+          version?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["doc_category"]
+          content?: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_published?: boolean | null
+          metadata?: Json | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+          version?: string | null
+        }
+        Relationships: []
+      }
+      documentation_sections: {
+        Row: {
+          content: Json
+          created_at: string | null
+          doc_id: string | null
+          id: string
+          order_index: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          doc_id?: string | null
+          id?: string
+          order_index: number
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          doc_id?: string | null
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_sections_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "documentation"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media: {
         Row: {
           alt_text: string | null
@@ -1063,6 +1143,7 @@ export type Database = {
       }
     }
     Enums: {
+      doc_category: "themes" | "rls" | "authorization"
       theme_status: "active" | "inactive" | "draft"
       user_role: "user" | "admin"
     }
