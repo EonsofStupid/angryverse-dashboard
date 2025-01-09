@@ -138,7 +138,8 @@ export interface Theme {
 
 // Database Theme Type
 export interface DatabaseTheme extends Omit<Theme, 'configuration'> {
-  configuration: Record<string, any>;
+  configuration: Record<string, any> | string;
+  advanced_effects?: Record<string, any> | string;
 }
 
 // Type Guards and Validation
@@ -157,13 +158,28 @@ export function isThemeConfiguration(obj: any): obj is ThemeConfiguration {
 
 // Conversion Utility
 export function convertDatabaseTheme(dbTheme: DatabaseTheme): Theme {
-  if (!isThemeConfiguration(dbTheme.configuration)) {
+  // Parse configuration if it's a string
+  const configuration = typeof dbTheme.configuration === 'string'
+    ? JSON.parse(dbTheme.configuration)
+    : dbTheme.configuration;
+
+  if (!isThemeConfiguration(configuration)) {
     throw new Error('Invalid theme configuration structure');
+  }
+
+  // Ensure effect state properties are present
+  if (!configuration.effects.glass.enabled) {
+    configuration.effects.glass = {
+      enabled: true,
+      priority: 'database' as const,
+      source: 'database' as const,
+      ...configuration.effects.glass
+    };
   }
 
   return {
     ...dbTheme,
-    configuration: dbTheme.configuration as ThemeConfiguration
+    configuration
   };
 }
 

@@ -55,51 +55,6 @@ export const createThemeVariables = (theme: Theme): void => {
     root.style.setProperty('--glass-blur', blur);
     root.style.setProperty('--glass-border', border);
   }
-
-  // Apply glow effect variables
-  if (effects.glow) {
-    const { strengths, colors, animation } = effects.glow;
-    
-    // Strengths
-    Object.entries(strengths).forEach(([key, value]) => {
-      root.style.setProperty(`--glow-strength-${key}`, value);
-    });
-    
-    // Colors
-    Object.entries(colors).forEach(([key, value]) => {
-      root.style.setProperty(`--glow-color-${key}`, value);
-    });
-    
-    // Animation
-    root.style.setProperty('--glow-pulse-opacity', animation.pulse_opacity.toString());
-    root.style.setProperty('--glow-pulse-scale', animation.pulse_scale.toString());
-    root.style.setProperty('--glow-pulse-duration', animation.pulse_duration);
-  }
-
-  // Apply matrix effect variables
-  if (effects.matrix) {
-    const { core, visual, characters, animation } = effects.matrix;
-    
-    // Core
-    Object.entries(core).forEach(([key, value]) => {
-      root.style.setProperty(`--matrix-${key}`, value.toString());
-    });
-    
-    // Visual
-    Object.entries(visual).forEach(([key, value]) => {
-      root.style.setProperty(`--matrix-${key.replace('_', '-')}`, value.toString());
-    });
-    
-    // Characters
-    Object.entries(characters).forEach(([key, value]) => {
-      root.style.setProperty(`--matrix-${key}`, value.toString());
-    });
-    
-    // Animation
-    Object.entries(animation).forEach(([key, value]) => {
-      root.style.setProperty(`--matrix-animation-${key.replace('_', '-')}`, value.toString());
-    });
-  }
 };
 
 export const getThemeFromPath = async (path: string): Promise<Theme> => {
@@ -114,7 +69,18 @@ export const getThemeFromPath = async (path: string): Promise<Theme> => {
       .maybeSingle();
 
     if (pageTheme?.themes) {
-      return convertDatabaseTheme(pageTheme.themes);
+      // Parse the JSON configuration if it's a string
+      const parsedTheme = {
+        ...pageTheme.themes,
+        configuration: typeof pageTheme.themes.configuration === 'string'
+          ? JSON.parse(pageTheme.themes.configuration)
+          : pageTheme.themes.configuration,
+        advanced_effects: typeof pageTheme.themes.advanced_effects === 'string'
+          ? JSON.parse(pageTheme.themes.advanced_effects)
+          : pageTheme.themes.advanced_effects
+      };
+
+      return convertDatabaseTheme(parsedTheme);
     }
 
     return defaultTheme;

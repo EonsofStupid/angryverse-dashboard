@@ -14,7 +14,18 @@ export const importThemeFromDatabase = async (themeId: string): Promise<Theme> =
     if (error) throw error;
     
     if (theme) {
-      return convertDatabaseTheme(theme);
+      // Parse the JSON configuration if it's a string
+      const parsedTheme = {
+        ...theme,
+        configuration: typeof theme.configuration === 'string' 
+          ? JSON.parse(theme.configuration) 
+          : theme.configuration,
+        advanced_effects: typeof theme.advanced_effects === 'string'
+          ? JSON.parse(theme.advanced_effects)
+          : theme.advanced_effects
+      };
+      
+      return convertDatabaseTheme(parsedTheme);
     }
 
     return defaultTheme;
@@ -35,13 +46,24 @@ export const importThemePreset = async (presetId: string): Promise<Theme> => {
     if (error) throw error;
     
     if (preset) {
+      // Parse the JSON configuration if it's a string
+      const parsedPreset = {
+        ...preset,
+        configuration: typeof preset.configuration === 'string'
+          ? JSON.parse(preset.configuration)
+          : preset.configuration,
+        advanced_effects: typeof preset.advanced_effects === 'string'
+          ? JSON.parse(preset.advanced_effects)
+          : preset.advanced_effects
+      };
+
       return convertDatabaseTheme({
         id: preset.id,
         name: preset.name,
         description: preset.description || '',
         is_default: false,
         status: 'active',
-        configuration: preset.configuration,
+        configuration: parsedPreset.configuration,
         created_at: preset.created_at,
         updated_at: preset.updated_at
       });
