@@ -33,6 +33,10 @@ export interface ThemeEffects {
     lift: CSSValue;
     glow_strength: string;
     transition_duration: Duration;
+    glow_color?: string;
+    glow_opacity?: number;
+    glow_spread?: string;
+    glow_blur?: string;
   };
   card?: {
     background_opacity: number;

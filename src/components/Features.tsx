@@ -47,7 +47,11 @@ export const Features = () => {
   const cardHoverStyle = {
     '--hover-scale': effects?.hover?.scale || '1.05',
     '--hover-lift': effects?.hover?.lift || '-4px',
-    '--hover-glow': effects?.hover?.glow_strength || '10px',
+    '--hover-glow-strength': effects?.hover?.glow_strength || '10px',
+    '--hover-glow-color': effects?.hover?.glow_color || 'var(--theme-primary)',
+    '--hover-glow-opacity': effects?.hover?.glow_opacity || '0.5',
+    '--hover-glow-spread': effects?.hover?.glow_spread || '4px',
+    '--hover-glow-blur': effects?.hover?.glow_blur || '8px',
     '--transition-duration': effects?.hover?.transition_duration || '300ms',
   } as React.CSSProperties;
 
@@ -61,13 +65,19 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group cursor-pointer p-6 rounded-lg transition-all"
+              className="group cursor-pointer p-6 rounded-lg transition-all hover:transform hover:scale-[var(--hover-scale)] hover:translate-y-[var(--hover-lift)]"
               style={{
                 ...glassStyle,
                 ...cardHoverStyle,
               }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity rounded-lg`} />
+              <div 
+                className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity rounded-lg`}
+                style={{
+                  boxShadow: `0 0 var(--hover-glow-blur) var(--hover-glow-spread) var(--hover-glow-color)`,
+                  opacity: 'var(--hover-glow-opacity)',
+                }}
+              />
               <div className="relative z-10">
                 <feature.icon
                   className={`h-12 w-12 ${feature.color} mb-4 transform transition-transform duration-[var(--transition-duration)] group-hover:scale-110`}

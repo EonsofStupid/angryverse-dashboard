@@ -32,11 +32,25 @@ export const useThemeEffects = () => {
 
     // Apply hover effect variables if present
     if (effects.hover) {
-      const { scale, lift, glow_strength, transition_duration } = effects.hover;
+      const { 
+        scale, 
+        lift, 
+        glow_strength, 
+        transition_duration,
+        glow_color,
+        glow_opacity,
+        glow_spread,
+        glow_blur
+      } = effects.hover;
+      
       root.style.setProperty('--hover-scale', String(scale));
       root.style.setProperty('--hover-lift', lift);
-      root.style.setProperty('--hover-glow', glow_strength);
+      root.style.setProperty('--hover-glow-strength', glow_strength);
       root.style.setProperty('--hover-transition', transition_duration);
+      root.style.setProperty('--hover-glow-color', glow_color || 'var(--theme-primary)');
+      root.style.setProperty('--hover-glow-opacity', String(glow_opacity || 0.5));
+      root.style.setProperty('--hover-glow-spread', glow_spread || '4px');
+      root.style.setProperty('--hover-glow-blur', glow_blur || '8px');
     }
 
     return () => {
@@ -53,8 +67,12 @@ export const useThemeEffects = () => {
       });
       root.style.removeProperty('--hover-scale');
       root.style.removeProperty('--hover-lift');
-      root.style.removeProperty('--hover-glow');
+      root.style.removeProperty('--hover-glow-strength');
       root.style.removeProperty('--hover-transition');
+      root.style.removeProperty('--hover-glow-color');
+      root.style.removeProperty('--hover-glow-opacity');
+      root.style.removeProperty('--hover-glow-spread');
+      root.style.removeProperty('--hover-glow-blur');
     };
   }, [effects]);
 
