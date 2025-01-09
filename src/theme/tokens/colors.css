@@ -1,5 +1,5 @@
 :root {
-  /* Brand Colors */
+  /* Core Theme Colors */
   --theme-colors-cyber-dark: #0a0a0f;
   --theme-colors-cyber-pink: hsl(330, 100%, 50%);
   --theme-colors-cyber-pink-hover: hsl(330, 100%, 55%);
@@ -26,10 +26,4 @@
   --gradient-primary: linear-gradient(to right, var(--theme-primary), var(--theme-secondary));
   --gradient-accent: linear-gradient(to right, var(--theme-accent), var(--theme-primary));
   --gradient-cyber: linear-gradient(45deg, var(--theme-primary), var(--theme-accent), var(--theme-secondary));
-
-  /* Duotone Pairs */
-  --duotone-primary: var(--theme-primary);
-  --duotone-secondary: var(--theme-secondary);
-  --duotone-highlight: var(--theme-accent);
-  --duotone-shadow: var(--theme-colors-cyber-dark);
 }

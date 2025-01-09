@@ -21,6 +21,11 @@
   --glow-color-primary: var(--theme-colors-cyber-pink);
   --glow-color-secondary: var(--theme-colors-cyber-cyan);
   
+  /* Glow Variations */
+  --glow-opacity-light: 0.3;
+  --glow-opacity-medium: 0.5;
+  --glow-opacity-heavy: 0.7;
+
   /* Animation Timings */
   --animation-fastest: 50ms;
   --animation-fast: 100ms;

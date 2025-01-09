@@ -3,15 +3,15 @@
 @import './typography.css';
 @import './spacing.css';
 @import './layout.css';
+@import './effects.css';
 
-/* Effects Tokens */
-@import '../effects/glass/tokens.css';
-@import '../effects/glow/tokens.css';
-@import '../effects/animations/tokens.css';
-@import '../effects/special/tokens.css';
-@import '../effects/textures/tokens.css';
+/* Theme Variations */
+:root[data-theme="dark"] {
+  --theme-background: var(--theme-colors-cyber-dark);
+  --theme-foreground: 220 28% 95%;
+}
 
-/* Interaction Tokens */
-@import '../interactions/hover/tokens.css';
-@import '../interactions/scroll/tokens.css';
-@import '../interactions/cursor/tokens.css';
+:root[data-theme="light"] {
+  --theme-background: 220 28% 95%;
+  --theme-foreground: var(--theme-colors-cyber-dark);
+}
