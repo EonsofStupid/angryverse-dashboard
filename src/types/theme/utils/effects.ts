@@ -1,41 +1,43 @@
-import { CSSValue, CSSColor } from './css';
+import { CSSValue } from './css';
 import { Duration, EasingFunction } from './animation';
 
-// Glass Effect
-export type GlassEffectLevel = 'none' | 'light' | 'medium' | 'heavy';
-export type GlassEffectStyle = {
+export interface ThemeEffects {
+  glass: {
     background: string;
-    blur: CSSValue;
-    opacity: number;
+    blur: string;
     border: string;
-};
-
-// Glow Effect
-export type GlowIntensity = 'subtle' | 'medium' | 'strong';
-export type GlowConfig = {
-    color: CSSColor;
-    intensity: GlowIntensity;
-    radius: CSSValue;
-    animation?: {
-        duration: Duration;
-        easing: EasingFunction;
+    blur_levels?: string[];
+    opacity_levels?: number[];
+    border_styles?: {
+      light: string;
+      medium: string;
+      heavy: string;
     };
-};
-
-// Matrix Effect
-export type MatrixDensity = 'sparse' | 'normal' | 'dense';
-export type MatrixConfig = {
-    color: CSSColor;
-    density: MatrixDensity;
-    speed: Duration;
-    opacity: number;
-    characters?: string[];
-};
-
-// Holographic Effect
-export type HolographicConfig = {
-    intensity: number;
-    angle: number;
-    shimmer: number;
-    rainbow: boolean;
-};
+  };
+  animations?: {
+    timing: {
+      fast: Duration;
+      normal: Duration;
+      slow: Duration;
+      very_slow: Duration;
+    };
+    curves: {
+      linear: EasingFunction;
+      ease_out: EasingFunction;
+      ease_in: EasingFunction;
+      ease_in_out: EasingFunction;
+    };
+  };
+  hover?: {
+    scale: number;
+    lift: CSSValue;
+    glow_strength: string;
+    transition_duration: Duration;
+  };
+  card?: {
+    background_opacity: number;
+    hover_opacity: number;
+    shadow: string;
+    hover_shadow: string;
+  };
+}
