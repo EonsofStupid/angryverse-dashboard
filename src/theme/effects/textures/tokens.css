@@ -1,0 +1,25 @@
+:root {
+  /* Noise */
+  --noise-opacity: 0.4;
+  --noise-blend-mode: overlay;
+  --noise-filter-scale: 100;
+  
+  /* Grid */
+  --grid-size: 20px;
+  --grid-line-color: rgba(255, 255, 255, 0.1);
+  --grid-line-width: 1px;
+  
+  /* Patterns */
+  --pattern-scale: 20;
+  --pattern-opacity: 0.15;
+  --pattern-blend: overlay;
+  
+  /* Overlays */
+  --overlay-gradient: linear-gradient(45deg, 
+    var(--theme-primary) 0%, 
+    transparent 40%,
+    transparent 60%,
+    var(--theme-secondary) 100%
+  );
+  --overlay-opacity: 0.1;
+}

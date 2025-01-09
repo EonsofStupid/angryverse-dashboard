@@ -1,0 +1,23 @@
+:root {
+  /* Magnetic */
+  --magnetic-strength: 1;
+  --magnetic-radius: 100px;
+  --magnetic-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --magnetic-duration: 0.3s;
+  
+  /* Tilt */
+  --tilt-perspective: 1000px;
+  --tilt-scale: 1.05;
+  --tilt-amount: 10deg;
+  --tilt-reset-duration: 0.3s;
+  
+  /* Lift */
+  --lift-amount: -10px;
+  --lift-scale: 1.05;
+  --lift-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  
+  /* Scale */
+  --scale-amount: 1.05;
+  --scale-duration: 0.2s;
+  --scale-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,27 @@
+:root {
+  /* Glass Base */
+  --glass-background: rgba(10, 10, 15, 0.5);
+  --glass-blur: 12px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Frost Levels */
+  --glass-frost-light: rgba(255, 255, 255, 0.1);
+  --glass-frost-medium: rgba(255, 255, 255, 0.15);
+  --glass-frost-heavy: rgba(255, 255, 255, 0.2);
+  
+  /* Tint Colors */
+  --glass-tint-primary: rgba(var(--theme-primary), 0.2);
+  --glass-tint-secondary: rgba(var(--theme-secondary), 0.2);
+  --glass-tint-accent: rgba(var(--theme-accent), 0.2);
+  
+  /* Reflection Strength */
+  --glass-reflection-light: 0.1;
+  --glass-reflection-medium: 0.15;
+  --glass-reflection-strong: 0.2;
+  
+  /* Patterns */
+  --glass-pattern-dots: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+  --glass-pattern-lines: repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 1px, transparent 1px, transparent 6px);
+  --glass-pattern-grid: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
+}

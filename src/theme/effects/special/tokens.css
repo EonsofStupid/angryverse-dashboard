@@ -1,0 +1,26 @@
+:root {
+  /* Matrix Rain */
+  --matrix-color: var(--theme-primary);
+  --matrix-font-size: 14px;
+  --matrix-speed: 1.5s;
+  --matrix-density: 20;
+  
+  /* Holographic */
+  --holographic-hue-rotate: 180deg;
+  --holographic-saturation: 70%;
+  --holographic-brightness: 130%;
+  --holographic-opacity: 0.5;
+  
+  /* Glitch */
+  --glitch-offset: 2px;
+  --glitch-gap: 1ch;
+  --glitch-duration: 3s;
+  --glitch-color-1: var(--theme-primary);
+  --glitch-color-2: var(--theme-secondary);
+  
+  /* Cyberpunk */
+  --cyber-neon-blur: 2px;
+  --cyber-neon-intensity: 2;
+  --cyber-scan-opacity: 0.5;
+  --cyber-scan-speed: 4s;
+}

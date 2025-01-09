@@ -1,0 +1,18 @@
+:root {
+  /* Triggers */
+  --scroll-trigger-threshold: 0.2;
+  --scroll-trigger-offset: 100px;
+  --scroll-trigger-duration: 0.5s;
+  
+  /* Parallax */
+  --parallax-perspective: 1000px;
+  --parallax-scale: 1.2;
+  --parallax-distance: 100px;
+  --parallax-rotation: 15deg;
+  
+  /* Reveal */
+  --reveal-distance: 50px;
+  --reveal-duration: 0.6s;
+  --reveal-stagger: 0.1s;
+  --reveal-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}

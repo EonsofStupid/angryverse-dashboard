@@ -1,0 +1,28 @@
+:root {
+  /* Timing */
+  --animation-fastest: 50ms;
+  --animation-fast: 100ms;
+  --animation-normal: 200ms;
+  --animation-slow: 300ms;
+  --animation-slower: 400ms;
+  --animation-slowest: 500ms;
+  --animation-very-slow: 1000ms;
+
+  /* Curves */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Keyframes Config */
+  --fade-start-opacity: 0;
+  --fade-end-opacity: 1;
+  --scale-start: 0.95;
+  --scale-end: 1;
+  --slide-distance: 20px;
+  
+  /* Transitions */
+  --transition-property: all;
+  --transition-duration: var(--animation-normal);
+  --transition-timing: var(--ease-out);
+}

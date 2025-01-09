@@ -1,0 +1,21 @@
+:root {
+  /* Glow Strengths */
+  --glow-strength-sm: 10px;
+  --glow-strength-md: 20px;
+  --glow-strength-lg: 30px;
+  
+  /* Glow Colors */
+  --glow-color-primary: var(--theme-primary);
+  --glow-color-secondary: var(--theme-secondary);
+  --glow-color-accent: var(--theme-accent);
+  
+  /* Multi-layer Glow */
+  --glow-multi-primary: 0 0 var(--glow-strength-sm) var(--glow-color-primary);
+  --glow-multi-secondary: 0 0 var(--glow-strength-md) var(--glow-color-secondary);
+  --glow-multi-accent: 0 0 var(--glow-strength-lg) var(--glow-color-accent);
+  
+  /* Animated Glow */
+  --glow-pulse-opacity: 0.7;
+  --glow-pulse-scale: 1.2;
+  --glow-pulse-duration: 2s;
+}
