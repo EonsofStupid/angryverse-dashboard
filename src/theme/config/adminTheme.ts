@@ -1,5 +1,11 @@
 import type { Theme, ThemeConfiguration } from '@/types/theme';
 
+const baseEffectState = {
+  enabled: true,
+  priority: 'database' as const,
+  source: 'database' as const,
+};
+
 export const adminThemeConfig: ThemeConfiguration = {
   colors: {
     cyber: {
@@ -31,6 +37,7 @@ export const adminThemeConfig: ThemeConfiguration = {
   },
   effects: {
     glass: {
+      ...baseEffectState,
       background: 'rgba(0, 0, 0, 0.1)',
       blur: '8px',
       border: '1px solid rgba(255, 255, 255, 0.1)'
