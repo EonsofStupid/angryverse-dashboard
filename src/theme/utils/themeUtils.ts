@@ -40,22 +40,66 @@ export const createThemeVariables = (theme: Theme): void => {
       root.style.setProperty(`--theme-colors-cyber-${key}`, value);
     } else if (typeof value === 'object' && value !== null) {
       Object.entries(value).forEach(([subKey, subValue]) => {
-        if (typeof subValue === 'string') {
-          root.style.setProperty(
-            `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
-            subValue
-          );
-        }
+        root.style.setProperty(
+          `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
+          subValue as string
+        );
       });
     }
   });
 
   // Apply glass effect variables
-  Object.entries(effects.glass).forEach(([key, value]) => {
-    if (typeof value === 'string') {
-      root.style.setProperty(`--theme-glass-${key}`, value);
-    }
-  });
+  if (effects.glass) {
+    const { background, blur, border } = effects.glass;
+    root.style.setProperty('--glass-background', background);
+    root.style.setProperty('--glass-blur', blur);
+    root.style.setProperty('--glass-border', border);
+  }
+
+  // Apply glow effect variables
+  if (effects.glow) {
+    const { strengths, colors, animation } = effects.glow;
+    
+    // Strengths
+    Object.entries(strengths).forEach(([key, value]) => {
+      root.style.setProperty(`--glow-strength-${key}`, value);
+    });
+    
+    // Colors
+    Object.entries(colors).forEach(([key, value]) => {
+      root.style.setProperty(`--glow-color-${key}`, value);
+    });
+    
+    // Animation
+    root.style.setProperty('--glow-pulse-opacity', animation.pulse_opacity.toString());
+    root.style.setProperty('--glow-pulse-scale', animation.pulse_scale.toString());
+    root.style.setProperty('--glow-pulse-duration', animation.pulse_duration);
+  }
+
+  // Apply matrix effect variables
+  if (effects.matrix) {
+    const { core, visual, characters, animation } = effects.matrix;
+    
+    // Core
+    Object.entries(core).forEach(([key, value]) => {
+      root.style.setProperty(`--matrix-${key}`, value.toString());
+    });
+    
+    // Visual
+    Object.entries(visual).forEach(([key, value]) => {
+      root.style.setProperty(`--matrix-${key.replace('_', '-')}`, value.toString());
+    });
+    
+    // Characters
+    Object.entries(characters).forEach(([key, value]) => {
+      root.style.setProperty(`--matrix-${key}`, value.toString());
+    });
+    
+    // Animation
+    Object.entries(animation).forEach(([key, value]) => {
+      root.style.setProperty(`--matrix-animation-${key.replace('_', '-')}`, value.toString());
+    });
+  }
 };
 
 export const getThemeFromPath = async (path: string): Promise<Theme> => {

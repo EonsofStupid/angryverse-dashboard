@@ -1,77 +1,67 @@
+/* Glow Effects */
 .cyber-glow {
-  --glow-color: var(--theme-primary);
-  filter: drop-shadow(0 0 5px var(--glow-color))
+  --glow-color: var(--glow-color-primary);
+  filter: drop-shadow(0 0 var(--glow-strength-sm) var(--glow-color))
           drop-shadow(0 0 var(--glow-strength-md) var(--glow-color));
 }
 
+.glow-pulse {
+  animation: glow-pulse var(--glow-pulse-duration) infinite;
+}
+
+.glow-multi {
+  filter: drop-shadow(var(--glow-multi-primary))
+          drop-shadow(var(--glow-multi-secondary))
+          drop-shadow(var(--glow-multi-accent));
+}
+
+/* Matrix Effects */
 .matrix-rain {
   position: relative;
   overflow: hidden;
+  font-family: monospace;
+  font-size: var(--matrix-font-size);
+  font-weight: var(--matrix-font-weight);
 }
 
-.matrix-rain::before {
-  content: '';
+.matrix-character {
   position: absolute;
-  top: -100%;
-  width: 2px;
-  height: 100%;
-  background: var(--theme-primary);
-  animation: matrix-rain var(--animation-very-slow) linear infinite;
+  color: var(--matrix-color-primary);
+  text-shadow: 0 0 var(--matrix-glow-strength) var(--matrix-color-secondary);
+  opacity: var(--matrix-opacity);
+  animation: matrix-fall var(--matrix-speed) linear infinite;
+  animation-delay: calc(var(--matrix-animation-stagger) * var(--index, 0));
 }
 
-.holographic {
-  position: relative;
-  overflow: hidden;
-}
-
-.holographic::before {
-  content: '';
+.matrix-trail {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.1) 45%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 55%,
-    transparent 100%
-  );
-  transform: translateX(-100%);
-  animation: holographic-shine var(--animation-very-slow) infinite;
-}
-
-@keyframes matrix-rain {
-  to { transform: translateY(200%); }
-}
-
-@keyframes holographic-shine {
-  to { transform: translateX(100%); }
-}
-
-.cyberpunk-glitch {
-  position: relative;
-}
-
-.cyberpunk-glitch::before,
-.cyberpunk-glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  height: var(--matrix-fade-distance);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--matrix-color-primary)
+  );
+  opacity: var(--matrix-opacity);
+  filter: blur(var(--matrix-blur));
 }
 
-.cyberpunk-glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 var(--theme-secondary);
-  clip: rect(24px, 550px, 90px, 0);
-  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: var(--glow-opacity-light);
+    transform: scale(1);
+  }
+  50% {
+    opacity: var(--glow-opacity-heavy);
+    transform: scale(var(--glow-pulse-scale));
+  }
 }
 
-.cyberpunk-glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 var(--theme-primary);
-  clip: rect(85px, 550px, 140px, 0);
-  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+@keyframes matrix-fall {
+  from {
+    transform: translateY(-100%) scale(var(--matrix-scale));
+  }
+  to {
+    transform: translateY(var(--matrix-fade-distance)) scale(var(--matrix-scale));
+  }
 }
