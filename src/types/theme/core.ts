@@ -99,9 +99,60 @@ export interface MatrixEffects {
 }
 
 export interface ThemeEffects {
-  glass: GlassEffects;
-  glow?: GlowEffects;
-  matrix?: MatrixEffects;
+  glass: {
+    background: string;
+    blur: string;
+    border: string;
+    blur_levels?: string[];
+    opacity_levels?: number[];
+    border_styles?: {
+      light: string;
+      medium: string;
+      heavy: string;
+    };
+  };
+  glow?: {
+    strengths: {
+      sm: string;
+      md: string;
+      lg: string;
+    };
+    colors: {
+      primary: string;
+      secondary: string;
+      accent: string;
+    };
+    animation: {
+      pulse_opacity: number;
+      pulse_scale: number;
+      pulse_duration: string;
+    };
+  };
+  matrix?: {
+    core: {
+      speed: string;
+      density: number;
+      direction: 'up' | 'down' | 'left' | 'right';
+      scale: number;
+    };
+    visual: {
+      color_primary: string;
+      color_secondary: string;
+      opacity: number;
+      blur: string;
+      glow_strength: string;
+    };
+    characters: {
+      charset: string;
+      font_size: string;
+      font_weight: number;
+    };
+    animation: {
+      stagger: string;
+      fade_distance: string;
+      trail_length: number;
+    };
+  };
   animations?: {
     timing: {
       fast: string;
