@@ -1,5 +1,5 @@
 .grow {
-  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: transform var(--animation-normal) var(--ease-out);
 }
 
 .grow:hover {
@@ -7,7 +7,7 @@
 }
 
 .grow-sm {
-  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: transform var(--animation-normal) var(--ease-out);
 }
 
 .grow-sm:hover {
@@ -15,7 +15,7 @@
 }
 
 .grow-lg {
-  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: transform var(--animation-normal) var(--ease-out);
 }
 
 .grow-lg:hover {

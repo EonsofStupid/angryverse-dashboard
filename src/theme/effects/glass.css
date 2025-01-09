@@ -2,20 +2,22 @@
   background: var(--glass-background);
   backdrop-filter: blur(var(--glass-blur));
   border: var(--glass-border);
-  transition: all var(--animation-normal) ease-in-out;
+  transition: all var(--animation-normal) var(--ease-in-out);
 }
 
 .glass-frost {
   --glass-background: rgba(255, 255, 255, 0.15);
-  --glass-blur: 16px;
+  --glass-blur: var(--glass-blur-xl);
 }
 
 .glass-tint {
   --glass-background: rgba(var(--theme-primary), 0.2);
-  --glass-blur: 12px;
+  --glass-blur: var(--glass-blur-lg);
 }
 
 .glass-reflect {
+  --glass-background: rgba(255, 255, 255, 0.2);
+  --glass-blur: var(--glass-blur-md);
   position: relative;
   overflow: hidden;
 }
@@ -33,5 +35,17 @@
     transparent 100%
   );
   transform: translateX(-100%);
-  animation: shine 3s infinite;
+  animation: shine var(--animation-very-slow) infinite;
+}
+
+.glass-pattern {
+  --glass-background: rgba(255, 255, 255, 0.1);
+  --glass-blur: var(--glass-blur-md);
+  background-size: 20px 20px;
+}
+
+@keyframes shine {
+  to {
+    transform: translateX(100%);
+  }
 }

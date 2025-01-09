@@ -1,11 +1,22 @@
 .cyber-glow {
-  filter: drop-shadow(0 0 5px var(--theme-glow-color))
-          drop-shadow(0 0 var(--theme-glow-strength) var(--theme-glow-color));
+  --glow-color: var(--theme-primary);
+  filter: drop-shadow(0 0 5px var(--glow-color))
+          drop-shadow(0 0 var(--glow-strength-md) var(--glow-color));
 }
 
 .matrix-rain {
   position: relative;
   overflow: hidden;
+}
+
+.matrix-rain::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  width: 2px;
+  height: 100%;
+  background: var(--theme-primary);
+  animation: matrix-rain var(--animation-very-slow) linear infinite;
 }
 
 .holographic {
@@ -20,11 +31,47 @@
   background: linear-gradient(
     45deg,
     transparent 0%,
-    rgba(255,255,255,0.1) 45%,
-    rgba(255,255,255,0.2) 50%,
-    rgba(255,255,255,0.1) 55%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 55%,
     transparent 100%
   );
   transform: translateX(-100%);
-  animation: shine 3s infinite;
+  animation: holographic-shine var(--animation-very-slow) infinite;
+}
+
+@keyframes matrix-rain {
+  to { transform: translateY(200%); }
+}
+
+@keyframes holographic-shine {
+  to { transform: translateX(100%); }
+}
+
+.cyberpunk-glitch {
+  position: relative;
+}
+
+.cyberpunk-glitch::before,
+.cyberpunk-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cyberpunk-glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 var(--theme-secondary);
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.cyberpunk-glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 var(--theme-primary);
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
 }
