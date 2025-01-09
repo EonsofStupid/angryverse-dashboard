@@ -8,18 +8,41 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes shine {
-  to { transform: translateX(100%); }
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 var(--glow-strength-sm) var(--theme-primary);
+  }
+  50% {
+    transform: translateY(-20px);
+    box-shadow: 
+      0 0 var(--glow-strength-md) var(--theme-primary),
+      0 0 var(--glow-strength-lg) var(--theme-secondary);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 var(--glow-strength-sm) var(--theme-primary));
+  }
+  50% {
+    filter: drop-shadow(0 0 var(--glow-strength-md) var(--theme-primary))
+           drop-shadow(0 0 var(--glow-strength-lg) var(--theme-secondary));
+  }
 }
 
 .animate-fade-in {
-  animation: fade-in var(--theme-animation-duration) var(--theme-animation-timing);
+  animation: fade-in var(--animation-normal) ease-out forwards;
 }
 
 .animate-scale-in {
-  animation: scale-in var(--theme-animation-duration) var(--theme-animation-timing);
+  animation: scale-in var(--animation-fast) ease-out forwards;
 }
 
-.animate-shine {
-  animation: shine 3s infinite;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
 }

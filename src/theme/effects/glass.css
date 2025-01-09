@@ -1,18 +1,18 @@
 .glass {
-  background: var(--theme-glass-background);
-  backdrop-filter: blur(var(--theme-glass-blur));
-  border: var(--theme-glass-border);
-  transition: all var(--theme-animation-duration) var(--theme-animation-timing);
+  background: var(--glass-background);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  transition: all var(--animation-normal) ease-in-out;
 }
 
 .glass-frost {
-  --theme-glass-background: rgba(255, 255, 255, 0.15);
-  --theme-glass-blur: 16px;
+  --glass-background: rgba(255, 255, 255, 0.15);
+  --glass-blur: 16px;
 }
 
 .glass-tint {
-  --theme-glass-background: rgba(var(--theme-colors-cyber-pink), 0.2);
-  --theme-glass-blur: 12px;
+  --glass-background: rgba(var(--theme-primary), 0.2);
+  --glass-blur: 12px;
 }
 
 .glass-reflect {
