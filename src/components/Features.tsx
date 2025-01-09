@@ -6,34 +6,48 @@ const features = [
     title: "Guides",
     description: "Detailed guides on pop culture topics",
     icon: BookOpen,
-    color: "text-[var(--cyber-primary-default)]",
-    gradient: "from-[var(--cyber-primary-default)]/20 to-[var(--cyber-secondary-default)]/20",
+    color: "text-[var(--theme-primary)]",
+    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/20",
   },
   {
     title: "Updates",
     description: "Latest news and personal updates",
     icon: Rss,
-    color: "text-[var(--cyber-primary-default)]",
-    gradient: "from-[var(--cyber-primary-default)]/20 to-[var(--cyber-accent-default)]/20",
+    color: "text-[var(--theme-primary)]",
+    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-accent)]/20",
   },
   {
     title: "Blog",
     description: "In-depth articles and opinions",
     icon: Newspaper,
-    color: "text-[var(--cyber-primary-default)]",
-    gradient: "from-[var(--cyber-primary-default)]/20 to-[var(--cyber-secondary-default)]/20",
+    color: "text-[var(--theme-primary)]",
+    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/20",
   },
   {
     title: "Videos",
     description: "Video content and highlights",
     icon: Video,
-    color: "text-[var(--cyber-primary-default)]",
-    gradient: "from-[var(--cyber-primary-default)]/20 to-[var(--cyber-accent-default)]/20",
+    color: "text-[var(--theme-primary)]",
+    gradient: "from-[var(--theme-primary)]/20 to-[var(--theme-accent)]/20",
   },
 ];
 
 export const Features = () => {
   const { currentTheme } = useTheme();
+  
+  const glassStyle = {
+    background: currentTheme?.configuration?.effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: `blur(${currentTheme?.configuration?.effects?.glass?.blur || '8px'})`,
+    border: currentTheme?.configuration?.effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
+    transition: `all ${currentTheme?.configuration?.effects?.animations?.timing?.normal || '200ms'} ${currentTheme?.configuration?.effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
+  };
+
+  const cardHoverStyle = {
+    '--hover-scale': currentTheme?.configuration?.effects?.hover?.scale || '1.05',
+    '--hover-lift': currentTheme?.configuration?.effects?.hover?.lift || '-4px',
+    '--hover-glow': currentTheme?.configuration?.effects?.hover?.glow_strength || '10px',
+    '--transition-duration': currentTheme?.configuration?.effects?.hover?.transition_duration || '300ms',
+  } as React.CSSProperties;
 
   return (
     <section className="py-20 relative">
@@ -45,17 +59,21 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="glass group transition-all duration-500 cursor-pointer p-6"
+              className="group cursor-pointer p-6 rounded-lg transition-all"
+              style={{
+                ...glassStyle,
+                ...cardHoverStyle,
+              }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity rounded-lg`} />
               <div className="relative z-10">
                 <feature.icon
-                  className={`h-12 w-12 ${feature.color} mb-4 group-hover:scale-110 transition-transform duration-500`}
+                  className={`h-12 w-12 ${feature.color} mb-4 transform transition-transform duration-[var(--transition-duration)] group-hover:scale-110`}
                 />
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-[var(--cyber-primary-default)]">
+                <h3 className={`text-xl font-semibold mb-2 ${feature.color} transition-colors duration-[var(--transition-duration)]`}>
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">
+                <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-[var(--transition-duration)]">
                   {feature.description}
                 </p>
               </div>
