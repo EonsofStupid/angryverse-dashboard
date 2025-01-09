@@ -7,7 +7,8 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
-import { Theme, DatabaseTheme, convertDatabaseTheme } from '@/types/theme';
+import { Theme } from '@/types/theme';
+import { isValidThemeColor } from '@/types/theme/utils/css';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -48,39 +49,40 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (isAdminRoute) {
       root.classList.add('admin-theme');
       root.classList.remove('site-theme');
+      console.log('Applied admin theme class');
     } else {
       root.classList.add('site-theme');
       root.classList.remove('admin-theme');
+      console.log('Applied site theme class');
     }
 
     // Apply colors from theme configuration
     const { colors } = currentTheme.configuration;
     if (colors?.cyber) {
       Object.entries(colors.cyber).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--theme-colors-cyber-${key}`, value);
-          console.log(`Setting color: --theme-colors-cyber-${key}:`, value);
+        if (typeof value === 'string' && isValidThemeColor(value)) {
+          const variableName = `--theme-colors-cyber-${key}`;
+          root.style.setProperty(variableName, value);
+          console.log(`Setting color: ${variableName}:`, value);
         } else if (typeof value === 'object' && value !== null) {
           Object.entries(value).forEach(([subKey, subValue]) => {
-            root.style.setProperty(
-              `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
-              subValue as string
-            );
-            console.log(`Setting color: --theme-colors-cyber-${key}-${subKey.toLowerCase()}:`, subValue);
+            if (typeof subValue === 'string' && isValidThemeColor(subValue)) {
+              const variableName = `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`;
+              root.style.setProperty(variableName, subValue);
+              console.log(`Setting color: ${variableName}:`, subValue);
+            }
           });
         }
       });
     }
 
-    // Apply effect configurations
-    const { effects } = currentTheme.configuration;
-    if (effects?.glass) {
-      const { background, blur, border } = effects.glass;
-      root.style.setProperty('--glass-background', background);
-      root.style.setProperty('--glass-blur', blur);
-      root.style.setProperty('--glass-border', border);
-      console.log('Applied glass effects:', { background, blur, border });
-    }
+    // Debug output of applied colors
+    const computedStyle = getComputedStyle(root);
+    console.log('Applied colors:', {
+      dark: computedStyle.getPropertyValue('--theme-colors-cyber-dark'),
+      primary: computedStyle.getPropertyValue('--theme-colors-cyber-pink'),
+      secondary: computedStyle.getPropertyValue('--theme-colors-cyber-cyan'),
+    });
   }, [currentTheme, theme, isAdminRoute]);
 
   useEffect(() => {

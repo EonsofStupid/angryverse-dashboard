@@ -1,28 +1,29 @@
-export type CSSUnit = 'px' | 'rem' | 'em' | '%' | 'vh' | 'vw';
+export type CSSColor = string;
 
-export type CSSValue<T extends CSSUnit = CSSUnit> = `${number}${T}`;
+export type ThemeColor = {
+  DEFAULT: CSSColor;
+  hover?: CSSColor;
+};
 
-export type HexColor = `#${string}`;
-export type RGBColor = `rgb(${number}, ${number}, ${number})`;
-export type RGBAColor = `rgba(${number}, ${number}, ${number}, ${number})`;
-export type HSLColor = `hsl(${number}, ${number}%, ${number}%)`;
-export type HSLAColor = `hsla(${number}, ${number}%, ${number}%, ${number})`;
+export type CyberColors = {
+  dark: CSSColor;
+  pink: ThemeColor;
+  cyan: ThemeColor;
+  purple: CSSColor;
+  green: ThemeColor;
+  yellow: ThemeColor;
+};
 
-export type CSSColor = HexColor | RGBColor | RGBAColor | HSLColor | HSLAColor;
+export type ColorToken = {
+  value: string;
+  variable: string;
+};
 
-export type TransformValue =
-  | `scale(${number})`
-  | `rotate(${number}deg)`
-  | `translate(${CSSValue}, ${CSSValue})`
-  | `skew(${number}deg, ${number}deg)`;
+export type ColorTokens = {
+  [key: string]: ColorToken;
+};
 
-export type FilterValue =
-  | `blur(${CSSValue})`
-  | `brightness(${number}%)`
-  | `contrast(${number}%)`
-  | `grayscale(${number}%)`
-  | `hue-rotate(${number}deg)`
-  | `invert(${number}%)`
-  | `opacity(${number}%)`
-  | `saturate(${number}%)`
-  | `sepia(${number}%)`;
+export const isValidThemeColor = (color: unknown): color is CSSColor => {
+  if (typeof color !== 'string') return false;
+  return color.startsWith('var(--') || color.startsWith('#') || color.startsWith('hsl(');
+};

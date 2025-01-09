@@ -1,77 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import './theme/index.css';
-@import './theme/effects/glass.css';
-@import './theme/effects/animations.css';
-@import './theme/effects/special.css';
+/* Base Tokens */
+@import './theme/tokens/colors.css';
+@import './theme/tokens/typography.css';
+@import './theme/tokens/spacing.css';
+@import './theme/tokens/effects.css';
+@import './theme/tokens/layout.css';
+
+/* Site Theme */
+@import './theme/site/base/colors.css';
+@import './theme/site/base/typography.css';
+@import './theme/site/effects/glass.css';
+@import './theme/site/effects/animations.css';
+@import './theme/site/effects/interactions.css';
+
+/* Admin Theme */
+@import './theme/admin/base/colors.css';
+@import './theme/admin/base/typography.css';
+@import './theme/admin/effects/glass.css';
+@import './theme/admin/effects/animations.css';
+@import './theme/admin/effects/interactions.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground antialiased min-h-screen w-full;
-    font-family: var(--font-sans);
-  }
-
-  #root {
-    @apply min-h-screen w-full;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
-  }
-
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
-  }
-
-  h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
-  }
-
-  h3 {
-    @apply text-2xl md:text-3xl lg:text-4xl;
-  }
-}
-
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
-           disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
-  }
-
-  .btn-primary {
-    background: var(--theme-primary);
-    @apply text-white hover:brightness-110;
-  }
-
-  .btn-secondary {
-    background: var(--theme-secondary);
-    @apply text-black hover:brightness-110;
-  }
-
-  .card {
-    @apply glass rounded-lg p-6;
-  }
-
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
-           ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium 
-           placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 
-           focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed 
-           disabled:opacity-50;
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-primary)] 
-           via-[var(--theme-accent)] to-[var(--theme-secondary)];
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
