@@ -29,7 +29,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   const applyThemeVariables = useCallback(() => {
-    if (!currentTheme?.configuration) return;
+    if (!currentTheme?.configuration) {
+      console.log('No theme configuration found');
+      return;
+    }
+    
+    console.log('Applying theme:', currentTheme);
     const root = document.documentElement;
     
     // Apply theme mode class
@@ -48,6 +53,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.classList.remove('admin-theme');
     }
 
+    // Apply colors from theme configuration
+    const { colors } = currentTheme.configuration;
+    if (colors?.cyber) {
+      Object.entries(colors.cyber).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          root.style.setProperty(`--theme-colors-cyber-${key}`, value);
+          console.log(`Setting color: --theme-colors-cyber-${key}:`, value);
+        } else if (typeof value === 'object' && value !== null) {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            root.style.setProperty(
+              `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
+              subValue as string
+            );
+            console.log(`Setting color: --theme-colors-cyber-${key}-${subKey.toLowerCase()}:`, subValue);
+          });
+        }
+      });
+    }
+
     // Apply effect configurations
     const { effects } = currentTheme.configuration;
     if (effects?.glass) {
@@ -55,6 +79,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
       root.style.setProperty('--glass-border', border);
+      console.log('Applied glass effects:', { background, blur, border });
     }
   }, [currentTheme, theme, isAdminRoute]);
 
@@ -71,6 +96,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         if (themeError) throw themeError;
 
         if (themeData) {
+          console.log('Fetched theme data:', themeData);
           const convertedTheme = convertDatabaseTheme(themeData as DatabaseTheme);
           setCurrentTheme(convertedTheme);
         }
@@ -89,6 +115,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (pageError) throw pageError;
 
           if (pageTheme?.themes) {
+            console.log('Fetched page-specific theme:', pageTheme.themes);
             setCurrentTheme(convertDatabaseTheme(pageTheme.themes as DatabaseTheme));
           }
         }
