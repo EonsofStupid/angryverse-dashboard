@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useTheme } from "@/hooks/useTheme";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { convertDatabaseTheme } from "@/types/theme";
+import type { Theme, DatabaseTheme } from "@/types/theme";
 
 export const useRouteTheme = () => {
   const location = useLocation();
@@ -24,7 +26,8 @@ export const useRouteTheme = () => {
         if (pageError) throw pageError;
 
         if (pageTheme?.themes) {
-          setCurrentTheme(pageTheme.themes);
+          const convertedTheme = convertDatabaseTheme(pageTheme.themes as DatabaseTheme);
+          setCurrentTheme(convertedTheme);
           return;
         }
 
@@ -38,7 +41,8 @@ export const useRouteTheme = () => {
         if (themeError) throw themeError;
 
         if (themeData) {
-          setCurrentTheme(themeData);
+          const convertedTheme = convertDatabaseTheme(themeData as DatabaseTheme);
+          setCurrentTheme(convertedTheme);
         }
       } catch (error) {
         console.error('Error fetching theme:', error);
