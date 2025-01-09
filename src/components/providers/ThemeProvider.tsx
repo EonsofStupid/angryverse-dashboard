@@ -26,24 +26,57 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const { toast } = useToast();
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   const applyThemeVariables = useCallback(() => {
     if (!currentTheme?.configuration) return;
     const root = document.documentElement;
-    const { effects } = currentTheme.configuration;
+    
+    // Apply theme mode class
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
 
+    // Apply route-specific theme class
+    if (isAdminRoute) {
+      root.classList.add('admin-theme');
+      root.classList.remove('site-theme');
+    } else {
+      root.classList.add('site-theme');
+      root.classList.remove('admin-theme');
+    }
+
+    // Apply effect configurations
+    const { effects } = currentTheme.configuration;
     if (effects?.glass) {
       const { background, blur, border } = effects.glass;
-      root.style.setProperty('--theme-glass-background', background);
-      root.style.setProperty('--theme-glass-blur', blur);
-      root.style.setProperty('--theme-glass-border', border);
+      root.style.setProperty('--glass-background', background);
+      root.style.setProperty('--glass-blur', blur);
+      root.style.setProperty('--glass-border', border);
     }
-  }, [currentTheme]);
+  }, [currentTheme, theme, isAdminRoute]);
 
   useEffect(() => {
     const initializeTheme = async () => {
       try {
-        // Only admins can set page-specific themes
-        if (isAdmin) {
+        // Fetch theme based on route type
+        const { data: themeData, error: themeError } = await supabase
+          .from('themes')
+          .select('*')
+          .eq(isAdminRoute ? 'name' : 'is_default', isAdminRoute ? 'Admin Theme' : true)
+          .maybeSingle();
+
+        if (themeError) throw themeError;
+
+        if (themeData) {
+          const convertedTheme = convertDatabaseTheme(themeData as DatabaseTheme);
+          setCurrentTheme(convertedTheme);
+        }
+
+        // If no theme found, check for page-specific theme
+        if (!currentTheme) {
           const { data: pageTheme, error: pageError } = await supabase
             .from('page_themes')
             .select(`
@@ -56,23 +89,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (pageError) throw pageError;
 
           if (pageTheme?.themes) {
-            const themeData = convertDatabaseTheme(pageTheme.themes as DatabaseTheme);
-            setCurrentTheme(themeData);
-          }
-        }
-
-        // If no page theme or not admin, load default theme
-        if (!currentTheme) {
-          const { data: defaultThemeData, error: defaultError } = await supabase
-            .from('themes')
-            .select('*')
-            .eq('is_default', true)
-            .maybeSingle();
-
-          if (defaultError) throw defaultError;
-          
-          if (defaultThemeData) {
-            setCurrentTheme(convertDatabaseTheme(defaultThemeData as DatabaseTheme));
+            setCurrentTheme(convertDatabaseTheme(pageTheme.themes as DatabaseTheme));
           }
         }
 
@@ -88,7 +105,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeTheme();
-  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdmin, currentTheme]);
+  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdminRoute, currentTheme]);
 
   const value = {
     currentTheme,
@@ -105,6 +122,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeContext.Provider value={value}>
       {children}
+      {isLoading && (
+        <div className="fixed top-4 right-4 flex items-center gap-2 bg-background/80 p-2 rounded-md">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-sm">Loading theme...</span>
+        </div>
+      )}
     </ThemeContext.Provider>
   );
 };

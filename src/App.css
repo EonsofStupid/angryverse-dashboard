@@ -28,90 +28,19 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  background: var(--background);
-  color: hsl(var(--foreground));
 }
 
 .app {
   @apply min-h-screen w-full relative;
+}
+
+/* Theme-specific styles */
+.site-theme {
   background: var(--background);
   color: hsl(var(--foreground));
 }
 
-/* Glass Effect Base */
-.glass {
-  background: var(--glass-background);
-  backdrop-filter: blur(var(--glass-blur));
-  border: var(--glass-border);
-  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animation Classes */
-.animate-glow {
-  animation: glow var(--animation-slow) ease-in-out infinite alternate;
-}
-
-.animate-float {
-  animation: float var(--animation-very-slow) ease-in-out infinite;
-}
-
-.animate-pulse {
-  animation: pulse var(--animation-slow) cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Keyframes */
-@keyframes glow {
-  from {
-    box-shadow: 0 0 var(--glow-strength-sm) var(--glow-color-primary);
-  }
-  to {
-    box-shadow: 0 0 var(--glow-strength-lg) var(--glow-color-primary),
-                0 0 var(--glow-strength-md) var(--glow-color-secondary);
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Utility Classes */
-.text-gradient {
-  @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(
-    to right,
-    var(--theme-colors-cyber-pink),
-    var(--theme-colors-cyber-cyan)
-  );
-}
-
-.hover-glow {
-  transition: all var(--animation-normal) ease-in-out;
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 var(--glow-strength-md) var(--glow-color-primary);
-}
-
-/* Section Layouts */
-.section {
-  @apply py-20 px-4 md:px-8 lg:px-12;
-  background: var(--background);
-}
-
-.container {
-  @apply max-w-7xl mx-auto;
+.admin-theme {
+  background: var(--admin-background);
+  color: hsl(var(--admin-foreground));
 }
