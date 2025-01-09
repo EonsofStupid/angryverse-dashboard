@@ -13,6 +13,12 @@ export interface ThemeEffects {
       medium: string;
       heavy: string;
     };
+    shadow_composition?: {
+      offset_y: string;
+      blur_radius: string;
+      spread_radius: string;
+      opacity: number;
+    };
   };
   animations?: {
     timing: {
@@ -37,11 +43,14 @@ export interface ThemeEffects {
     glow_opacity?: number;
     glow_spread?: string;
     glow_blur?: string;
+    shadow_normal?: string;
+    shadow_hover?: string;
   };
-  card?: {
-    background_opacity: number;
-    hover_opacity: number;
-    shadow: string;
-    hover_shadow: string;
+  gradients?: {
+    gray_combinations: Array<{
+      start: string;
+      end: string;
+    }>;
+    opacity_levels: number[];
   };
 }

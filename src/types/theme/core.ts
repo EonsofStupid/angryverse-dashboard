@@ -8,6 +8,8 @@ export interface ThemeConfiguration {
   colors: ThemeColors;
   typography: ThemeTypography;
   effects: ThemeEffects;
+  gray_palette?: GrayPalette;
+  effects_details?: EffectsDetails;
 }
 
 export interface ThemeColors {
@@ -33,6 +35,16 @@ export interface ThemeColors {
   };
 }
 
+export interface GrayPalette {
+  neutral: string;
+  soft: string;
+  medium: string;
+  light: string;
+  silver: string;
+  dark: string;
+  mid: string;
+}
+
 export interface ThemeTypography {
   fonts: {
     sans: string[];
@@ -40,7 +52,6 @@ export interface ThemeTypography {
   };
 }
 
-// Effect Types
 export interface GlassEffects {
   background: string;
   blur: string;
@@ -52,86 +63,40 @@ export interface GlassEffects {
     medium: string;
     heavy: string;
   };
-}
-
-export interface GlowEffects {
-  strengths: {
-    sm: string;
-    md: string;
-    lg: string;
-  };
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
-  animation: {
-    pulse_opacity: number;
-    pulse_scale: number;
-    pulse_duration: string;
-  };
-}
-
-export interface MatrixEffects {
-  core: {
-    speed: string;
-    density: number;
-    direction: 'up' | 'down' | 'left' | 'right';
-    scale: number;
-  };
-  visual: {
-    color_primary: string;
-    color_secondary: string;
+  shadow_composition?: {
+    offset_y: string;
+    blur_radius: string;
+    spread_radius: string;
     opacity: number;
-    blur: string;
-    glow_strength: string;
-  };
-  characters: {
-    charset: string;
-    font_size: string;
-    font_weight: number;
-  };
-  animation: {
-    stagger: string;
-    fade_distance: string;
-    trail_length: number;
-  };
-}
-
-export interface AnimationEffects {
-  timing: {
-    fast: string;
-    normal: string;
-    slow: string;
-    very_slow: string;
-  };
-  curves: {
-    linear: string;
-    ease_out: string;
-    ease_in: string;
-    ease_in_out: string;
   };
 }
 
 export interface HoverEffects {
   scale: number;
-  lift: string;
-  glow_strength: string;
   transition_duration: string;
+  timing_function: string;
+  shadow_normal: string;
+  shadow_hover: string;
+}
+
+export interface GradientEffects {
+  gray_combinations: Array<{
+    start: string;
+    end: string;
+  }>;
+  opacity_levels: number[];
+}
+
+export interface EffectsDetails {
+  glass: GlassEffects;
+  hover: HoverEffects;
+  gradients: GradientEffects;
 }
 
 export interface ThemeEffects {
   glass: GlassEffects;
-  glow?: GlowEffects;
-  matrix?: MatrixEffects;
-  animations?: AnimationEffects;
   hover?: HoverEffects;
-  card?: {
-    background_opacity: number;
-    hover_opacity: number;
-    shadow: string;
-    hover_shadow: string;
-  };
+  gradients?: GradientEffects;
 }
 
 // Complete Theme Type
