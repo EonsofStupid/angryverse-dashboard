@@ -1,5 +1,6 @@
 import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 
 const features = [
   {
@@ -34,19 +35,20 @@ const features = [
 
 export const Features = () => {
   const { currentTheme } = useTheme();
+  const { effects } = useThemeEffects();
   
   const glassStyle = {
-    background: currentTheme?.configuration?.effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: `blur(${currentTheme?.configuration?.effects?.glass?.blur || '8px'})`,
-    border: currentTheme?.configuration?.effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
-    transition: `all ${currentTheme?.configuration?.effects?.animations?.timing?.normal || '200ms'} ${currentTheme?.configuration?.effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
+    background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
+    border: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
+    transition: `all ${effects?.animations?.timing?.normal || '200ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
   };
 
   const cardHoverStyle = {
-    '--hover-scale': currentTheme?.configuration?.effects?.hover?.scale || '1.05',
-    '--hover-lift': currentTheme?.configuration?.effects?.hover?.lift || '-4px',
-    '--hover-glow': currentTheme?.configuration?.effects?.hover?.glow_strength || '10px',
-    '--transition-duration': currentTheme?.configuration?.effects?.hover?.transition_duration || '300ms',
+    '--hover-scale': effects?.hover?.scale || '1.05',
+    '--hover-lift': effects?.hover?.lift || '-4px',
+    '--hover-glow': effects?.hover?.glow_strength || '10px',
+    '--transition-duration': effects?.hover?.transition_duration || '300ms',
   } as React.CSSProperties;
 
   return (
