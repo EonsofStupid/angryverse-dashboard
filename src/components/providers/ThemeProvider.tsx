@@ -30,71 +30,97 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   const applyThemeVariables = useCallback(() => {
+    console.log('Theme Application Start:', {
+      currentTheme,
+      isAdminRoute,
+      themeMode: theme,
+      route: location.pathname
+    });
+
     if (!currentTheme?.configuration) {
-      console.log('No theme configuration found');
+      console.warn('No theme configuration found');
       return;
     }
     
-    console.log('Applying theme:', currentTheme);
     const root = document.documentElement;
     
-    // Apply theme mode class
+    // Log theme mode application
     if (theme === 'dark') {
       root.classList.add('dark');
+      console.log('Applied dark mode class');
     } else {
       root.classList.remove('dark');
+      console.log('Removed dark mode class');
     }
 
-    // Apply route-specific theme class
+    // Log route-specific theme class application
+    console.log('Applying route theme:', {
+      isAdminRoute,
+      addingClass: isAdminRoute ? 'admin-theme' : 'site-theme',
+      removingClass: isAdminRoute ? 'site-theme' : 'admin-theme'
+    });
+
     if (isAdminRoute) {
       root.classList.add('admin-theme');
       root.classList.remove('site-theme');
-      console.log('Applied admin theme class');
     } else {
       root.classList.add('site-theme');
       root.classList.remove('admin-theme');
-      console.log('Applied site theme class');
     }
 
-    // Apply colors from theme configuration
+    // Log current classes on root
+    console.log('Current root classes:', root.classList.toString());
+
+    // Apply and log colors
     const { colors } = currentTheme.configuration;
+    console.log('Applying theme colors:', colors);
+
     if (colors?.cyber) {
       Object.entries(colors.cyber).forEach(([key, value]) => {
         if (typeof value === 'string' && isValidThemeColor(value)) {
           const variableName = `--theme-colors-cyber-${key}`;
           root.style.setProperty(variableName, value);
-          console.log(`Setting color: ${variableName}:`, value);
+          console.log(`Set color variable: ${variableName} = ${value}`);
         } else if (typeof value === 'object' && value !== null) {
           Object.entries(value).forEach(([subKey, subValue]) => {
             if (typeof subValue === 'string' && isValidThemeColor(subValue)) {
               const variableName = `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`;
               root.style.setProperty(variableName, subValue);
-              console.log(`Setting color: ${variableName}:`, subValue);
+              console.log(`Set nested color variable: ${variableName} = ${subValue}`);
             }
           });
         }
       });
     }
 
-    // Debug output of applied colors
+    // Log computed styles for verification
     const computedStyle = getComputedStyle(root);
-    console.log('Applied colors:', {
+    console.log('Computed theme colors:', {
       dark: computedStyle.getPropertyValue('--theme-colors-cyber-dark'),
       primary: computedStyle.getPropertyValue('--theme-colors-cyber-pink'),
       secondary: computedStyle.getPropertyValue('--theme-colors-cyber-cyan'),
+      background: computedStyle.getPropertyValue('--background'),
+      foreground: computedStyle.getPropertyValue('--foreground')
     });
-  }, [currentTheme, theme, isAdminRoute]);
+  }, [currentTheme, theme, isAdminRoute, location.pathname]);
 
   useEffect(() => {
     const initializeTheme = async () => {
+      console.log('Theme initialization start:', {
+        currentRoute: location.pathname,
+        isAdminRoute,
+        currentTheme: currentTheme?.name
+      });
+
       try {
-        console.log('Fetching theme...');
-        // Fetch theme based on route type
+        console.log('Fetching theme data...');
         const { data: themeData, error: themeError } = await supabase
           .from('themes')
           .select('*')
           .eq(isAdminRoute ? 'name' : 'is_default', isAdminRoute ? 'Admin Theme' : true)
           .maybeSingle();
+
+        console.log('Theme query result:', { themeData, themeError });
 
         if (themeError) {
           console.error('Error fetching theme:', themeError);
@@ -102,15 +128,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         if (themeData) {
-          console.log('Fetched theme data:', themeData);
-          const convertedTheme = convertDatabaseTheme(themeData as DatabaseTheme);
-          setCurrentTheme(convertedTheme);
+          console.log('Processing theme data:', themeData);
+          const theme = themeData as Theme;
+          setCurrentTheme(theme);
+          console.log('Theme set successfully:', theme.name);
         } else {
           console.log('No theme found, checking page-specific theme...');
-        }
-
-        // If no theme found, check for page-specific theme
-        if (!currentTheme) {
           const { data: pageTheme, error: pageError } = await supabase
             .from('page_themes')
             .select(`
@@ -120,20 +143,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
             .eq('page_path', location.pathname)
             .maybeSingle();
 
+          console.log('Page theme query result:', { pageTheme, pageError });
+
           if (pageError) {
             console.error('Error fetching page theme:', pageError);
             throw pageError;
           }
 
           if (pageTheme?.themes) {
-            console.log('Fetched page-specific theme:', pageTheme.themes);
-            setCurrentTheme(convertDatabaseTheme(pageTheme.themes as DatabaseTheme));
+            console.log('Setting page-specific theme:', pageTheme.themes);
+            const theme = pageTheme.themes as Theme;
+            setCurrentTheme(theme);
           }
         }
 
-        applyThemeVariables();
+        await applyThemeVariables();
+        console.log('Theme initialization complete');
+
       } catch (error) {
-        console.error('Failed to initialize theme:', error);
+        console.error('Theme initialization failed:', error);
         toast({
           title: "Theme Error",
           description: "Using fallback theme due to connection issues.",
@@ -143,7 +171,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     initializeTheme();
-  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdminRoute, currentTheme]);
+  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdminRoute]);
 
   const value = {
     currentTheme,
