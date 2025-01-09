@@ -1,0 +1,23 @@
+.grow {
+  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+}
+
+.grow:hover {
+  transform: scale(1.1);
+}
+
+.grow-sm {
+  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+}
+
+.grow-sm:hover {
+  transform: scale(1.05);
+}
+
+.grow-lg {
+  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+}
+
+.grow-lg:hover {
+  transform: scale(1.15);
+}
