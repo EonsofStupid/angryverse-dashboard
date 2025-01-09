@@ -1,7 +1,14 @@
 import { CSSValue } from './css';
 import { Duration, EasingFunction } from './animation';
 
+/**
+ * Defines the structure for glass effect styles, animations, hover behaviors,
+ * and gradient configurations within your theme.
+ */
 export interface ThemeEffects {
+  /**
+   * Glass styling configuration.
+   */
   glass: {
     background: string;
     blur: string;
@@ -20,6 +27,10 @@ export interface ThemeEffects {
       opacity: number;
     };
   };
+
+  /**
+   * Animation presets for timing and curves.
+   */
   animations?: {
     timing: {
       fast: Duration;
@@ -34,6 +45,10 @@ export interface ThemeEffects {
       ease_in_out: EasingFunction;
     };
   };
+
+  /**
+   * Hover effects configuration, including glow and shadow behaviors.
+   */
   hover?: {
     scale: number;
     lift: CSSValue;
@@ -46,6 +61,10 @@ export interface ThemeEffects {
     shadow_normal?: string;
     shadow_hover?: string;
   };
+
+  /**
+   * Gradient configurations with predefined combinations.
+   */
   gradients?: {
     gray_combinations: Array<{
       start: string;

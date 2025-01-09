@@ -1,35 +1,34 @@
 import { CSSValue } from './css';
-import { Duration } from './animation';
+import { Duration, EasingFunction } from './animation';
 
-// Magnetic Effect
 export type MagneticStrength = 'weak' | 'medium' | 'strong';
-export type MagneticConfig = {
-    strength: MagneticStrength;
-    radius: CSSValue;
-    smoothing: number;
-    maxRotation?: number;
-};
 
-// Hover Effect
-export type HoverTransition = {
-    property: string;
-    duration: Duration;
-    easing: string;
-    delay?: Duration;
-};
+export interface MagneticConfig {
+  strength: MagneticStrength;
+  radius: CSSValue;
+  smoothing: number;
+  maxRotation?: number;
+}
 
-export type HoverConfig = {
-    scale?: number;
-    rotate?: number;
-    translate?: [CSSValue, CSSValue];
-    transitions?: HoverTransition[];
-};
+export interface HoverTransition {
+  property: string;
+  duration: Duration;
+  easing: string;
+  delay?: Duration;
+}
 
-// Scroll Effect
+export interface HoverConfig {
+  scale?: number;
+  rotate?: number;
+  translate?: [CSSValue, CSSValue];
+  transitions?: HoverTransition[];
+}
+
 export type ScrollTriggerPoint = 'top' | 'center' | 'bottom' | number;
-export type ScrollConfig = {
-    trigger: ScrollTriggerPoint;
-    offset?: CSSValue;
-    duration?: Duration;
-    once?: boolean;
-};
+
+export interface ScrollConfig {
+  trigger: ScrollTriggerPoint;
+  offset?: CSSValue;
+  duration?: Duration;
+  once?: boolean;
+}
