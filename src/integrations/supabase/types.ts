@@ -885,7 +885,7 @@ export type Database = {
         }
         Insert: {
           advanced_effects?: Json | null
-          configuration: Json
+          configuration?: Json
           created_at?: string | null
           created_by?: string | null
           description?: string | null
