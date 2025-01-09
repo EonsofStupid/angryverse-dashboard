@@ -1,0 +1,38 @@
+:root {
+  /* Glass Effect System */
+  --glass-background: rgba(10, 10, 15, 0.5);
+  --glass-blur: 12px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Glass Variations */
+  --glass-opacity-light: 0.1;
+  --glass-opacity-medium: 0.2;
+  --glass-opacity-heavy: 0.3;
+  
+  --glass-blur-sm: 4px;
+  --glass-blur-md: 8px;
+  --glass-blur-lg: 12px;
+  --glass-blur-xl: 16px;
+
+  /* Glow Effect System */
+  --glow-strength-sm: 10px;
+  --glow-strength-md: 20px;
+  --glow-strength-lg: 30px;
+  --glow-color-primary: var(--theme-colors-cyber-pink);
+  --glow-color-secondary: var(--theme-colors-cyber-cyan);
+  
+  /* Animation Timings */
+  --animation-fastest: 50ms;
+  --animation-fast: 100ms;
+  --animation-normal: 200ms;
+  --animation-slow: 300ms;
+  --animation-slower: 400ms;
+  --animation-slowest: 500ms;
+  --animation-very-slow: 1000ms;
+
+  /* Animation Curves */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}

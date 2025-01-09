@@ -1,0 +1,16 @@
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/effects.css';
+@import './tokens/layout.css';
+
+/* Theme Variations */
+:root[data-theme="dark"] {
+  --theme-background: var(--theme-colors-cyber-dark);
+  --theme-foreground: 220 28% 95%;
+}
+
+:root[data-theme="light"] {
+  --theme-background: 220 28% 95%;
+  --theme-foreground: var(--theme-colors-cyber-dark);
+}
