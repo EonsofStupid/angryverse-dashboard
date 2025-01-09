@@ -1,0 +1,26 @@
+:root {
+  /* Magnetic Base */
+  --magnetic-strength: 0.5;
+  --magnetic-radius: 100px;
+  --magnetic-smoothing: 0.15;
+  
+  /* Animation */
+  --magnetic-duration: 300ms;
+  --magnetic-easing: cubic-bezier(0.33, 1, 0.68, 1);
+  --magnetic-reset-duration: 200ms;
+  
+  /* Transform */
+  --magnetic-scale: 1.1;
+  --magnetic-rotation: 5deg;
+  --magnetic-perspective: 1000px;
+  --magnetic-origin: center;
+  
+  /* Boundaries */
+  --magnetic-min-distance: 10px;
+  --magnetic-max-distance: 200px;
+  --magnetic-threshold: 0.1;
+  
+  /* Interaction */
+  --magnetic-hover-scale: 1.05;
+  --magnetic-resistance: 0.2;
+}
