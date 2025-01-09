@@ -65,4 +65,14 @@
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
   --radius-full: 9999px;
+
+  /* Theme Tokens */
+  --theme-primary: var(--theme-colors-cyber-pink);
+  --theme-primary-hover: var(--theme-colors-cyber-pink-hover);
+  --theme-secondary: var(--theme-colors-cyber-cyan);
+  --theme-secondary-hover: var(--theme-colors-cyber-cyan-hover);
+  --theme-accent: var(--theme-colors-cyber-purple);
+  --theme-success: var(--theme-colors-cyber-green);
+  --theme-warning: var(--theme-colors-cyber-yellow);
+  --theme-background: var(--theme-colors-cyber-dark);
 }

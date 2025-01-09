@@ -9,8 +9,17 @@ export const Hero = () => {
 
   return (
     <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
-      {/* Background gradient using theme colors */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--cyber-primary-default)]/10 via-[var(--cyber-secondary-default)]/5 to-[var(--cyber-accent-default)]/10" />
+      {/* Background gradient using theme tokens */}
+      <div 
+        className="absolute inset-0" 
+        style={{
+          background: `linear-gradient(to bottom right, 
+            var(--theme-primary) / 0.1,
+            var(--theme-secondary) / 0.05,
+            var(--theme-accent) / 0.1
+          )`
+        }}
+      />
       
       <ScrollingCode />
       <DataStream />
@@ -40,8 +49,15 @@ export const Hero = () => {
           }
 
           @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); }
-            50% { transform: translateY(-20px) translateX(-10px) scale(1.05); }
+            0%, 100% { 
+              transform: translateY(0) translateX(0) scale(1);
+              box-shadow: 0 0 var(--glow-strength-sm) var(--theme-primary);
+            }
+            50% { 
+              transform: translateY(-20px) translateX(-10px) scale(1.05);
+              box-shadow: 0 0 var(--glow-strength-md) var(--theme-primary),
+                         0 0 var(--glow-strength-lg) var(--theme-secondary);
+            }
           }
         `}
       </style>
