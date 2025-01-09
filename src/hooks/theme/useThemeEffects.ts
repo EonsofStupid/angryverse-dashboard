@@ -1,6 +1,46 @@
 import { useEffect } from 'react';
 import { useTheme } from '@/hooks/useTheme';
-import { ThemeEffects } from '@/types/theme';
+
+export interface ThemeEffects {
+  glass?: {
+    background: string;
+    blur: string;
+    border: string;
+  };
+  glow?: {
+    strengths: {
+      sm: string;
+      md: string;
+      lg: string;
+    };
+  };
+  matrix?: {
+    core: {
+      speed: string;
+      density: number;
+    };
+  };
+  animations?: {
+    timing: {
+      fast: string;
+      normal: string;
+      slow: string;
+      very_slow: string;
+    };
+    curves: {
+      linear: string;
+      ease_out: string;
+      ease_in: string;
+      ease_in_out: string;
+    };
+  };
+  hover?: {
+    scale: number;
+    lift: string;
+    glow_strength: string;
+    transition_duration: string;
+  };
+}
 
 export const useThemeEffects = () => {
   const { currentTheme } = useTheme();
@@ -33,6 +73,26 @@ export const useThemeEffects = () => {
       root.style.setProperty('--matrix-density', String(core.density));
     }
 
+    // Apply animation variables if present
+    if (effects.animations) {
+      const { timing, curves } = effects.animations;
+      Object.entries(timing).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-timing-${key}`, value);
+      });
+      Object.entries(curves).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-curve-${key}`, value);
+      });
+    }
+
+    // Apply hover effect variables if present
+    if (effects.hover) {
+      const { scale, lift, glow_strength, transition_duration } = effects.hover;
+      root.style.setProperty('--hover-scale', String(scale));
+      root.style.setProperty('--hover-lift', lift);
+      root.style.setProperty('--hover-glow', glow_strength);
+      root.style.setProperty('--hover-transition', transition_duration);
+    }
+
     return () => {
       // Cleanup effect variables when component unmounts
       root.style.removeProperty('--glass-background');
@@ -47,5 +107,7 @@ export const useThemeEffects = () => {
     hasGlass: !!effects?.glass,
     hasGlow: !!effects?.glow,
     hasMatrix: !!effects?.matrix,
+    hasAnimations: !!effects?.animations,
+    hasHover: !!effects?.hover,
   };
 };
