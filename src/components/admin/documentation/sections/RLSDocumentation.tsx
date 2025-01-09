@@ -9,9 +9,9 @@ export const RLSDocumentation = ({ data }: RLSDocumentationProps) => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Row Level Security (RLS) Documentation</CardTitle>
+          <CardTitle>RLS Policies Documentation</CardTitle>
           <CardDescription>
-            Comprehensive guide to RLS policies and table access patterns
+            Comprehensive guide to Row Level Security policies and table access patterns
           </CardDescription>
         </CardHeader>
         <CardContent>
