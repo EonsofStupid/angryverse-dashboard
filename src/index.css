@@ -2,8 +2,7 @@
 @import './theme/index.css';
 @import './theme/effects/glass.css';
 @import './theme/effects/animations.css';
-@import './theme/utils/hover-interactions.css';
-@import './theme/utils/grow-interactions.css';
+@import './theme/effects/special.css';
 
 @tailwind base;
 @tailwind components;
