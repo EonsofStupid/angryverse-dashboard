@@ -1,21 +1,19 @@
-// State Management
-export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
-export type ValidationState = 'valid' | 'invalid' | 'warning';
-export type ProcessState = 'pending' | 'processing' | 'completed' | 'failed';
+import { Theme } from '../core';
 
-export interface AsyncState<T> {
-    data: T | null;
-    loading: boolean;
-    error: Error | null;
-    timestamp?: number;
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeStatus = 'active' | 'inactive' | 'draft';
+
+export interface ThemeState {
+  currentTheme: Theme | null;
+  mode: ThemeMode;
+  status: ThemeStatus;
+  isLoading: boolean;
+  error: Error | null;
 }
 
-export type StateUpdater<T> = (prev: T) => T;
-export type AsyncStateUpdater<T> = (prev: AsyncState<T>) => AsyncState<T>;
-
-// Action types
-export type ActionType<T extends string, P = void> = P extends void
-    ? { type: T }
-    : { type: T; payload: P };
-
-export type DispatchFunction<A> = (action: A) => void;
+export type ThemeAction = 
+  | { type: 'SET_THEME'; payload: Theme }
+  | { type: 'SET_MODE'; payload: ThemeMode }
+  | { type: 'SET_STATUS'; payload: ThemeStatus }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: Error | null };

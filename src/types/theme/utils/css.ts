@@ -1,6 +1,6 @@
 export type CSSUnit = 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%';
-export type CSSValue = `${number}${CSSUnit}`;
-export type CSSColor = string;
+export type CSSValue<T extends CSSUnit = CSSUnit> = `${number}${T}`;
+export type CSSColor = `#${string}` | `rgb(${number}, ${number}, ${number})` | `rgba(${number}, ${number}, ${number}, ${number})`;
 
 export type ThemeColor = {
   DEFAULT: CSSColor;
@@ -14,15 +14,6 @@ export type CyberColors = {
   purple: CSSColor;
   green: ThemeColor;
   yellow: ThemeColor;
-};
-
-export type ColorToken = {
-  value: string;
-  variable: string;
-};
-
-export type ColorTokens = {
-  [key: string]: ColorToken;
 };
 
 export const isValidThemeColor = (color: unknown): color is CSSColor => {

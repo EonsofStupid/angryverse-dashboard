@@ -1,5 +1,5 @@
 import { CSSValue } from './css';
-import { Duration, EasingFunction } from './animation';
+import { Duration } from './animation';
 
 export type MagneticStrength = 'weak' | 'medium' | 'strong';
 
@@ -32,3 +32,5 @@ export interface ScrollConfig {
   duration?: Duration;
   once?: boolean;
 }
+
+export type FilterValue = string;
