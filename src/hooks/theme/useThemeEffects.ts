@@ -60,10 +60,10 @@ export const useThemeEffects = () => {
       root.style.removeProperty('--glass-border');
       
       if (effects.animations) {
-        Object.keys(effects.animations.timing).forEach((key) => {
+        Object.entries(effects.animations.timing).forEach(([key]) => {
           root.style.removeProperty(`--animation-timing-${key}`);
         });
-        Object.keys(effects.animations.curves).forEach((key) => {
+        Object.entries(effects.animations.curves).forEach(([key]) => {
           root.style.removeProperty(`--animation-curve-${key}`);
         });
       }

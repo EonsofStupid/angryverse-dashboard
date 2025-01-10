@@ -19,8 +19,6 @@ export interface GlassEffects {
     spread_radius: string;
     opacity: number;
   };
-  frost_levels?: number[];
-  reflection_strength?: number[];
 }
 
 export interface HoverEffects {
