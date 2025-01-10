@@ -1,5 +1,5 @@
-import { CSSValue } from './css';
-import { Duration, EasingFunction } from './animation';
+import { CSSColor } from './css';
+import { Duration, TimingFunction } from './animation';
 
 /**
  * Defines the structure for glass effect styles, animations, hover behaviors,
@@ -26,12 +26,14 @@ export interface ThemeEffects {
       spread_radius: string;
       opacity: number;
     };
+    frost_levels?: number[];
+    reflection_strength?: number[];
   };
 
   /**
    * Animation presets for timing and curves.
    */
-  animations?: {
+  animations: {
     timing: {
       fast: Duration;
       normal: Duration;
@@ -39,22 +41,22 @@ export interface ThemeEffects {
       very_slow: Duration;
     };
     curves: {
-      linear: EasingFunction;
-      ease_out: EasingFunction;
-      ease_in: EasingFunction;
-      ease_in_out: EasingFunction;
+      linear: TimingFunction;
+      ease_out: TimingFunction;
+      ease_in: TimingFunction;
+      ease_in_out: TimingFunction;
     };
   };
 
   /**
    * Hover effects configuration, including glow and shadow behaviors.
    */
-  hover?: {
+  hover: {
     scale: number;
-    lift: CSSValue;
+    lift: string;
     glow_strength: string;
     transition_duration: Duration;
-    glow_color?: string;
+    glow_color?: CSSColor;
     glow_opacity?: number;
     glow_spread?: string;
     glow_blur?: string;
@@ -63,13 +65,12 @@ export interface ThemeEffects {
   };
 
   /**
-   * Gradient configurations with predefined combinations.
+   * Card effects configuration
    */
-  gradients?: {
-    gray_combinations: Array<{
-      start: string;
-      end: string;
-    }>;
-    opacity_levels: number[];
+  card?: {
+    shadow: string;
+    hover_shadow: string;
+    hover_opacity: number;
+    background_opacity: number;
   };
 }

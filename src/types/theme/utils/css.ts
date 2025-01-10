@@ -1,3 +1,5 @@
+export type CSSUnit = 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%';
+export type CSSValue = `${number}${CSSUnit}`;
 export type CSSColor = string;
 
 export type ThemeColor = {
@@ -25,5 +27,9 @@ export type ColorTokens = {
 
 export const isValidThemeColor = (color: unknown): color is CSSColor => {
   if (typeof color !== 'string') return false;
-  return color.startsWith('var(--') || color.startsWith('#') || color.startsWith('hsl(');
+  return color.startsWith('var(--') || 
+         color.startsWith('#') || 
+         color.startsWith('rgb(') || 
+         color.startsWith('rgba(') ||
+         color.startsWith('hsl(');
 };
