@@ -1,5 +1,6 @@
 import { CSSColor, CSSValue } from './css';
 import { Duration, TimingFunction } from './animation';
+import type { HoverConfig } from './interactions';
 
 export interface GlassEffects {
   background: string;
@@ -33,6 +34,7 @@ export interface HoverEffects {
   glow_blur?: string;
   shadow_normal?: string;
   shadow_hover?: string;
+  config?: HoverConfig;
 }
 
 export interface AnimationEffects {
@@ -52,8 +54,8 @@ export interface AnimationEffects {
 
 export interface ThemeEffects {
   glass: GlassEffects;
-  hover?: HoverEffects;
-  animations?: AnimationEffects;
+  hover: HoverEffects;
+  animations: AnimationEffects;
   card?: {
     shadow: string;
     hover_shadow: string;

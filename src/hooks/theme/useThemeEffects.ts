@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTheme } from '@/hooks/useTheme';
-import { ThemeEffects } from '@/types/theme/utils/effects';
+import type { ThemeEffects } from '@/types/theme/utils/effects';
 
 export const useThemeEffects = () => {
   const { currentTheme } = useTheme();
@@ -19,7 +19,7 @@ export const useThemeEffects = () => {
       root.style.setProperty('--glass-border', border);
     }
 
-    // Apply animation variables if present
+    // Apply animation variables
     if (effects.animations) {
       const { timing, curves } = effects.animations;
       Object.entries(timing).forEach(([key, value]) => {
@@ -30,7 +30,7 @@ export const useThemeEffects = () => {
       });
     }
 
-    // Apply hover effect variables if present
+    // Apply hover effect variables
     if (effects.hover) {
       const { 
         scale, 
@@ -54,25 +54,30 @@ export const useThemeEffects = () => {
     }
 
     return () => {
-      // Cleanup effect variables when component unmounts
+      // Cleanup effect variables
       root.style.removeProperty('--glass-background');
       root.style.removeProperty('--glass-blur');
       root.style.removeProperty('--glass-border');
-      // Cleanup animation and hover variables
-      Object.keys(effects.animations?.timing || {}).forEach((key) => {
-        root.style.removeProperty(`--animation-timing-${key}`);
-      });
-      Object.keys(effects.animations?.curves || {}).forEach((key) => {
-        root.style.removeProperty(`--animation-curve-${key}`);
-      });
-      root.style.removeProperty('--hover-scale');
-      root.style.removeProperty('--hover-lift');
-      root.style.removeProperty('--hover-glow-strength');
-      root.style.removeProperty('--hover-transition');
-      root.style.removeProperty('--hover-glow-color');
-      root.style.removeProperty('--hover-glow-opacity');
-      root.style.removeProperty('--hover-glow-spread');
-      root.style.removeProperty('--hover-glow-blur');
+      
+      if (effects.animations) {
+        Object.keys(effects.animations.timing).forEach((key) => {
+          root.style.removeProperty(`--animation-timing-${key}`);
+        });
+        Object.keys(effects.animations.curves).forEach((key) => {
+          root.style.removeProperty(`--animation-curve-${key}`);
+        });
+      }
+      
+      if (effects.hover) {
+        root.style.removeProperty('--hover-scale');
+        root.style.removeProperty('--hover-lift');
+        root.style.removeProperty('--hover-glow-strength');
+        root.style.removeProperty('--hover-transition');
+        root.style.removeProperty('--hover-glow-color');
+        root.style.removeProperty('--hover-glow-opacity');
+        root.style.removeProperty('--hover-glow-spread');
+        root.style.removeProperty('--hover-glow-blur');
+      }
     };
   }, [effects]);
 

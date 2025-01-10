@@ -12,7 +12,7 @@ const features = [
     icon: BookOpen,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-neutral)] to-[var(--theme-gray-soft)]",
-    glowColor: "var(--theme-gray-silver)" as CSSColor,
+    glowColor: "var(--theme-colors-cyber-pink)" as CSSColor,
   },
   {
     title: "Updates",
@@ -20,7 +20,7 @@ const features = [
     icon: Rss,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-medium)] to-[var(--theme-gray-light)]",
-    glowColor: "var(--theme-gray-neutral)" as CSSColor,
+    glowColor: "var(--theme-colors-cyber-cyan)" as CSSColor,
   },
   {
     title: "Blog",
@@ -28,7 +28,7 @@ const features = [
     icon: Newspaper,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-dark)] to-[var(--theme-gray-medium)]",
-    glowColor: "var(--theme-gray-silver)" as CSSColor,
+    glowColor: "var(--theme-colors-cyber-purple)" as CSSColor,
   },
   {
     title: "Videos",
@@ -36,7 +36,7 @@ const features = [
     icon: Video,
     color: "text-[var(--theme-primary)]",
     gradient: "from-[var(--theme-gray-mid)] to-[var(--theme-gray-dark)]",
-    glowColor: "var(--theme-gray-neutral)" as CSSColor,
+    glowColor: "var(--theme-colors-cyber-cyan)" as CSSColor,
   },
 ];
 
