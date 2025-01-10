@@ -52,8 +52,8 @@ export interface AnimationEffects {
 
 export interface ThemeEffects {
   glass: GlassEffects;
-  hover?: HoverEffects;
-  animations?: AnimationEffects;
+  hover: HoverEffects;
+  animations: AnimationEffects;
   card?: {
     shadow: string;
     hover_shadow: string;

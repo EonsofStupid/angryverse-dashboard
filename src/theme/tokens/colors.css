@@ -1,4 +1,3 @@
-/* Base HSL Color System */
 :root {
   /* Core Colors - HSL Format */
   --base-1: 240 20% 99.02%;
@@ -13,20 +12,6 @@
   --base-10: 226.15 5.39% 52.75%;
   --base-11: 220 5.88% 40%;
   --base-12: 210 12.5% 12.55%;
-
-  /* Accent Colors - HSL Format */
-  --accent-1: 210 100% 99.22%;
-  --accent-2: 207.27 100% 97.84%;
-  --accent-3: 205 92.31% 94.90%;
-  --accent-4: 202.86 100% 91.76%;
-  --accent-5: 205.57 100% 88.04%;
-  --accent-6: 207 93.02% 83.14%;
-  --accent-7: 206.54 85.25% 76.08%;
-  --accent-8: 205.66 81.92% 65.29%;
-  --accent-9: 206.12 100% 50%;
-  --accent-10: 206.55 95.92% 48.04%;
-  --accent-11: 207.98 88.13% 42.94%;
-  --accent-12: 216.14 70.94% 22.94%;
 
   /* Theme Semantic Colors */
   --background: hsl(var(--base-1));
@@ -50,10 +35,8 @@
   --ring: hsl(var(--base-6));
   --success: hsl(151 55% 45%);
   --success-foreground: hsl(210 40% 98%);
-}
 
-/* Site Theme Colors */
-.site-theme {
+  /* Theme Colors */
   --theme-colors-cyber-dark: hsl(var(--base-12));
   --theme-colors-cyber-pink: hsl(330 100% 50%);
   --theme-colors-cyber-pink-hover: hsl(330 100% 55%);
@@ -64,24 +47,13 @@
   --theme-colors-cyber-green-hover: hsl(145 63% 47%);
   --theme-colors-cyber-yellow: hsl(35 90% 58%);
   --theme-colors-cyber-yellow-hover: hsl(35 90% 63%);
-}
 
-/* Admin Theme Colors */
-.admin-theme {
-  --theme-colors-cyber-dark: hsl(var(--base-12));
-  --theme-colors-cyber-pink: hsl(280 70% 50%);
-  --theme-colors-cyber-pink-hover: hsl(280 70% 55%);
-  --theme-colors-cyber-cyan: hsl(190 80% 48%);
-  --theme-colors-cyber-cyan-hover: hsl(190 80% 53%);
-  --theme-colors-cyber-purple: hsl(260 60% 50%);
-  --theme-colors-cyber-green: hsl(145 63% 42%);
-  --theme-colors-cyber-green-hover: hsl(145 63% 47%);
-  --theme-colors-cyber-yellow: hsl(35 90% 58%);
-  --theme-colors-cyber-yellow-hover: hsl(35 90% 63%);
-}
-
-/* Debug Helper */
-.debug-colors {
-  --debug-color: var(--theme-colors-cyber-dark);
-  content: var(--debug-color);
+  /* Gray Scale */
+  --theme-gray-neutral: hsl(220, 13%, 91%);
+  --theme-gray-soft: hsl(220, 14%, 96%);
+  --theme-gray-medium: hsl(220, 13%, 91%);
+  --theme-gray-light: hsl(220, 14%, 96%);
+  --theme-gray-silver: hsl(220, 13%, 91%);
+  --theme-gray-dark: hsl(220, 9%, 46%);
+  --theme-gray-mid: hsl(220, 13%, 91%);
 }
