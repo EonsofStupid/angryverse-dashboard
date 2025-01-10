@@ -17,8 +17,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     fetchPageTheme, 
     setCurrentTheme,
-    theme,
-    setTheme,
   } = useThemeStore();
 
   const { user } = useAuthStore();
@@ -36,13 +34,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
     
     const root = document.documentElement;
-    
-    // Apply theme mode
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
 
     // Apply route-specific theme class
     if (isAdminRoute) {
@@ -102,7 +93,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         root.style.setProperty(`--animation-curve-${key}`, value);
       });
     }
-  }, [currentTheme, theme, isAdminRoute]);
+  }, [currentTheme, isAdminRoute]);
 
   useEffect(() => {
     const initializeTheme = async () => {
@@ -158,8 +149,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     setCurrentTheme,
     fetchPageTheme,
-    theme,
-    setTheme,
     applyThemeVariables,
     isAdmin,
   };

@@ -7,8 +7,6 @@ export interface ThemeContextType {
   error: Error | null;
   setCurrentTheme: (theme: Theme | null) => void;
   fetchPageTheme: (path: string) => Promise<void>;
-  theme: string;
-  setTheme: (theme: string) => void;
   applyThemeVariables: () => void;
   isAdmin: boolean;
 }

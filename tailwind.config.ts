@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 import { glassPlugin } from "./src/theme/plugins/glass";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",

@@ -5,12 +5,7 @@
 @import './tokens/layout.css';
 
 /* Theme Variations */
-:root[data-theme="dark"] {
+:root {
   --theme-background: var(--theme-colors-cyber-dark);
   --theme-foreground: 220 28% 95%;
-}
-
-:root[data-theme="light"] {
-  --theme-background: 220 28% 95%;
-  --theme-foreground: var(--theme-colors-cyber-dark);
 }
