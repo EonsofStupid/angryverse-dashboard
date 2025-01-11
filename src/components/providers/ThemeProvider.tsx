@@ -22,6 +22,25 @@ const convertDatabaseTheme = (dbTheme: any): Theme => {
 
   console.log('Parsed configuration:', configuration);
   
+  // Ensure glass effects are present
+  if (!configuration.effects) {
+    configuration.effects = {};
+  }
+  
+  if (!configuration.effects.glass) {
+    configuration.effects.glass = {
+      background: 'rgba(0, 0, 0, 0.1)',
+      blur: '8px',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      shadow_composition: {
+        offset_y: '4px',
+        blur_radius: '6px',
+        spread_radius: '0px',
+        opacity: 0.1
+      }
+    };
+  }
+
   if (!isThemeConfiguration(configuration)) {
     console.error('Invalid theme configuration:', configuration);
     throw new Error('Invalid theme configuration structure');
