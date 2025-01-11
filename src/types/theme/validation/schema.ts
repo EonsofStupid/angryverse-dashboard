@@ -12,6 +12,12 @@ const glassEffectsSchema = effectStateSchema.extend({
   background: z.string(),
   blur: z.string(),
   border: z.string(),
+  shadow_composition: z.object({
+    offset_y: z.string(),
+    blur_radius: z.string(),
+    spread_radius: z.string(),
+    opacity: z.number()
+  }).optional(),
   blur_levels: z.array(z.string()).optional(),
   opacity_levels: z.array(z.number()).optional(),
   border_styles: z.object({
@@ -46,7 +52,9 @@ const hoverEffectsSchema = effectStateSchema.extend({
   glow_color: z.string().optional(),
   glow_opacity: z.number().optional(),
   glow_spread: z.string().optional(),
-  glow_blur: z.string().optional()
+  glow_blur: z.string().optional(),
+  shadow_normal: z.string().optional(),
+  shadow_hover: z.string().optional()
 });
 
 // Theme effects schema
