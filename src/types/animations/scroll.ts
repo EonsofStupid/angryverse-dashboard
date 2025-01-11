@@ -1,5 +1,5 @@
-import type { CSSValue } from '../theme/utils/css';
-import type { AnimationConfig } from './core';
+import type { CSSValue } from '@/types/theme/utils/css';
+import type { AnimationConfig, AnimationState } from './core';
 
 export type ScrollDirection = 'vertical' | 'horizontal' | 'both';
 export type ScrollTriggerEvent = 'enter' | 'leave' | 'enter-back' | 'leave-back';
@@ -13,9 +13,11 @@ export interface ScrollTrigger {
   once?: boolean;
 }
 
-export interface ScrollConfig extends AnimationConfig {
+export interface ScrollConfig {
   trigger: ScrollTrigger;
   direction: ScrollDirection;
+  duration: string;
+  easing: string;
   distance?: CSSValue;
   pin?: boolean;
   pinSpacing?: boolean;

@@ -1,5 +1,5 @@
-import type { CSSValue } from '../theme/utils/css';
-import type { AnimationConfig } from './core';
+import type { CSSValue } from '@/types/theme/utils/css';
+import type { AnimationConfig, AnimationState } from './core';
 
 export type PathType = 'linear' | 'curved' | 'circular' | 'custom';
 export type PathAlignment = 'auto' | 'start' | 'center' | 'end';

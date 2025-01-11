@@ -1,22 +1,14 @@
-import type { Duration, CSSValue, TimingFunction } from './css';
-import type { KeyframeState, EasingFunction } from '@/theme/animations/types/keyframes';
-import type { MotionPathState } from '@/theme/animations/types/motion-paths';
-import type { ScrollEffectState } from '@/theme/animations/types/scroll-effects';
-import type { EffectState } from './state';
+import type { Duration, EasingFunction } from '@/types/animations/core';
+import type { KeyframeState } from '@/types/animations/keyframes';
+import type { MotionState } from '@/types/animations/motion';
+import type { ScrollState } from '@/types/animations/scroll';
+import type { AnimationEffects } from './effects/animation';
 
-export interface AnimationEffects extends EffectState {
-  timing: {
-    fast: Duration;
-    normal: Duration;
-    slow: Duration;
-    very_slow: Duration;
-  };
-  curves: {
-    linear: TimingFunction;
-    ease_out: TimingFunction;
-    ease_in: TimingFunction;
-    ease_in_out: TimingFunction;
-  };
-}
-
-export type { Duration, TimingFunction, KeyframeState, MotionPathState, ScrollEffectState, EasingFunction };
+export type { 
+  Duration, 
+  EasingFunction, 
+  KeyframeState, 
+  MotionState, 
+  ScrollState,
+  AnimationEffects 
+};

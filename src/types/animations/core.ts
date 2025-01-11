@@ -1,4 +1,4 @@
-import type { CSSValue } from '../theme/utils/css';
+import type { CSSValue } from '@/types/theme/utils/css';
 
 // Core timing types
 export type Duration = `${number}${'ms' | 's'}`;

@@ -1,4 +1,4 @@
-import type { CSSValue, CSSColor } from '../theme/utils/css';
+import type { CSSValue, CSSColor } from '@/types/theme/utils/css';
 import type { AnimationConfig } from './core';
 
 export interface KeyframeState extends AnimationConfig {
