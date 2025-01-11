@@ -1,13 +1,44 @@
+// src/types/theme/validation/schema.ts
 import { z } from 'zod';
+import type { Theme, ThemeStatus } from '../types';
 
-// Base effect state schema
+// Base effect state schema - all required
 const effectStateSchema = z.object({
-  enabled: z.boolean().optional(),
-  priority: z.enum(['database', 'fallback', 'hybrid']).optional(),
-  source: z.enum(['database', 'fallback']).optional()
+  enabled: z.boolean(),
+  priority: z.enum(['database', 'fallback', 'hybrid']),
+  source: z.enum(['database', 'fallback'])
+}).strict();
+
+// Animation timing and curves - all required
+const animationTimingSchema = z.object({
+  fast: z.string(),
+  normal: z.string(),
+  slow: z.string(),
+  very_slow: z.string()
+}).strict();
+
+const animationCurvesSchema = z.object({
+  linear: z.string(),
+  ease_out: z.string(),
+  ease_in: z.string(),
+  ease_in_out: z.string()
+}).strict();
+
+// Hover effects - all required
+const hoverEffectsSchema = effectStateSchema.extend({
+  scale: z.number(),
+  lift: z.string(),
+  glow_strength: z.string(),
+  transition_duration: z.string(),
+  glow_color: z.string(),
+  glow_opacity: z.number(),
+  glow_spread: z.string(),
+  glow_blur: z.string(),
+  shadow_normal: z.string(),
+  shadow_hover: z.string()
 });
 
-// Glass effects schema
+// Glass effects - all required
 const glassEffectsSchema = effectStateSchema.extend({
   background: z.string(),
   blur: z.string(),
@@ -17,122 +48,90 @@ const glassEffectsSchema = effectStateSchema.extend({
     blur_radius: z.string(),
     spread_radius: z.string(),
     opacity: z.number()
-  }).optional(),
-  blur_levels: z.array(z.string()).optional(),
-  opacity_levels: z.array(z.number()).optional(),
-  border_styles: z.object({
-    light: z.string(),
-    medium: z.string(),
-    heavy: z.string()
-  }).optional()
+  }).strict()
 });
 
-// Animation timing schema
-const animationTimingSchema = z.object({
-  fast: z.string(),
-  normal: z.string(),
-  slow: z.string(),
-  very_slow: z.string()
-});
-
-// Animation curves schema
-const animationCurvesSchema = z.object({
-  linear: z.string(),
-  ease_out: z.string(),
-  ease_in: z.string(),
-  ease_in_out: z.string()
-});
-
-// Hover effects schema
-const hoverEffectsSchema = effectStateSchema.extend({
-  scale: z.number(),
-  lift: z.string(),
-  glow_strength: z.string(),
-  transition_duration: z.string(),
-  glow_color: z.string().optional(),
-  glow_opacity: z.number().optional(),
-  glow_spread: z.string().optional(),
-  glow_blur: z.string().optional(),
-  shadow_normal: z.string().optional(),
-  shadow_hover: z.string().optional()
-});
-
-// Theme effects schema
+// Theme effects - all core effects required
 const themeEffectsSchema = z.object({
   glass: glassEffectsSchema,
-  hover: hoverEffectsSchema.optional(),
+  hover: hoverEffectsSchema,
   animations: z.object({
     timing: animationTimingSchema,
     curves: animationCurvesSchema
-  }).optional()
-});
+  }).strict()
+}).strict();
 
-// Colors schema
+// Colors schema - all required
 const colorSchema = z.object({
   cyber: z.object({
     dark: z.string(),
     pink: z.object({
       DEFAULT: z.string(),
       hover: z.string()
-    }),
+    }).strict(),
     cyan: z.object({
       DEFAULT: z.string(),
       hover: z.string()
-    }),
+    }).strict(),
     purple: z.string(),
     green: z.object({
       DEFAULT: z.string(),
       hover: z.string()
-    }),
+    }).strict(),
     yellow: z.object({
       DEFAULT: z.string(),
       hover: z.string()
-    })
-  })
-});
+    }).strict()
+  }).strict()
+}).strict();
 
-// Typography schema
+// Typography schema - all required
 const typographySchema = z.object({
   fonts: z.object({
     sans: z.array(z.string()),
     cyber: z.array(z.string())
-  })
-});
+  }).strict()
+}).strict();
 
-// Theme configuration schema
+// Complete theme configuration schema
 export const themeConfigurationSchema = z.object({
   colors: colorSchema,
   typography: typographySchema,
   effects: themeEffectsSchema
-});
+}).strict();
 
-// Database theme row schema
+// Database row validation
 export const databaseThemeRowSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   description: z.string().optional(),
   is_default: z.boolean(),
   status: z.enum(['active', 'inactive', 'draft']),
-  configuration: z.unknown(),
+  configuration: themeConfigurationSchema,
   created_by: z.string().uuid().optional(),
-  created_at: z.string().datetime().optional(),
-  updated_at: z.string().datetime().optional()
-});
+  // Convert string-based datetimes into real JS Dates
+  created_at: z.coerce.date().optional(),
+  updated_at: z.coerce.date().optional()
+}).strict();
 
-// Types inferred from schemas
+// Type inference
 export type ThemeConfiguration = z.infer<typeof themeConfigurationSchema>;
 export type DatabaseThemeRow = z.infer<typeof databaseThemeRowSchema>;
 
-// Theme transformation function
-export const transformDatabaseThemeRow = (row: DatabaseThemeRow) => {
-  try {
-    const configuration = themeConfigurationSchema.parse(row.configuration);
-    return {
-      ...row,
-      configuration
-    };
-  } catch (error) {
-    console.error('Invalid theme configuration:', error);
-    throw new Error('Failed to validate theme configuration');
-  }
+// Transform function
+export const transformDatabaseThemeRow = (row: DatabaseThemeRow): Theme => {
+  // Validate the configuration
+  const validatedConfig = themeConfigurationSchema.parse(row.configuration);
+
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    is_default: row.is_default,
+    status: row.status as ThemeStatus,
+    configuration: validatedConfig,
+    created_by: row.created_by,
+    created_at: row.created_at,
+    updated_at: row.updated_at
+  };
 };
