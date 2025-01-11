@@ -9,6 +9,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 import { isThemeConfiguration } from '@/types/theme/core';
 import type { Theme, ThemeConfiguration } from '@/types/theme/core';
+import type { ThemeEffects } from '@/types/theme/utils/effects';
+import type { GlassEffects } from '@/types/theme/utils/effects/glass';
+import type { HoverEffects } from '@/types/theme/utils/effects/hover';
+import type { AnimationEffects } from '@/types/theme/utils/animation';
 
 const convertDatabaseTheme = (dbTheme: any): Theme => {
   console.log('Converting database theme:', dbTheme);
@@ -61,7 +65,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
     
     const root = document.documentElement;
-    const effects = currentTheme.configuration.effects;
+    const effects = currentTheme.configuration.effects as ThemeEffects;
 
     // Apply route-specific theme class
     if (isAdminRoute) {
@@ -74,13 +78,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply glass effects
     if (effects.glass) {
-      const { background, blur, border, shadow_composition } = effects.glass;
+      const { background, blur, border } = effects.glass;
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
       root.style.setProperty('--glass-border', border);
 
-      if (shadow_composition) {
-        const { offset_y, blur_radius, spread_radius, opacity } = shadow_composition;
+      if ('shadow_composition' in effects.glass) {
+        const { offset_y, blur_radius, spread_radius, opacity } = effects.glass.shadow_composition;
         root.style.setProperty('--glass-shadow-offset-y', offset_y);
         root.style.setProperty('--glass-shadow-blur-radius', blur_radius);
         root.style.setProperty('--glass-shadow-spread-radius', spread_radius);
@@ -89,7 +93,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply hover effects
-    if (effects.hover) {
+    if ('hover' in effects) {
       const { 
         scale, 
         lift, 
@@ -116,13 +120,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply animation effects
-    if (effects.animations) {
+    if ('animations' in effects) {
       const { timing, curves } = effects.animations;
       Object.entries(timing).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-timing-${key}`, value);
+        if (typeof value === 'string') {
+          root.style.setProperty(`--animation-timing-${key}`, value);
+        }
       });
       Object.entries(curves).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-curve-${key}`, value);
+        if (typeof value === 'string') {
+          root.style.setProperty(`--animation-curve-${key}`, value);
+        }
       });
     }
   }, [currentTheme, isAdminRoute]);
