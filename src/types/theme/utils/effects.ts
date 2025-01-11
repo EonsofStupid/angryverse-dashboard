@@ -50,17 +50,14 @@ export interface AnimationEffects {
   };
 }
 
-export interface GradientEffects {
-  gray_combinations: Array<{
-    start: CSSColor;
-    end: CSSColor;
-  }>;
-  opacity_levels: number[];
-}
-
 export interface ThemeEffects {
   glass: GlassEffects;
   hover: HoverEffects;
   animations: AnimationEffects;
-  gradients: GradientEffects;
+  card?: {
+    shadow: string;
+    hover_shadow: string;
+    hover_opacity: number;
+    background_opacity: number;
+  };
 }

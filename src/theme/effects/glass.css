@@ -3,25 +3,21 @@
   backdrop-filter: blur(var(--glass-blur));
   border: var(--glass-border);
   transition: all var(--animation-normal) var(--ease-in-out);
-  box-shadow: var(--glass-shadow);
 }
 
 .glass-frost {
   --glass-background: rgba(255, 255, 255, 0.15);
   --glass-blur: var(--glass-blur-xl);
-  --glass-shadow: var(--shadow-frost);
 }
 
 .glass-tint {
   --glass-background: rgba(var(--theme-primary), 0.2);
   --glass-blur: var(--glass-blur-lg);
-  --glass-shadow: var(--shadow-tint);
 }
 
 .glass-reflect {
   --glass-background: rgba(255, 255, 255, 0.2);
   --glass-blur: var(--glass-blur-md);
-  --glass-shadow: var(--shadow-reflect);
   position: relative;
   overflow: hidden;
 }

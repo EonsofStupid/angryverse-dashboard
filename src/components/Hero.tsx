@@ -11,9 +11,9 @@ export const Hero = () => {
 
   const gradientStyle = {
     background: `linear-gradient(to bottom right, 
-      var(--theme-gray-neutral) / ${effects?.gradients?.opacity_levels?.[0] || 0.1},
-      var(--theme-gray-soft) / ${effects?.gradients?.opacity_levels?.[1] || 0.05},
-      var(--theme-gray-medium) / ${effects?.gradients?.opacity_levels?.[2] || 0.1}
+      var(--theme-gray-neutral) / 0.1,
+      var(--theme-gray-soft) / 0.05,
+      var(--theme-gray-medium) / 0.1
     )`,
     boxShadow: effects?.glass?.shadow_composition ? 
       `0 ${effects.glass.shadow_composition.offset_y} ${effects.glass.shadow_composition.blur_radius} rgba(0, 0, 0, ${effects.glass.shadow_composition.opacity})` :
@@ -24,11 +24,7 @@ export const Hero = () => {
     <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
       <div 
         className="absolute inset-0" 
-        style={{
-          ...gradientStyle,
-          backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
-          border: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)'
-        }}
+        style={gradientStyle}
       />
       
       <ScrollingCode />

@@ -1,21 +1,7 @@
 import React from 'react';
 import { Button } from "../ui/button";
-import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 
 export const HeroContent = () => {
-  const { effects } = useThemeEffects();
-  
-  const buttonStyle = {
-    transition: `all ${effects?.animations?.timing?.normal || '200ms'} ${effects?.animations?.curves?.ease_out || 'ease-out'}`,
-    transform: `scale(${effects?.hover?.scale || 1})`,
-    boxShadow: effects?.hover?.shadow_normal
-  };
-
-  const buttonHoverStyle = {
-    transform: `scale(${effects?.hover?.scale || 1.05})`,
-    boxShadow: effects?.hover?.shadow_hover
-  };
-
   return (
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -42,13 +28,11 @@ export const HeroContent = () => {
             size="lg"
             className="glass hover:scale-105 transition-all duration-500"
             style={{
-              ...buttonStyle,
               background: `linear-gradient(to right, 
                 var(--theme-primary), 
                 var(--theme-secondary)
               )`,
-              boxShadow: `0 0 var(--glow-strength-sm) var(--theme-primary)`,
-              '&:hover': buttonHoverStyle
+              boxShadow: `0 0 var(--glow-strength-sm) var(--theme-primary)`
             }}
           >
             Get Started
@@ -58,10 +42,8 @@ export const HeroContent = () => {
             size="lg"
             className="glass hover:scale-105 transition-all duration-500"
             style={{
-              ...buttonStyle,
               borderColor: 'var(--theme-secondary)',
-              color: 'var(--theme-secondary)',
-              '&:hover': buttonHoverStyle
+              color: 'var(--theme-secondary)'
             }}
           >
             Learn More
