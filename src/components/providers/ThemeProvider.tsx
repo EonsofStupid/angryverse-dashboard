@@ -7,8 +7,15 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
-import { Theme } from '@/types/theme';
-import { isValidThemeColor } from '@/types/theme/utils/css';
+
+// Theme Types
+import { Theme, ThemeConfiguration } from '@/types/theme/core';
+import { ThemeEffects } from '@/types/theme/utils/effects';
+import { GlassEffects } from '@/types/theme/utils/effects/glass';
+import { HoverEffects } from '@/types/theme/utils/effects/hover';
+import { AnimationEffects } from '@/types/theme/utils/animation';
+import { GradientEffects } from '@/types/theme/utils/effects/gradient';
+import { isValidThemeColor, CSSColor } from '@/types/theme/utils/css';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -44,7 +51,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.classList.remove('admin-theme');
     }
 
-    // Apply colors
+    // Apply colors and effects from the theme configuration
     const { colors, effects } = currentTheme.configuration;
 
     // Apply cyber colors
@@ -65,19 +72,41 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply glass effects
     if (effects?.glass) {
-      const { background, blur, border } = effects.glass;
+      const { background, blur, border, shadow_composition } = effects.glass;
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
       root.style.setProperty('--glass-border', border);
+
+      if (shadow_composition) {
+        const { offset_y, blur_radius, spread_radius, opacity } = shadow_composition;
+        root.style.setProperty('--glass-shadow-offset-y', offset_y);
+        root.style.setProperty('--glass-shadow-blur-radius', blur_radius);
+        root.style.setProperty('--glass-shadow-spread-radius', spread_radius);
+        root.style.setProperty('--glass-shadow-opacity', opacity.toString());
+      }
     }
 
     // Apply hover effects
     if (effects?.hover) {
-      const { scale, lift, glow_strength, transition_duration } = effects.hover;
+      const { 
+        scale, 
+        lift, 
+        glow_strength, 
+        transition_duration,
+        glow_color,
+        glow_opacity,
+        glow_spread,
+        glow_blur
+      } = effects.hover;
+      
       root.style.setProperty('--hover-scale', scale.toString());
       root.style.setProperty('--hover-lift', lift);
       root.style.setProperty('--hover-glow-strength', glow_strength);
       root.style.setProperty('--hover-transition', transition_duration);
+      root.style.setProperty('--hover-glow-color', glow_color || 'var(--theme-primary)');
+      root.style.setProperty('--hover-glow-opacity', glow_opacity?.toString() || '0.5');
+      root.style.setProperty('--hover-glow-spread', glow_spread || '4px');
+      root.style.setProperty('--hover-glow-blur', glow_blur || '8px');
     }
 
     // Apply animation timings
