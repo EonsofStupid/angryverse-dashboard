@@ -48,6 +48,7 @@
   --border: hsl(var(--base-6));
   --input: hsl(var(--base-6));
   --ring: hsl(var(--base-6));
+  --radius: 0.5rem;
   --success: hsl(151 55% 45%);
   --success-foreground: hsl(210 40% 98%);
 }
@@ -78,10 +79,4 @@
   --theme-colors-cyber-green-hover: hsl(145 63% 47%);
   --theme-colors-cyber-yellow: hsl(35 90% 58%);
   --theme-colors-cyber-yellow-hover: hsl(35 90% 63%);
-}
-
-/* Debug Helper */
-.debug-colors {
-  --debug-color: var(--theme-colors-cyber-dark);
-  content: var(--debug-color);
 }

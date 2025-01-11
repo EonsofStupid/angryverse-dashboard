@@ -10,21 +10,16 @@ import { useRoleCheck } from '@/hooks/useRoleCheck';
 import { isThemeConfiguration } from '@/types/theme/core';
 import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 import type { ThemeEffects } from '@/types/theme/utils/effects';
-import type { GlassEffects } from '@/types/theme/utils/effects/glass';
-import type { HoverEffects } from '@/types/theme/utils/effects/hover';
-import type { AnimationEffects } from '@/types/theme/utils/animation';
 
-// Cache duration in milliseconds (5 minutes)
-const CACHE_DURATION = 5 * 60 * 1000;
-
-// Rate limiting - max calls per minute
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const MAX_CALLS_PER_MINUTE = 10;
 const MINUTE = 60 * 1000;
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const { toast } = useToast();
-  const { isAdmin } = useRoleCheck();
+  const { user } = useAuthStore();
+  const { hasRole } = useRoleCheck(user, 'admin');
   const [apiCalls, setApiCalls] = useState<number[]>([]);
   const [lastFetch, setLastFetch] = useState<number>(0);
   const [cachedTheme, setCachedTheme] = useState<Theme | null>(null);
@@ -51,24 +46,45 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const convertDatabaseTheme = useCallback((dbTheme: any): Theme => {
     const configuration = dbTheme.configuration as ThemeConfiguration;
-    console.log('Converting database theme:', dbTheme);
-    console.log('Parsed configuration:', configuration);
     
-    // Ensure glass effects are present
+    // Ensure effects structure is complete
     if (!configuration.effects) {
-      configuration.effects = {};
-    }
-    
-    if (!configuration.effects.glass) {
-      configuration.effects.glass = {
-        background: 'rgba(0, 0, 0, 0.1)',
-        blur: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        shadow_composition: {
-          offset_y: '4px',
-          blur_radius: '6px',
-          spread_radius: '0px',
-          opacity: 0.1
+      configuration.effects = {
+        glass: {
+          enabled: true,
+          priority: 'database',
+          source: 'database',
+          background: 'rgba(0, 0, 0, 0.1)',
+          blur: '8px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          shadow_composition: {
+            offset_y: '4px',
+            blur_radius: '6px',
+            spread_radius: '0px',
+            opacity: 0.1
+          }
+        },
+        hover: {
+          scale: 1.05,
+          lift: '-4px',
+          glow_strength: '10px',
+          transition_duration: '300ms',
+          shadow_normal: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          shadow_hover: '0 8px 12px rgba(0, 0, 0, 0.15)'
+        },
+        animations: {
+          timing: {
+            fast: '100ms',
+            normal: '200ms',
+            slow: '300ms',
+            very_slow: '1000ms'
+          },
+          curves: {
+            linear: 'linear',
+            ease_out: 'cubic-bezier(0, 0, 0.2, 1)',
+            ease_in: 'cubic-bezier(0.4, 0, 1, 1)',
+            ease_in_out: 'cubic-bezier(0.4, 0, 0.2, 1)'
+          }
         }
       };
     }
@@ -91,19 +107,53 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  const applyThemeVariables = useCallback(() => {
+    if (!currentTheme?.configuration?.effects) return;
+    
+    const root = document.documentElement;
+    const effects = currentTheme.configuration.effects;
+
+    // Apply glass effect variables
+    if (effects.glass) {
+      root.style.setProperty('--glass-background', effects.glass.background);
+      root.style.setProperty('--glass-blur', effects.glass.blur);
+      root.style.setProperty('--glass-border', effects.glass.border);
+    }
+
+    // Apply hover effect variables
+    if (effects.hover) {
+      root.style.setProperty('--hover-scale', effects.hover.scale.toString());
+      root.style.setProperty('--hover-lift', effects.hover.lift);
+      root.style.setProperty('--hover-glow-strength', effects.hover.glow_strength);
+      root.style.setProperty('--hover-transition', effects.hover.transition_duration);
+    }
+
+    // Apply animation variables
+    if (effects.animations) {
+      Object.entries(effects.animations.timing).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-${key}`, value);
+      });
+      Object.entries(effects.animations.curves).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-curve-${key}`, value);
+      });
+    }
+  }, [currentTheme]);
+
+  useEffect(() => {
+    applyThemeVariables();
+  }, [applyThemeVariables]);
+
   const initializeTheme = useCallback(async () => {
     console.log('Initializing theme...');
     
     const now = Date.now();
     
-    // Check cache first
     if (cachedTheme && (now - lastFetch < CACHE_DURATION)) {
       console.log('Using cached theme');
       setCurrentTheme(cachedTheme);
       return;
     }
     
-    // Check rate limiting
     if (!checkRateLimit()) {
       console.log('Rate limit exceeded');
       toast({
@@ -123,8 +173,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) throw error;
 
-      console.log('Theme data from database:', themeData);
-      
       if (themeData) {
         const convertedTheme = convertDatabaseTheme(themeData);
         setCurrentTheme(convertedTheme);
@@ -151,7 +199,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     setCurrentTheme,
     fetchPageTheme,
-    isAdmin
+    isAdmin: hasRole,
+    applyThemeVariables
   };
 
   return (
