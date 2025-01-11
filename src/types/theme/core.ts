@@ -24,6 +24,15 @@ export interface ThemeColors {
       hover: CSSColor;
     };
   };
+  gray?: {
+    neutral: CSSColor;
+    soft: CSSColor;
+    medium: CSSColor;
+    light: CSSColor;
+    silver: CSSColor;
+    dark: CSSColor;
+    mid: CSSColor;
+  };
 }
 
 export interface ThemeTypography {
@@ -94,6 +103,5 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
     return false;
   }
 
-  // If we made it here, the configuration is valid
   return true;
 }
