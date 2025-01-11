@@ -10,4 +10,6 @@ export interface HoverEffects {
   glow_opacity?: number;
   glow_spread?: string;
   glow_blur?: string;
+  shadow_normal: string;
+  shadow_hover: string;
 }
