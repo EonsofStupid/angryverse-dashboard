@@ -11,7 +11,7 @@ export type CSSColor =
   | `hsla(${HSLValue}, ${number})`
   | CSSVariable;
 
-export function isValidThemeColor(value: unknown): value is CSSColor {
+export function isValidCSSColor(value: unknown): value is CSSColor {
   if (typeof value !== 'string') return false;
   
   // CSS Variable
