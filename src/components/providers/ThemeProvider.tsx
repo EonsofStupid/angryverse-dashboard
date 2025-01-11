@@ -16,11 +16,15 @@ import type { HoverEffects } from '@/types/theme/utils/effects/hover';
 import type { AnimationEffects } from '@/types/theme/utils/animation';
 
 const convertDatabaseTheme = (dbTheme: any): Theme => {
+  console.log('Converting database theme:', dbTheme);
   const configuration = typeof dbTheme.configuration === 'string' 
     ? JSON.parse(dbTheme.configuration) 
     : dbTheme.configuration;
 
+  console.log('Parsed configuration:', configuration);
+  
   if (!isThemeConfiguration(configuration)) {
+    console.error('Invalid theme configuration:', configuration);
     throw new Error('Invalid theme configuration structure');
   }
 
@@ -55,6 +59,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   const applyThemeVariables = useCallback(() => {
+    console.log('Applying theme variables:', currentTheme);
     if (!currentTheme?.configuration?.effects) {
       console.warn('No theme effects configuration found');
       return;
@@ -134,6 +139,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeTheme = async () => {
       try {
+        console.log('Initializing theme...');
         const { data: themeData, error: themeError } = await supabase
           .from('themes')
           .select('*')
@@ -141,6 +147,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           .maybeSingle();
 
         if (themeError) throw themeError;
+
+        console.log('Theme data from database:', themeData);
 
         if (themeData) {
           const theme = convertDatabaseTheme(themeData);
@@ -157,6 +165,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
             .maybeSingle();
 
           if (pageError) throw pageError;
+
+          console.log('Page theme data:', pageTheme);
 
           if (pageTheme?.themes) {
             const theme = convertDatabaseTheme(pageTheme.themes);
