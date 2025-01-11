@@ -8,17 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 
-// Theme Types
-import { Theme, ThemeConfiguration, isThemeConfiguration } from '@/types/theme/core';
-import { ThemeEffects } from '@/types/theme/utils/effects';
-import { GlassEffects } from '@/types/theme/utils/effects/glass';
-import { HoverEffects } from '@/types/theme/utils/effects/hover';
-import { AnimationEffects } from '@/types/theme/utils/animation';
-import { GradientEffects } from '@/types/theme/utils/effects/gradient';
-import { isValidThemeColor, CSSColor } from '@/types/theme/utils/css';
+import type { Theme, ThemeConfiguration, isThemeConfiguration } from '@/types/theme/core';
+import type { ThemeEffects } from '@/types/theme/utils/effects';
+import type { GlassEffects } from '@/types/theme/utils/effects/glass';
+import type { HoverEffects } from '@/types/theme/utils/effects/hover';
+import type { AnimationEffects } from '@/types/theme/utils/animation';
 
 const convertDatabaseTheme = (dbTheme: any): Theme => {
-  // Parse configuration if it's a string
   const configuration = typeof dbTheme.configuration === 'string' 
     ? JSON.parse(dbTheme.configuration) 
     : dbTheme.configuration;
@@ -58,12 +54,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   const applyThemeVariables = useCallback(() => {
-    if (!currentTheme?.configuration) {
-      console.warn('No theme configuration found');
+    if (!currentTheme?.configuration?.effects) {
+      console.warn('No theme effects configuration found');
       return;
     }
     
     const root = document.documentElement;
+    const effects = currentTheme.configuration.effects as ThemeEffects;
 
     // Apply route-specific theme class
     if (isAdminRoute) {
@@ -74,27 +71,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.classList.remove('admin-theme');
     }
 
-    // Apply colors and effects from the theme configuration
-    const { colors, effects } = currentTheme.configuration;
-
-    // Apply cyber colors
-    if (colors?.cyber) {
-      Object.entries(colors.cyber).forEach(([key, value]) => {
-        if (typeof value === 'string' && isValidThemeColor(value)) {
-          root.style.setProperty(`--theme-colors-cyber-${key}`, value);
-        } else if (typeof value === 'object' && value !== null) {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            if (typeof subValue === 'string' && isValidThemeColor(subValue)) {
-              const variableName = `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`;
-              root.style.setProperty(variableName, subValue);
-            }
-          });
-        }
-      });
-    }
-
     // Apply glass effects
-    if (effects?.glass) {
+    if (effects.glass) {
       const { background, blur, border, shadow_composition } = effects.glass;
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
@@ -110,7 +88,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply hover effects
-    if (effects?.hover) {
+    if (effects.hover) {
       const { 
         scale, 
         lift, 
@@ -137,13 +115,17 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply animation timings
-    if (effects?.animations) {
+    if (effects.animations) {
       const { timing, curves } = effects.animations;
       Object.entries(timing).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-timing-${key}`, value);
+        if (typeof value === 'string') {
+          root.style.setProperty(`--animation-timing-${key}`, value);
+        }
       });
       Object.entries(curves).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-curve-${key}`, value);
+        if (typeof value === 'string') {
+          root.style.setProperty(`--animation-curve-${key}`, value);
+        }
       });
     }
   }, [currentTheme, isAdminRoute]);
