@@ -10,18 +10,12 @@ import { useRoleCheck } from '@/hooks/useRoleCheck';
 import { isThemeConfiguration } from '@/types/theme/core';
 import type { Theme } from '@/types/theme/core';
 
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const MAX_CALLS_PER_MINUTE = 10;
-const MINUTE = 60 * 1000;
-
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const { toast } = useToast();
   const { user } = useAuthStore();
-  const { hasRole } = useRoleCheck(user, 'admin');
-  const [apiCalls, setApiCalls] = useState<number[]>([]);
-  const [lastFetch, setLastFetch] = useState<number>(0);
-  const [cachedTheme, setCachedTheme] = useState<Theme | null>(null);
+  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const [isInitialized, setIsInitialized] = useState(false);
   
   const {
     currentTheme,
@@ -31,127 +25,46 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     fetchPageTheme
   } = useThemeStore();
 
-  const checkRateLimit = useCallback(() => {
-    const now = Date.now();
-    const recentCalls = apiCalls.filter(timestamp => now - timestamp < MINUTE);
-    
-    if (recentCalls.length >= MAX_CALLS_PER_MINUTE) {
-      return false;
-    }
-    
-    setApiCalls([...recentCalls, now]);
-    return true;
-  }, [apiCalls]);
-
-  const applyThemeVariables = useCallback(() => {
-    if (!currentTheme?.configuration) {
-      console.error('No theme configuration available');
-      return;
-    }
-    
-    const root = document.documentElement;
-    const { effects, colors } = currentTheme.configuration;
-
-    // Apply color variables
-    if (colors?.cyber) {
-      Object.entries(colors.cyber).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--color-cyber-${key}`, value);
-        } else if (typeof value === 'object') {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            root.style.setProperty(
-              `--color-cyber-${key}-${subKey.toLowerCase()}`,
-              subValue as string
-            );
-          });
-        }
-      });
-    }
-
-    // Apply effect variables
-    if (effects) {
-      // Glass effects
-      if (effects.glass) {
-        const { background, blur, border } = effects.glass;
-        root.style.setProperty('--glass-background', background);
-        root.style.setProperty('--glass-blur', blur);
-        root.style.setProperty('--glass-border', border);
-      }
-
-      // Hover effects
-      if (effects.hover) {
-        const { scale, lift, glow_strength, transition_duration } = effects.hover;
-        root.style.setProperty('--hover-scale', scale.toString());
-        root.style.setProperty('--hover-lift', lift);
-        root.style.setProperty('--hover-glow-strength', glow_strength);
-        root.style.setProperty('--hover-transition', transition_duration);
-      }
-
-      // Animation effects
-      if (effects.animations) {
-        const { timing, curves } = effects.animations;
-        Object.entries(timing).forEach(([key, value]) => {
-          root.style.setProperty(`--animation-${key}`, value);
-        });
-        Object.entries(curves).forEach(([key, value]) => {
-          root.style.setProperty(`--animation-curve-${key}`, value);
-        });
-      }
-    }
-  }, [currentTheme]);
-
   const initializeTheme = useCallback(async () => {
     console.log('Initializing theme...');
-    
-    const now = Date.now();
-    
-    if (cachedTheme && (now - lastFetch < CACHE_DURATION)) {
-      console.log('Using cached theme');
-      setCurrentTheme(cachedTheme);
-      return;
-    }
-    
-    if (!checkRateLimit()) {
-      console.log('Rate limit exceeded');
-      toast({
-        title: "Rate limit exceeded",
-        description: "Please try again in a minute",
-        variant: "destructive"
-      });
-      return;
-    }
-
     try {
-      const { data: themeData, error } = await supabase
+      // First try to get a page-specific theme
+      const { data: pageTheme, error: pageError } = await supabase
+        .from('page_themes')
+        .select(`
+          theme_id,
+          themes (*)
+        `)
+        .eq('page_path', location.pathname)
+        .maybeSingle();
+
+      if (pageError) throw pageError;
+
+      if (pageTheme?.themes) {
+        console.log('Found page-specific theme:', pageTheme.themes);
+        setCurrentTheme(pageTheme.themes as Theme);
+        setIsInitialized(true);
+        return;
+      }
+
+      // If no page theme, get the default theme
+      const { data: defaultTheme, error: defaultError } = await supabase
         .from('themes')
         .select('*')
         .eq('is_default', true)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (defaultError) throw defaultError;
 
-      if (themeData) {
-        // Ensure the configuration is properly structured
-        if (!isThemeConfiguration(themeData.configuration)) {
+      if (defaultTheme) {
+        console.log('Loading default theme:', defaultTheme);
+        if (!isThemeConfiguration(defaultTheme.configuration)) {
           throw new Error('Invalid theme configuration structure');
         }
-
-        const theme: Theme = {
-          id: themeData.id,
-          name: themeData.name,
-          description: themeData.description || '',
-          is_default: !!themeData.is_default,
-          status: themeData.status || 'active',
-          configuration: themeData.configuration,
-          created_by: themeData.created_by,
-          created_at: themeData.created_at,
-          updated_at: themeData.updated_at
-        };
-
-        setCurrentTheme(theme);
-        setCachedTheme(theme);
-        setLastFetch(now);
+        setCurrentTheme(defaultTheme as Theme);
       }
+      
+      setIsInitialized(true);
     } catch (error) {
       console.error('Theme initialization failed:', error);
       toast({
@@ -160,15 +73,65 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         variant: "destructive"
       });
     }
-  }, [setCurrentTheme, checkRateLimit, toast, cachedTheme, lastFetch]);
+  }, [location.pathname, setCurrentTheme, toast]);
 
   useEffect(() => {
-    initializeTheme();
-  }, [initializeTheme]);
+    if (!isInitialized) {
+      initializeTheme();
+    }
+  }, [isInitialized, initializeTheme]);
 
   useEffect(() => {
-    applyThemeVariables();
-  }, [applyThemeVariables]);
+    if (currentTheme?.configuration) {
+      const root = document.documentElement;
+      
+      // Apply color variables
+      if (currentTheme.configuration.colors?.cyber) {
+        Object.entries(currentTheme.configuration.colors.cyber).forEach(([key, value]) => {
+          if (typeof value === 'string') {
+            root.style.setProperty(`--theme-colors-cyber-${key}`, value);
+          } else if (typeof value === 'object' && value !== null) {
+            Object.entries(value).forEach(([subKey, subValue]) => {
+              root.style.setProperty(
+                `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
+                subValue as string
+              );
+            });
+          }
+        });
+      }
+
+      // Apply effect variables
+      if (currentTheme.configuration.effects) {
+        const { glass, hover, animations } = currentTheme.configuration.effects;
+        
+        // Glass effects
+        if (glass) {
+          root.style.setProperty('--glass-background', glass.background);
+          root.style.setProperty('--glass-blur', glass.blur);
+          root.style.setProperty('--glass-border', glass.border);
+        }
+
+        // Hover effects
+        if (hover) {
+          root.style.setProperty('--hover-scale', hover.scale.toString());
+          root.style.setProperty('--hover-lift', hover.lift);
+          root.style.setProperty('--hover-glow-strength', hover.glow_strength);
+          root.style.setProperty('--hover-transition', hover.transition_duration);
+        }
+
+        // Animation effects
+        if (animations) {
+          Object.entries(animations.timing).forEach(([key, value]) => {
+            root.style.setProperty(`--animation-${key}`, value);
+          });
+          Object.entries(animations.curves).forEach(([key, value]) => {
+            root.style.setProperty(`--animation-curve-${key}`, value);
+          });
+        }
+      }
+    }
+  }, [currentTheme]);
 
   const value = {
     currentTheme,
@@ -176,8 +139,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     setCurrentTheme,
     fetchPageTheme,
-    isAdmin: hasRole,
-    applyThemeVariables
+    isAdmin,
+    applyThemeVariables: () => {} // This is a placeholder for now
   };
 
   return (
