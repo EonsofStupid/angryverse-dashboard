@@ -52,88 +52,48 @@ export interface Theme {
 }
 
 export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
-  console.log('Validating theme configuration:', obj);
-  
   if (!obj || typeof obj !== 'object') {
     console.error('Theme configuration must be an object');
     return false;
   }
-  
+
   const config = obj as any;
-  
-  // Check colors structure
-  if (!config.colors?.cyber) {
-    console.error('Missing colors.cyber configuration');
+
+  // Check if basic structure exists
+  if (!config.colors || !config.typography || !config.effects) {
+    console.error('Missing required top-level properties:', { 
+      hasColors: !!config.colors,
+      hasTypography: !!config.typography,
+      hasEffects: !!config.effects
+    });
     return false;
   }
 
+  // Validate colors structure
   const { cyber } = config.colors;
-  if (typeof cyber.dark !== 'string') {
-    console.error('Invalid cyber.dark color value:', cyber.dark);
+  if (!cyber || typeof cyber !== 'object') {
+    console.error('Invalid cyber colors configuration');
     return false;
   }
 
-  // Validate complex color objects
-  const colorObjects = ['pink', 'cyan', 'green', 'yellow'];
-  for (const color of colorObjects) {
-    if (!cyber[color]?.DEFAULT || !cyber[color]?.hover || 
-        typeof cyber[color].DEFAULT !== 'string' || 
-        typeof cyber[color].hover !== 'string') {
-      console.error(`Invalid ${color} color configuration:`, cyber[color]);
-      return false;
-    }
-  }
-
-  if (typeof cyber.purple !== 'string') {
-    console.error('Invalid cyber.purple color value:', cyber.purple);
-    return false;
-  }
-  
-  // Check typography structure
-  if (!config.typography?.fonts) {
-    console.error('Missing typography.fonts configuration');
-    return false;
-  }
-  
-  if (!Array.isArray(config.typography.fonts.sans)) {
-    console.error('typography.fonts.sans must be an array');
-    return false;
-  }
-  
-  if (!Array.isArray(config.typography.fonts.cyber)) {
-    console.error('typography.fonts.cyber must be an array');
-    return false;
-  }
-  
-  // Check effects structure
-  if (!config.effects) {
-    console.error('Missing effects configuration');
+  // Validate typography
+  const { fonts } = config.typography;
+  if (!fonts || !Array.isArray(fonts.sans) || !Array.isArray(fonts.cyber)) {
+    console.error('Invalid typography configuration');
     return false;
   }
 
-  // Validate glass effects
-  if (!config.effects.glass || 
-      typeof config.effects.glass.background !== 'string' || 
-      typeof config.effects.glass.blur !== 'string' || 
-      typeof config.effects.glass.border !== 'string') {
-    console.error('Invalid glass effects configuration:', config.effects.glass);
+  // Validate effects
+  const { effects } = config;
+  if (!effects.glass || !effects.hover || !effects.animations) {
+    console.error('Missing required effects:', {
+      hasGlass: !!effects.glass,
+      hasHover: !!effects.hover,
+      hasAnimations: !!effects.animations
+    });
     return false;
   }
 
-  // Validate hover effects
-  if (!config.effects.hover || 
-      typeof config.effects.hover.scale !== 'number' || 
-      typeof config.effects.hover.transition_duration !== 'string') {
-    console.error('Invalid hover effects configuration:', config.effects.hover);
-    return false;
-  }
-
-  // Validate animation effects
-  if (!config.effects.animations?.timing || !config.effects.animations?.curves) {
-    console.error('Invalid animation effects configuration:', config.effects.animations);
-    return false;
-  }
-
-  console.log('Theme configuration is valid');
+  // If we made it here, the configuration is valid
   return true;
 }

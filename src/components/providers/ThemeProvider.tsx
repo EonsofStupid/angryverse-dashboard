@@ -8,8 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 import { isThemeConfiguration } from '@/types/theme/core';
-import type { Theme, ThemeConfiguration } from '@/types/theme/core';
-import type { ThemeEffects } from '@/types/theme/utils/effects';
+import type { Theme } from '@/types/theme/core';
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const MAX_CALLS_PER_MINUTE = 10;
@@ -44,104 +43,62 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     return true;
   }, [apiCalls]);
 
-  const convertDatabaseTheme = useCallback((dbTheme: any): Theme => {
-    const configuration = dbTheme.configuration as ThemeConfiguration;
-    
-    // Ensure effects structure is complete
-    if (!configuration.effects) {
-      configuration.effects = {
-        glass: {
-          enabled: true,
-          priority: 'database',
-          source: 'database',
-          background: 'rgba(0, 0, 0, 0.1)',
-          blur: '8px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          shadow_composition: {
-            offset_y: '4px',
-            blur_radius: '6px',
-            spread_radius: '0px',
-            opacity: 0.1
-          }
-        },
-        hover: {
-          scale: 1.05,
-          lift: '-4px',
-          glow_strength: '10px',
-          transition_duration: '300ms',
-          shadow_normal: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          shadow_hover: '0 8px 12px rgba(0, 0, 0, 0.15)'
-        },
-        animations: {
-          timing: {
-            fast: '100ms',
-            normal: '200ms',
-            slow: '300ms',
-            very_slow: '1000ms'
-          },
-          curves: {
-            linear: 'linear',
-            ease_out: 'cubic-bezier(0, 0, 0.2, 1)',
-            ease_in: 'cubic-bezier(0.4, 0, 1, 1)',
-            ease_in_out: 'cubic-bezier(0.4, 0, 0.2, 1)'
-          }
-        }
-      };
-    }
-
-    if (!isThemeConfiguration(configuration)) {
-      console.error('Invalid theme configuration:', configuration);
-      throw new Error('Invalid theme configuration structure');
-    }
-
-    return {
-      id: dbTheme.id,
-      name: dbTheme.name,
-      description: dbTheme.description || '',
-      is_default: !!dbTheme.is_default,
-      status: dbTheme.status || 'active',
-      configuration,
-      created_by: dbTheme.created_by,
-      created_at: dbTheme.created_at,
-      updated_at: dbTheme.updated_at
-    };
-  }, []);
-
   const applyThemeVariables = useCallback(() => {
-    if (!currentTheme?.configuration?.effects) return;
+    if (!currentTheme?.configuration) {
+      console.error('No theme configuration available');
+      return;
+    }
     
     const root = document.documentElement;
-    const effects = currentTheme.configuration.effects;
+    const { effects, colors } = currentTheme.configuration;
 
-    // Apply glass effect variables
-    if (effects.glass) {
-      root.style.setProperty('--glass-background', effects.glass.background);
-      root.style.setProperty('--glass-blur', effects.glass.blur);
-      root.style.setProperty('--glass-border', effects.glass.border);
+    // Apply color variables
+    if (colors?.cyber) {
+      Object.entries(colors.cyber).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          root.style.setProperty(`--color-cyber-${key}`, value);
+        } else if (typeof value === 'object') {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            root.style.setProperty(
+              `--color-cyber-${key}-${subKey.toLowerCase()}`,
+              subValue as string
+            );
+          });
+        }
+      });
     }
 
-    // Apply hover effect variables
-    if (effects.hover) {
-      root.style.setProperty('--hover-scale', effects.hover.scale.toString());
-      root.style.setProperty('--hover-lift', effects.hover.lift);
-      root.style.setProperty('--hover-glow-strength', effects.hover.glow_strength);
-      root.style.setProperty('--hover-transition', effects.hover.transition_duration);
-    }
+    // Apply effect variables
+    if (effects) {
+      // Glass effects
+      if (effects.glass) {
+        const { background, blur, border } = effects.glass;
+        root.style.setProperty('--glass-background', background);
+        root.style.setProperty('--glass-blur', blur);
+        root.style.setProperty('--glass-border', border);
+      }
 
-    // Apply animation variables
-    if (effects.animations) {
-      Object.entries(effects.animations.timing).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-${key}`, value);
-      });
-      Object.entries(effects.animations.curves).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-curve-${key}`, value);
-      });
+      // Hover effects
+      if (effects.hover) {
+        const { scale, lift, glow_strength, transition_duration } = effects.hover;
+        root.style.setProperty('--hover-scale', scale.toString());
+        root.style.setProperty('--hover-lift', lift);
+        root.style.setProperty('--hover-glow-strength', glow_strength);
+        root.style.setProperty('--hover-transition', transition_duration);
+      }
+
+      // Animation effects
+      if (effects.animations) {
+        const { timing, curves } = effects.animations;
+        Object.entries(timing).forEach(([key, value]) => {
+          root.style.setProperty(`--animation-${key}`, value);
+        });
+        Object.entries(curves).forEach(([key, value]) => {
+          root.style.setProperty(`--animation-curve-${key}`, value);
+        });
+      }
     }
   }, [currentTheme]);
-
-  useEffect(() => {
-    applyThemeVariables();
-  }, [applyThemeVariables]);
 
   const initializeTheme = useCallback(async () => {
     console.log('Initializing theme...');
@@ -174,9 +131,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) throw error;
 
       if (themeData) {
-        const convertedTheme = convertDatabaseTheme(themeData);
-        setCurrentTheme(convertedTheme);
-        setCachedTheme(convertedTheme);
+        // Ensure the configuration is properly structured
+        if (!isThemeConfiguration(themeData.configuration)) {
+          throw new Error('Invalid theme configuration structure');
+        }
+
+        const theme: Theme = {
+          id: themeData.id,
+          name: themeData.name,
+          description: themeData.description || '',
+          is_default: !!themeData.is_default,
+          status: themeData.status || 'active',
+          configuration: themeData.configuration,
+          created_by: themeData.created_by,
+          created_at: themeData.created_at,
+          updated_at: themeData.updated_at
+        };
+
+        setCurrentTheme(theme);
+        setCachedTheme(theme);
         setLastFetch(now);
       }
     } catch (error) {
@@ -187,11 +160,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         variant: "destructive"
       });
     }
-  }, [setCurrentTheme, convertDatabaseTheme, toast, checkRateLimit, cachedTheme, lastFetch]);
+  }, [setCurrentTheme, checkRateLimit, toast, cachedTheme, lastFetch]);
 
   useEffect(() => {
     initializeTheme();
   }, [initializeTheme]);
+
+  useEffect(() => {
+    applyThemeVariables();
+  }, [applyThemeVariables]);
 
   const value = {
     currentTheme,
