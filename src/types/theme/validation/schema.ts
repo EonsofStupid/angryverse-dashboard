@@ -46,9 +46,7 @@ const hoverEffectsSchema = effectStateSchema.extend({
   glow_color: z.string().optional(),
   glow_opacity: z.number().optional(),
   glow_spread: z.string().optional(),
-  glow_blur: z.string().optional(),
-  shadow_normal: z.string().optional(),
-  shadow_hover: z.string().optional()
+  glow_blur: z.string().optional()
 });
 
 // Theme effects schema

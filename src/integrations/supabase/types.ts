@@ -972,9 +972,11 @@ export type Database = {
           created_at: string | null
           created_by: string | null
           description: string | null
+          effects_config: Json | null
           effects_details: Json | null
           gray_palette: Json | null
           id: string
+          interaction_tokens: Json | null
           is_default: boolean | null
           name: string
           status: Database["public"]["Enums"]["theme_status"] | null
@@ -986,9 +988,11 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           description?: string | null
+          effects_config?: Json | null
           effects_details?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_tokens?: Json | null
           is_default?: boolean | null
           name: string
           status?: Database["public"]["Enums"]["theme_status"] | null
@@ -1000,9 +1004,11 @@ export type Database = {
           created_at?: string | null
           created_by?: string | null
           description?: string | null
+          effects_config?: Json | null
           effects_details?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_tokens?: Json | null
           is_default?: boolean | null
           name?: string
           status?: Database["public"]["Enums"]["theme_status"] | null
