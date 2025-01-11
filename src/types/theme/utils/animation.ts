@@ -23,7 +23,7 @@ export interface AnimationEffects {
   timing: AnimationTiming;
 }
 
-export type Duration = `${number}${'ms' | 's'}`;
+export type Duration = '100ms' | '200ms' | '300ms' | '1000ms';
 export type TimingFunction = 
   | 'linear' 
   | 'ease' 
