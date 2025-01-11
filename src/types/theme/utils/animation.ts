@@ -1,8 +1,8 @@
-import type { Duration, CSSValue } from '@/types/theme/utils/css';
+import type { Duration, CSSValue, TimingFunction } from './css';
 import type { KeyframeState, EasingFunction } from '@/theme/animations/types/keyframes';
 import type { MotionPathState } from '@/theme/animations/types/motion-paths';
 import type { ScrollEffectState } from '@/theme/animations/types/scroll-effects';
-import type { EffectState } from '@/types/theme/utils/state';
+import type { EffectState } from './state';
 
 export interface AnimationEffects extends EffectState {
   timing: {
@@ -19,4 +19,4 @@ export interface AnimationEffects extends EffectState {
   };
 }
 
-export type { Duration, TimingFunction, KeyframeState, MotionPathState, ScrollEffectState };
+export type { Duration, TimingFunction, KeyframeState, MotionPathState, ScrollEffectState, EasingFunction };
