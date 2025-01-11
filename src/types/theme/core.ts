@@ -1,26 +1,27 @@
 import type { ThemeEffects } from './utils/effects';
+import type { CSSColor } from './utils/css';
 
 export type ThemeStatus = 'active' | 'inactive' | 'draft';
 
 export interface ThemeColors {
   cyber: {
-    dark: string;
+    dark: CSSColor;
     pink: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
     cyan: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
-    purple: string;
+    purple: CSSColor;
     green: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
     yellow: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
   };
 }
@@ -48,4 +49,17 @@ export interface Theme {
   created_by?: string;
   created_at?: string;
   updated_at?: string;
+}
+
+export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
+  if (!obj || typeof obj !== 'object') return false;
+  const conf = obj as any;
+  
+  return (
+    conf.colors?.cyber &&
+    conf.typography?.fonts &&
+    conf.effects?.glass &&
+    conf.effects?.hover &&
+    conf.effects?.animations
+  );
 }
