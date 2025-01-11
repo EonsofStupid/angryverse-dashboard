@@ -53,13 +53,21 @@ export interface Theme {
 
 export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
   if (!obj || typeof obj !== 'object') return false;
-  const conf = obj as any;
   
-  return (
-    conf.colors?.cyber &&
-    conf.typography?.fonts &&
-    conf.effects?.glass &&
-    conf.effects?.hover &&
-    conf.effects?.animations
-  );
+  const config = obj as any;
+  
+  // Check colors structure
+  if (!config.colors?.cyber) return false;
+  if (typeof config.colors.cyber.dark !== 'string') return false;
+  
+  // Check typography structure
+  if (!config.typography?.fonts) return false;
+  if (!Array.isArray(config.typography.fonts.sans)) return false;
+  if (!Array.isArray(config.typography.fonts.cyber)) return false;
+  
+  // Check effects structure
+  if (!config.effects) return false;
+  if (!config.effects.glass || !config.effects.hover || !config.effects.animations) return false;
+  
+  return true;
 }
