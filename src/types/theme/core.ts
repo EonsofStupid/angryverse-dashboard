@@ -68,7 +68,6 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
 
   const config = obj as any;
 
-  // Check if basic structure exists
   if (!config.colors || !config.typography || !config.effects) {
     console.error('Missing required top-level properties:', { 
       hasColors: !!config.colors,
@@ -78,27 +77,11 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
     return false;
   }
 
-  // Validate colors structure
-  const { cyber } = config.colors;
-  if (!cyber || typeof cyber !== 'object') {
-    console.error('Invalid cyber colors configuration');
-    return false;
-  }
-
-  // Validate typography
-  const { fonts } = config.typography;
-  if (!fonts || !Array.isArray(fonts.sans) || !Array.isArray(fonts.cyber)) {
-    console.error('Invalid typography configuration');
-    return false;
-  }
-
-  // Validate effects
-  const { effects } = config;
-  if (!effects.glass || !effects.hover || !effects.animations) {
+  if (!config.effects.glass || !config.effects.hover || !config.effects.animations) {
     console.error('Missing required effects:', {
-      hasGlass: !!effects.glass,
-      hasHover: !!effects.hover,
-      hasAnimations: !!effects.animations
+      hasGlass: !!config.effects.glass,
+      hasHover: !!config.effects.hover,
+      hasAnimations: !!config.effects.animations
     });
     return false;
   }
