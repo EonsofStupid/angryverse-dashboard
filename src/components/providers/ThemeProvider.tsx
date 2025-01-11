@@ -9,13 +9,36 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 
 // Theme Types
-import { Theme, ThemeConfiguration } from '@/types/theme/core';
+import { Theme, ThemeConfiguration, isThemeConfiguration } from '@/types/theme/core';
 import { ThemeEffects } from '@/types/theme/utils/effects';
 import { GlassEffects } from '@/types/theme/utils/effects/glass';
 import { HoverEffects } from '@/types/theme/utils/effects/hover';
 import { AnimationEffects } from '@/types/theme/utils/animation';
 import { GradientEffects } from '@/types/theme/utils/effects/gradient';
 import { isValidThemeColor, CSSColor } from '@/types/theme/utils/css';
+
+const convertDatabaseTheme = (dbTheme: any): Theme => {
+  // Parse configuration if it's a string
+  const configuration = typeof dbTheme.configuration === 'string' 
+    ? JSON.parse(dbTheme.configuration) 
+    : dbTheme.configuration;
+
+  if (!isThemeConfiguration(configuration)) {
+    throw new Error('Invalid theme configuration structure');
+  }
+
+  return {
+    id: dbTheme.id,
+    name: dbTheme.name,
+    description: dbTheme.description || '',
+    is_default: !!dbTheme.is_default,
+    status: dbTheme.status || 'active',
+    configuration,
+    created_by: dbTheme.created_by,
+    created_at: dbTheme.created_at,
+    updated_at: dbTheme.updated_at
+  };
+};
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { 
@@ -52,7 +75,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply colors and effects from the theme configuration
-    const { colors, effects } = currentTheme.configuration as ThemeConfiguration;
+    const { colors, effects } = currentTheme.configuration;
 
     // Apply cyber colors
     if (colors?.cyber) {
@@ -117,10 +140,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (effects?.animations) {
       const { timing, curves } = effects.animations as AnimationEffects;
       Object.entries(timing).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-timing-${key}`, value as string);
+        root.style.setProperty(`--animation-timing-${key}`, value);
       });
       Object.entries(curves).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-curve-${key}`, value as string);
+        root.style.setProperty(`--animation-curve-${key}`, value);
       });
     }
   }, [currentTheme, isAdminRoute]);
@@ -137,7 +160,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         if (themeError) throw themeError;
 
         if (themeData) {
-          const theme = themeData as Theme;
+          const theme = convertDatabaseTheme(themeData);
           setCurrentTheme(theme);
           console.log('Theme set successfully:', theme.name);
         } else {
@@ -153,7 +176,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           if (pageError) throw pageError;
 
           if (pageTheme?.themes) {
-            const theme = pageTheme.themes as Theme;
+            const theme = convertDatabaseTheme(pageTheme.themes);
             setCurrentTheme(theme);
           }
         }
