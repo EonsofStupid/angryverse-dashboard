@@ -52,7 +52,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     // Apply colors and effects from the theme configuration
-    const { colors, effects } = currentTheme.configuration;
+    const { colors, effects } = currentTheme.configuration as ThemeConfiguration;
 
     // Apply cyber colors
     if (colors?.cyber) {
@@ -72,7 +72,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply glass effects
     if (effects?.glass) {
-      const { background, blur, border, shadow_composition } = effects.glass;
+      const { background, blur, border, shadow_composition } = effects.glass as GlassEffects;
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
       root.style.setProperty('--glass-border', border);
@@ -96,8 +96,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         glow_color,
         glow_opacity,
         glow_spread,
-        glow_blur
-      } = effects.hover;
+        glow_blur,
+        shadow_normal,
+        shadow_hover
+      } = effects.hover as HoverEffects;
       
       root.style.setProperty('--hover-scale', scale.toString());
       root.style.setProperty('--hover-lift', lift);
@@ -107,19 +109,18 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.style.setProperty('--hover-glow-opacity', glow_opacity?.toString() || '0.5');
       root.style.setProperty('--hover-glow-spread', glow_spread || '4px');
       root.style.setProperty('--hover-glow-blur', glow_blur || '8px');
+      root.style.setProperty('--hover-shadow-normal', shadow_normal);
+      root.style.setProperty('--hover-shadow-hover', shadow_hover);
     }
 
     // Apply animation timings
-    if (effects?.animations?.timing) {
-      Object.entries(effects.animations.timing).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-timing-${key}`, value);
+    if (effects?.animations) {
+      const { timing, curves } = effects.animations as AnimationEffects;
+      Object.entries(timing).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-timing-${key}`, value as string);
       });
-    }
-
-    // Apply animation curves
-    if (effects?.animations?.curves) {
-      Object.entries(effects.animations.curves).forEach(([key, value]) => {
-        root.style.setProperty(`--animation-curve-${key}`, value);
+      Object.entries(curves).forEach(([key, value]) => {
+        root.style.setProperty(`--animation-curve-${key}`, value as string);
       });
     }
   }, [currentTheme, isAdminRoute]);
