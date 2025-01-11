@@ -7,25 +7,21 @@ export type TimingFunction =
   | 'ease-in-out' 
   | `cubic-bezier(${number},${number},${number},${number})`;
 
-export interface AnimationConfig {
-  duration: Duration;
-  timing: TimingFunction;
-  delay?: Duration;
+export interface AnimationCurves {
+  linear: 'linear';
+  ease_out: 'cubic-bezier(0, 0, 0.2, 1)';
+  ease_in: 'cubic-bezier(0.4, 0, 1, 1)';
+  ease_in_out: 'cubic-bezier(0.4, 0, 0.2, 1)';
 }
 
-export interface TransitionConfig extends AnimationConfig {
-  property: string;
+export interface AnimationTiming {
+  fast: Duration;
+  normal: Duration;
+  slow: Duration;
+  very_slow: Duration;
 }
 
-export type AnimationDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
-export type AnimationFillMode = 'none' | 'forwards' | 'backwards' | 'both';
-
-export interface KeyframeConfig {
-  name: string;
-  duration: Duration;
-  timing: TimingFunction;
-  delay?: Duration;
-  iterations?: number | 'infinite';
-  direction?: AnimationDirection;
-  fillMode?: AnimationFillMode;
+export interface AnimationEffects {
+  curves: AnimationCurves;
+  timing: AnimationTiming;
 }
