@@ -90,12 +90,7 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
   }
   
   // Check typography structure
-  if (!config.typography) {
-    console.error('Missing typography configuration');
-    return false;
-  }
-  
-  if (!config.typography.fonts) {
+  if (!config.typography?.fonts) {
     console.error('Missing typography.fonts configuration');
     return false;
   }
@@ -116,28 +111,26 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
     return false;
   }
 
-  const { effects } = config;
-  
   // Validate glass effects
-  if (!effects.glass || 
-      typeof effects.glass.background !== 'string' || 
-      typeof effects.glass.blur !== 'string' || 
-      typeof effects.glass.border !== 'string') {
-    console.error('Invalid glass effects configuration:', effects.glass);
+  if (!config.effects.glass || 
+      typeof config.effects.glass.background !== 'string' || 
+      typeof config.effects.glass.blur !== 'string' || 
+      typeof config.effects.glass.border !== 'string') {
+    console.error('Invalid glass effects configuration:', config.effects.glass);
     return false;
   }
 
   // Validate hover effects
-  if (!effects.hover || 
-      typeof effects.hover.scale !== 'number' || 
-      typeof effects.hover.transition_duration !== 'string') {
-    console.error('Invalid hover effects configuration:', effects.hover);
+  if (!config.effects.hover || 
+      typeof config.effects.hover.scale !== 'number' || 
+      typeof config.effects.hover.transition_duration !== 'string') {
+    console.error('Invalid hover effects configuration:', config.effects.hover);
     return false;
   }
 
   // Validate animation effects
-  if (!effects.animations?.timing || !effects.animations?.curves) {
-    console.error('Invalid animation effects configuration:', effects.animations);
+  if (!config.effects.animations?.timing || !config.effects.animations?.curves) {
+    console.error('Invalid animation effects configuration:', config.effects.animations);
     return false;
   }
 

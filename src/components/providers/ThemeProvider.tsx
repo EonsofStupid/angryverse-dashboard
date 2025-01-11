@@ -7,13 +7,8 @@ import { Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
-
 import { isThemeConfiguration } from '@/types/theme/core';
 import type { Theme, ThemeConfiguration } from '@/types/theme/core';
-import type { ThemeEffects } from '@/types/theme/utils/effects';
-import type { GlassEffects } from '@/types/theme/utils/effects/glass';
-import type { HoverEffects } from '@/types/theme/utils/effects/hover';
-import type { AnimationEffects } from '@/types/theme/utils/animation';
 
 const convertDatabaseTheme = (dbTheme: any): Theme => {
   console.log('Converting database theme:', dbTheme);
@@ -66,7 +61,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
     
     const root = document.documentElement;
-    const effects = currentTheme.configuration.effects as ThemeEffects;
+    const effects = currentTheme.configuration.effects;
 
     // Apply route-specific theme class
     if (isAdminRoute) {
@@ -120,18 +115,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       root.style.setProperty('--hover-shadow-hover', shadow_hover);
     }
 
-    // Apply animation timings
+    // Apply animation effects
     if (effects.animations) {
       const { timing, curves } = effects.animations;
       Object.entries(timing).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--animation-timing-${key}`, value);
-        }
+        root.style.setProperty(`--animation-timing-${key}`, value);
       });
       Object.entries(curves).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--animation-curve-${key}`, value);
-        }
+        root.style.setProperty(`--animation-curve-${key}`, value);
       });
     }
   }, [currentTheme, isAdminRoute]);
