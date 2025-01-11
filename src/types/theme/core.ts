@@ -52,6 +52,8 @@ export interface Theme {
 }
 
 export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
+  console.log('Validating theme configuration:', obj);
+  
   if (!obj || typeof obj !== 'object') {
     console.error('Theme configuration must be an object');
     return false;
@@ -81,16 +83,28 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
       return false;
     }
   }
+
+  if (typeof cyber.purple !== 'string') {
+    console.error('Invalid cyber.purple color value:', cyber.purple);
+    return false;
+  }
   
   // Check typography structure
-  if (!config.typography?.fonts) {
+  if (!config.typography) {
+    console.error('Missing typography configuration');
+    return false;
+  }
+  
+  if (!config.typography.fonts) {
     console.error('Missing typography.fonts configuration');
     return false;
   }
+  
   if (!Array.isArray(config.typography.fonts.sans)) {
     console.error('typography.fonts.sans must be an array');
     return false;
   }
+  
   if (!Array.isArray(config.typography.fonts.cyber)) {
     console.error('typography.fonts.cyber must be an array');
     return false;
@@ -102,11 +116,11 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
     return false;
   }
 
-  // Validate required effect types
   const { effects } = config;
   
   // Validate glass effects
-  if (!effects.glass || typeof effects.glass.background !== 'string' || 
+  if (!effects.glass || 
+      typeof effects.glass.background !== 'string' || 
       typeof effects.glass.blur !== 'string' || 
       typeof effects.glass.border !== 'string') {
     console.error('Invalid glass effects configuration:', effects.glass);
@@ -114,7 +128,8 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
   }
 
   // Validate hover effects
-  if (!effects.hover || typeof effects.hover.scale !== 'number' || 
+  if (!effects.hover || 
+      typeof effects.hover.scale !== 'number' || 
       typeof effects.hover.transition_duration !== 'string') {
     console.error('Invalid hover effects configuration:', effects.hover);
     return false;
@@ -126,5 +141,6 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
     return false;
   }
 
+  console.log('Theme configuration is valid');
   return true;
 }
