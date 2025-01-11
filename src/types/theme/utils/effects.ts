@@ -1,10 +1,10 @@
-import type { ThemeEffects } from './effects'
-import type { GlassEffects } from './effects/glass'
-import type { HoverEffects } from './effects/hover'
-import type { InteractionTokens } from './effects/interaction'
-import type { SpecialEffectTokens } from './effects/special'
-import type { MotionTokens } from './effects/motion'
-import type { AnimationEffects } from './effects/animation'
+import type { ThemeEffects } from './effects';
+import type { GlassEffects } from './effects/glass';
+import type { HoverEffects } from './effects/hover';
+import type { InteractionTokens } from './effects/interaction';
+import type { SpecialEffectTokens } from './effects/special';
+import type { MotionTokens } from './effects/motion';
+import type { AnimationEffects } from './effects/animation';
 
 export interface ThemeEffects {
   glass: GlassEffects;
