@@ -1,18 +1,16 @@
 import { CSSValue } from '../css';
+import type { EffectState } from '../state';
 
-export type FrostLevel = 0.1 | 0.2 | 0.3 | 0.4 | 0.5;
-export type ReflectionStrength = 0.1 | 0.2 | 0.3;
+export interface GlassShadowComposition {
+  offset_y: CSSValue;
+  blur_radius: CSSValue;
+  spread_radius: CSSValue;
+  opacity: number;
+}
 
-export interface GlassEffects {
+export interface GlassEffects extends EffectState {
   background: string;
   blur: string;
   border: string;
-  frost_levels: FrostLevel[];
-  reflection_strength: ReflectionStrength[];
-  shadow_composition?: {
-    offset_y: CSSValue;
-    blur_radius: CSSValue;
-    spread_radius: CSSValue;
-    opacity: number;
-  };
+  shadow_composition: GlassShadowComposition;
 }
