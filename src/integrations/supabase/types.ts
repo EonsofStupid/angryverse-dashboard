@@ -923,7 +923,10 @@ export type Database = {
           effects_details: Json | null
           gray_palette: Json | null
           id: string
+          interaction_tokens: Json | null
+          motion_tokens: Json | null
           name: string
+          special_effect_tokens: Json | null
           updated_at: string | null
         }
         Insert: {
@@ -937,7 +940,10 @@ export type Database = {
           effects_details?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_tokens?: Json | null
+          motion_tokens?: Json | null
           name: string
+          special_effect_tokens?: Json | null
           updated_at?: string | null
         }
         Update: {
@@ -951,7 +957,10 @@ export type Database = {
           effects_details?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_tokens?: Json | null
+          motion_tokens?: Json | null
           name?: string
+          special_effect_tokens?: Json | null
           updated_at?: string | null
         }
         Relationships: []

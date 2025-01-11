@@ -20,8 +20,17 @@ export const Hero = () => {
       'none'
   };
 
+  // Get motion tokens for animations
+  const motionTokens = effects?.motion_tokens;
+  const scrollTriggers = motionTokens?.scroll_triggers;
+
   return (
-    <section className="min-h-screen pt-16 flex items-center relative overflow-hidden">
+    <section 
+      className="min-h-screen pt-16 flex items-center relative overflow-hidden"
+      style={{
+        perspective: effects?.interaction_tokens?.tilt?.perspective_values?.[2] || '1000px'
+      }}
+    >
       <div 
         className="absolute inset-0" 
         style={gradientStyle}
@@ -57,13 +66,27 @@ export const Hero = () => {
           @keyframes float {
             0%, 100% { 
               transform: translateY(0) translateX(0) scale(1);
-              box-shadow: 0 0 var(--glow-strength-sm) var(--theme-gray-neutral);
+              box-shadow: 0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-gray-neutral);
             }
             50% { 
-              transform: translateY(-20px) translateX(-10px) scale(1.05);
-              box-shadow: 0 0 var(--glow-strength-md) var(--theme-gray-soft),
-                         0 0 var(--glow-strength-lg) var(--theme-gray-medium);
+              transform: translateY(${effects?.interaction_tokens?.hover?.lift_distances?.[1] || '-4px'}) 
+                        translateX(-10px) 
+                        scale(${effects?.interaction_tokens?.hover?.scale_values?.[1] || '1.05'});
+              box-shadow: 0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-gray-soft),
+                         0 0 ${effects?.hover?.glow_strength || '20px'} var(--theme-gray-medium);
             }
+          }
+
+          .scroll-reveal {
+            opacity: 0;
+            transform: translateY(${scrollTriggers?.distances?.[1] || '20px'});
+            transition: all ${effects?.animations?.timing?.normal || '300ms'} 
+                       ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'};
+          }
+
+          .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
           }
         `}
       </style>
