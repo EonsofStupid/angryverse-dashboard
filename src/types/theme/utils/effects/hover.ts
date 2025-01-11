@@ -1,5 +1,5 @@
 import type { CSSColor, CSSValue } from '../css';
-import type { Duration } from './animation';
+import type { Duration } from '../animation';
 
 export interface HoverEffects {
   scale: number;
