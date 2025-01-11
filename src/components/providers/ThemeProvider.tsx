@@ -8,7 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 
-import type { Theme, ThemeConfiguration, isThemeConfiguration } from '@/types/theme/core';
+import { isThemeConfiguration } from '@/types/theme/core';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 import type { ThemeEffects } from '@/types/theme/utils/effects';
 import type { GlassEffects } from '@/types/theme/utils/effects/glass';
 import type { HoverEffects } from '@/types/theme/utils/effects/hover';
