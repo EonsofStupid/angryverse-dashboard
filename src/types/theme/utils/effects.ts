@@ -1,6 +1,6 @@
 import { GlassEffects } from './effects/glass';
 import { HoverEffects } from './effects/hover';
-import { AnimationEffects } from './animation';
+import { AnimationEffects } from './effects/animation';
 import { GradientEffects } from './effects/gradient';
 
 export interface ThemeEffects {
