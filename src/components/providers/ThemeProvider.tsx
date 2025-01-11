@@ -95,7 +95,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply glass effects
     if (effects?.glass) {
-      const { background, blur, border, shadow_composition } = effects.glass as GlassEffects;
+      const { background, blur, border, shadow_composition } = effects.glass;
       root.style.setProperty('--glass-background', background);
       root.style.setProperty('--glass-blur', blur);
       root.style.setProperty('--glass-border', border);
@@ -122,7 +122,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         glow_blur,
         shadow_normal,
         shadow_hover
-      } = effects.hover as HoverEffects;
+      } = effects.hover;
       
       root.style.setProperty('--hover-scale', scale.toString());
       root.style.setProperty('--hover-lift', lift);
@@ -138,7 +138,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Apply animation timings
     if (effects?.animations) {
-      const { timing, curves } = effects.animations as AnimationEffects;
+      const { timing, curves } = effects.animations;
       Object.entries(timing).forEach(([key, value]) => {
         root.style.setProperty(`--animation-timing-${key}`, value);
       });
