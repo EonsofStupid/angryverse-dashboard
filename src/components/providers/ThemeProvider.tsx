@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useThemeStore } from '@/store/useThemeStore';
 import { ThemeContext } from '@/hooks/useTheme';
@@ -14,198 +14,136 @@ import type { GlassEffects } from '@/types/theme/utils/effects/glass';
 import type { HoverEffects } from '@/types/theme/utils/effects/hover';
 import type { AnimationEffects } from '@/types/theme/utils/animation';
 
-const convertDatabaseTheme = (dbTheme: any): Theme => {
-  console.log('Converting database theme:', dbTheme);
-  const configuration = typeof dbTheme.configuration === 'string' 
-    ? JSON.parse(dbTheme.configuration) 
-    : dbTheme.configuration;
+// Cache duration in milliseconds (5 minutes)
+const CACHE_DURATION = 5 * 60 * 1000;
 
-  console.log('Parsed configuration:', configuration);
-  
-  // Ensure glass effects are present
-  if (!configuration.effects) {
-    configuration.effects = {};
-  }
-  
-  if (!configuration.effects.glass) {
-    configuration.effects.glass = {
-      background: 'rgba(0, 0, 0, 0.1)',
-      blur: '8px',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      shadow_composition: {
-        offset_y: '4px',
-        blur_radius: '6px',
-        spread_radius: '0px',
-        opacity: 0.1
-      }
-    };
-  }
-
-  if (!isThemeConfiguration(configuration)) {
-    console.error('Invalid theme configuration:', configuration);
-    throw new Error('Invalid theme configuration structure');
-  }
-
-  return {
-    id: dbTheme.id,
-    name: dbTheme.name,
-    description: dbTheme.description || '',
-    is_default: !!dbTheme.is_default,
-    status: dbTheme.status || 'active',
-    configuration,
-    created_by: dbTheme.created_by,
-    created_at: dbTheme.created_at,
-    updated_at: dbTheme.updated_at
-  };
-};
+// Rate limiting - max calls per minute
+const MAX_CALLS_PER_MINUTE = 10;
+const MINUTE = 60 * 1000;
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { 
-    currentTheme, 
-    isLoading, 
-    error,
-    fetchPageTheme, 
-    setCurrentTheme,
-  } = useThemeStore();
-
-  const { user } = useAuthStore();
-  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
-  
   const location = useLocation();
   const { toast } = useToast();
+  const { isAdmin } = useRoleCheck();
+  const [apiCalls, setApiCalls] = useState<number[]>([]);
+  const [lastFetch, setLastFetch] = useState<number>(0);
+  const [cachedTheme, setCachedTheme] = useState<Theme | null>(null);
+  
+  const {
+    currentTheme,
+    setCurrentTheme,
+    isLoading,
+    error,
+    fetchPageTheme
+  } = useThemeStore();
 
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const checkRateLimit = useCallback(() => {
+    const now = Date.now();
+    const recentCalls = apiCalls.filter(timestamp => now - timestamp < MINUTE);
+    
+    if (recentCalls.length >= MAX_CALLS_PER_MINUTE) {
+      return false;
+    }
+    
+    setApiCalls([...recentCalls, now]);
+    return true;
+  }, [apiCalls]);
 
-  const applyThemeVariables = useCallback(() => {
-    console.log('Applying theme variables:', currentTheme);
-    if (!currentTheme?.configuration?.effects) {
-      console.warn('No theme effects configuration found');
+  const convertDatabaseTheme = useCallback((dbTheme: any): Theme => {
+    const configuration = dbTheme.configuration as ThemeConfiguration;
+    console.log('Converting database theme:', dbTheme);
+    console.log('Parsed configuration:', configuration);
+    
+    // Ensure glass effects are present
+    if (!configuration.effects) {
+      configuration.effects = {};
+    }
+    
+    if (!configuration.effects.glass) {
+      configuration.effects.glass = {
+        background: 'rgba(0, 0, 0, 0.1)',
+        blur: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        shadow_composition: {
+          offset_y: '4px',
+          blur_radius: '6px',
+          spread_radius: '0px',
+          opacity: 0.1
+        }
+      };
+    }
+
+    if (!isThemeConfiguration(configuration)) {
+      console.error('Invalid theme configuration:', configuration);
+      throw new Error('Invalid theme configuration structure');
+    }
+
+    return {
+      id: dbTheme.id,
+      name: dbTheme.name,
+      description: dbTheme.description || '',
+      is_default: !!dbTheme.is_default,
+      status: dbTheme.status || 'active',
+      configuration,
+      created_by: dbTheme.created_by,
+      created_at: dbTheme.created_at,
+      updated_at: dbTheme.updated_at
+    };
+  }, []);
+
+  const initializeTheme = useCallback(async () => {
+    console.log('Initializing theme...');
+    
+    const now = Date.now();
+    
+    // Check cache first
+    if (cachedTheme && (now - lastFetch < CACHE_DURATION)) {
+      console.log('Using cached theme');
+      setCurrentTheme(cachedTheme);
       return;
     }
     
-    const root = document.documentElement;
-    const effects = currentTheme.configuration.effects as ThemeEffects;
-
-    // Apply route-specific theme class
-    if (isAdminRoute) {
-      root.classList.add('admin-theme');
-      root.classList.remove('site-theme');
-    } else {
-      root.classList.add('site-theme');
-      root.classList.remove('admin-theme');
+    // Check rate limiting
+    if (!checkRateLimit()) {
+      console.log('Rate limit exceeded');
+      toast({
+        title: "Rate limit exceeded",
+        description: "Please try again in a minute",
+        variant: "destructive"
+      });
+      return;
     }
 
-    // Apply glass effects
-    if (effects.glass) {
-      const { background, blur, border } = effects.glass;
-      root.style.setProperty('--glass-background', background);
-      root.style.setProperty('--glass-blur', blur);
-      root.style.setProperty('--glass-border', border);
+    try {
+      const { data: themeData, error } = await supabase
+        .from('themes')
+        .select('*')
+        .eq('is_default', true)
+        .single();
 
-      if ('shadow_composition' in effects.glass) {
-        const { offset_y, blur_radius, spread_radius, opacity } = effects.glass.shadow_composition;
-        root.style.setProperty('--glass-shadow-offset-y', offset_y);
-        root.style.setProperty('--glass-shadow-blur-radius', blur_radius);
-        root.style.setProperty('--glass-shadow-spread-radius', spread_radius);
-        root.style.setProperty('--glass-shadow-opacity', opacity.toString());
-      }
-    }
+      if (error) throw error;
 
-    // Apply hover effects
-    if ('hover' in effects) {
-      const { 
-        scale, 
-        lift, 
-        glow_strength, 
-        transition_duration,
-        glow_color,
-        glow_opacity,
-        glow_spread,
-        glow_blur,
-        shadow_normal,
-        shadow_hover
-      } = effects.hover;
+      console.log('Theme data from database:', themeData);
       
-      root.style.setProperty('--hover-scale', scale.toString());
-      root.style.setProperty('--hover-lift', lift);
-      root.style.setProperty('--hover-glow-strength', glow_strength);
-      root.style.setProperty('--hover-transition', transition_duration);
-      root.style.setProperty('--hover-glow-color', glow_color || 'var(--theme-primary)');
-      root.style.setProperty('--hover-glow-opacity', glow_opacity?.toString() || '0.5');
-      root.style.setProperty('--hover-glow-spread', glow_spread || '4px');
-      root.style.setProperty('--hover-glow-blur', glow_blur || '8px');
-      root.style.setProperty('--hover-shadow-normal', shadow_normal);
-      root.style.setProperty('--hover-shadow-hover', shadow_hover);
-    }
-
-    // Apply animation effects
-    if ('animations' in effects) {
-      const { timing, curves } = effects.animations;
-      Object.entries(timing).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--animation-timing-${key}`, value);
-        }
-      });
-      Object.entries(curves).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          root.style.setProperty(`--animation-curve-${key}`, value);
-        }
+      if (themeData) {
+        const convertedTheme = convertDatabaseTheme(themeData);
+        setCurrentTheme(convertedTheme);
+        setCachedTheme(convertedTheme);
+        setLastFetch(now);
+      }
+    } catch (error) {
+      console.error('Theme initialization failed:', error);
+      toast({
+        title: "Theme Error",
+        description: "Failed to load theme configuration",
+        variant: "destructive"
       });
     }
-  }, [currentTheme, isAdminRoute]);
+  }, [setCurrentTheme, convertDatabaseTheme, toast, checkRateLimit, cachedTheme, lastFetch]);
 
   useEffect(() => {
-    const initializeTheme = async () => {
-      try {
-        console.log('Initializing theme...');
-        const { data: themeData, error: themeError } = await supabase
-          .from('themes')
-          .select('*')
-          .eq(isAdminRoute ? 'name' : 'is_default', isAdminRoute ? 'Admin Theme' : true)
-          .maybeSingle();
-
-        if (themeError) throw themeError;
-
-        console.log('Theme data from database:', themeData);
-
-        if (themeData) {
-          const theme = convertDatabaseTheme(themeData);
-          setCurrentTheme(theme);
-          console.log('Theme set successfully:', theme.name);
-        } else {
-          const { data: pageTheme, error: pageError } = await supabase
-            .from('page_themes')
-            .select(`
-              theme_id,
-              themes (*)
-            `)
-            .eq('page_path', location.pathname)
-            .maybeSingle();
-
-          if (pageError) throw pageError;
-
-          console.log('Page theme data:', pageTheme);
-
-          if (pageTheme?.themes) {
-            const theme = convertDatabaseTheme(pageTheme.themes);
-            setCurrentTheme(theme);
-          }
-        }
-
-        await applyThemeVariables();
-
-      } catch (error) {
-        console.error('Theme initialization failed:', error);
-        toast({
-          title: "Theme Error",
-          description: "Using fallback theme due to connection issues.",
-          variant: "destructive",
-        });
-      }
-    };
-
     initializeTheme();
-  }, [location.pathname, setCurrentTheme, toast, applyThemeVariables, isAdminRoute]);
+  }, [initializeTheme]);
 
   const value = {
     currentTheme,
@@ -213,8 +151,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     error,
     setCurrentTheme,
     fetchPageTheme,
-    applyThemeVariables,
-    isAdmin,
+    isAdmin
   };
 
   return (
