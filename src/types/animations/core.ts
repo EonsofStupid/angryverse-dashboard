@@ -9,17 +9,6 @@ export type TimingFunction =
 
 export type EasingFunction = TimingFunction;
 
-export type AnimationDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
-export type AnimationFillMode = 'none' | 'forwards' | 'backwards' | 'both';
-
-export interface AnimationState {
-  isAnimating: boolean;
-  direction: AnimationDirection;
-  fillMode: AnimationFillMode;
-  duration: Duration;
-  timing: TimingFunction;
-}
-
 export interface AnimationConfig {
   duration: Duration;
   timing: TimingFunction;
