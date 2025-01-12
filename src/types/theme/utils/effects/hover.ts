@@ -1,12 +1,9 @@
-import type { EffectState } from '../state';
-import type { CSSColor, CSSValue, Duration } from '../css';
-
-export interface HoverEffects extends EffectState {
+export interface HoverEffects {
   scale: number;
-  lift: CSSValue;
+  lift: string;
   glow_strength: string;
-  transition_duration: Duration;
-  glow_color?: CSSColor;
+  transition_duration: string;
+  glow_color?: string;
   glow_opacity?: number;
   glow_spread?: string;
   glow_blur?: string;
