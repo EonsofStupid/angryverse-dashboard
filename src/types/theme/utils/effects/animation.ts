@@ -1,14 +1,18 @@
-export interface AnimationEffects {
+import type { Duration } from '@/types/animations/core';
+import type { EffectState } from '../state';
+import type { TimingFunction } from '@/types/animations/core';
+
+export interface AnimationEffects extends EffectState {
   timing: {
-    fast: string;
-    normal: string;
-    slow: string;
-    very_slow: string;
+    fast: Duration;
+    normal: Duration;
+    slow: Duration;
+    very_slow: Duration;
   };
   curves: {
-    linear: string;
-    ease_out: string;
-    ease_in: string;
-    ease_in_out: string;
-  }
+    linear: TimingFunction;
+    ease_out: TimingFunction;
+    ease_in: TimingFunction;
+    ease_in_out: TimingFunction;
+  };
 }
