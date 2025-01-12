@@ -1,23 +1,23 @@
 .hover-lift {
-  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: transform var(--animation-normal) var(--ease-out);
 }
 
 .hover-lift:hover {
-  transform: translateY(var(--theme-hover-lift));
+  transform: translateY(calc(var(--spacing-1) * -1));
 }
 
 .hover-scale {
-  transition: transform var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: transform var(--animation-normal) var(--ease-out);
 }
 
 .hover-scale:hover {
-  transform: scale(var(--theme-hover-scale));
+  transform: scale(1.05);
 }
 
 .hover-glow {
-  transition: filter var(--theme-animation-duration) var(--theme-animation-timing);
+  transition: filter var(--animation-normal) var(--ease-out);
 }
 
 .hover-glow:hover {
-  filter: drop-shadow(0 0 var(--theme-glow-strength) var(--theme-glow-color));
+  filter: drop-shadow(0 0 var(--glow-strength-md) var(--glow-color-primary));
 }
