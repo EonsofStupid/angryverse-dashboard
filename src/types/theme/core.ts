@@ -1,7 +1,6 @@
 import type { ThemeEffects } from './utils/effects';
 import type { ThemeColors } from './utils/colors';
 import type { ThemeTypography } from './utils/typography';
-import type { ThemeConfiguration } from './validation/schema';
 
 export interface ThemeConfiguration {
   colors: {
@@ -30,7 +29,19 @@ export interface ThemeConfiguration {
   effects: ThemeEffects;
 }
 
-export type { Theme, ThemeEffects };
+export interface Theme {
+  id: string;
+  name: string;
+  description?: string;
+  is_default: boolean;
+  status: 'active' | 'inactive' | 'draft';
+  configuration: ThemeConfiguration;
+  created_by?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export type { ThemeEffects };
 
 export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
   try {
