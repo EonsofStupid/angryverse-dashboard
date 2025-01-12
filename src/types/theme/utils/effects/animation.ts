@@ -1,5 +1,6 @@
-import type { Duration, TimingFunction } from '@/types/animations/core';
+import type { Duration } from '@/types/animations/core';
 import type { EffectState } from '../state';
+import type { TimingFunction } from '@/types/animations/core';
 
 export interface AnimationEffects extends EffectState {
   timing: {

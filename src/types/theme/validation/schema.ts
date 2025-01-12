@@ -131,7 +131,7 @@ export const transformDatabaseThemeRow = (row: DatabaseThemeRow): Theme => {
     status: row.status as ThemeStatus,
     configuration: validatedConfig,
     created_by: row.created_by,
-    created_at: row.created_at,
-    updated_at: row.updated_at
+    created_at: row.created_at?.toISOString(),
+    updated_at: row.updated_at?.toISOString()
   };
 };
