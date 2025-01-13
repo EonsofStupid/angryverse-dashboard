@@ -91,10 +91,10 @@ export interface GlassEffects extends BaseEffectState {
 // Hover Effects
 export interface HoverEffects extends BaseEffectState {
   scale: number;
-  lift: CSSValue;
+  lift: string;
   glow_strength: string;
-  transition_duration: Duration;
-  glow_color: CSSColor;
+  transition_duration: string;
+  glow_color: string;
   glow_opacity: number;
   glow_spread: string;
   glow_blur: string;
@@ -118,6 +118,38 @@ export interface AnimationEffects extends BaseEffectState {
   };
 }
 
+// Interaction Tokens
+export interface InteractionTokens extends BaseEffectState {
+  hover: {
+    lift_distances: CSSValue[];
+    scale_values: number[];
+    transition_curves: string[];
+    shadow_levels: string[];
+  };
+  magnetic: {
+    strength_levels: number[];
+    radius_values: number[];
+    smoothing_values: number[];
+    resistance_levels: number[];
+  };
+  tilt: {
+    max_tilt_values: number[];
+    perspective_values: number[];
+    scale_values: number[];
+    transition_speeds: Duration[];
+  };
+  cursor: {
+    sizes: string[];
+    effects: ('follow' | 'trail' | 'spotlight' | 'ripple')[];
+    colors: {
+      primary: CSSColor;
+      secondary: CSSColor;
+      accent: CSSColor;
+    };
+    transition_speeds: Duration[];
+  };
+}
+
 // Special Effects
 export interface SpecialEffectTokens extends BaseEffectState {
   glitch: {
@@ -135,7 +167,7 @@ export interface SpecialEffectTokens extends BaseEffectState {
   };
 }
 
-// Motion Effects
+// Motion Tokens
 export interface MotionTokens extends BaseEffectState {
   paths: {
     ease_curves: string[];
@@ -146,26 +178,6 @@ export interface MotionTokens extends BaseEffectState {
     animation_types: string[];
     directions: string[];
     distances: string[];
-  };
-}
-
-// Interaction Tokens
-export interface InteractionTokens extends BaseEffectState {
-  hover: {
-    lift_distances: CSSValue[];
-    scale_values: number[];
-    transition_curves: string[];
-    shadow_levels: string[];
-  };
-  magnetic: {
-    strength_levels: number[];
-    radius_values: number[];
-    smoothing_values: number[];
-  };
-  tilt: {
-    max_tilt_values: number[];
-    perspective_values: number[];
-    scale_values: number[];
   };
 }
 
