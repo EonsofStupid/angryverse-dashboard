@@ -64,10 +64,6 @@ export interface ThemeTypography {
   };
 }
 
-// Animation Types
-export type AnimationDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
-export type AnimationFillMode = 'none' | 'forwards' | 'backwards' | 'both';
-
 // Glass Effects
 export interface GlassEffects extends BaseEffectState {
   background: string;
@@ -118,6 +114,32 @@ export interface AnimationEffects extends BaseEffectState {
   };
 }
 
+// Interaction Tokens
+export interface InteractionTokens extends BaseEffectState {
+  hover: {
+    lift_distances: CSSValue[];
+    scale_values: number[];
+    transition_curves: string[];
+    shadow_levels: string[];
+  };
+  magnetic: {
+    strength_levels: number[];
+    radius_values: number[];
+    smoothing_values: number[];
+  };
+  tilt: {
+    max_tilt_values: number[];
+    perspective_values: number[];
+    scale_values: number[];
+  };
+  cursor: {
+    sizes: string[];
+    effects: string[];
+    colors: Record<string, string>;
+    transition_speeds: string[];
+  };
+}
+
 // Special Effects
 export interface SpecialEffectTokens extends BaseEffectState {
   glitch: {
@@ -146,26 +168,6 @@ export interface MotionTokens extends BaseEffectState {
     animation_types: string[];
     directions: string[];
     distances: string[];
-  };
-}
-
-// Interaction Tokens
-export interface InteractionTokens extends BaseEffectState {
-  hover: {
-    lift_distances: CSSValue[];
-    scale_values: number[];
-    transition_curves: string[];
-    shadow_levels: string[];
-  };
-  magnetic: {
-    strength_levels: number[];
-    radius_values: number[];
-    smoothing_values: number[];
-  };
-  tilt: {
-    max_tilt_values: number[];
-    perspective_values: number[];
-    scale_values: number[];
   };
 }
 
@@ -319,7 +321,7 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
 
 // Utility Types
 export type DeepPartial<T> = {
-  [P in keyof T]: T[P] extends object ? DeepPartial<T[P]> : T[P];
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 export type ThemeUpdate = DeepPartial<ThemeConfiguration>;
