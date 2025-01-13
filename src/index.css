@@ -37,3 +37,11 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Reset Tailwind utility variables */
+*, ::before, ::after {
+  --tw-ring-offset-color: transparent;
+  --tw-ring-color: transparent;
+  --tw-shadow: none;
+  --tw-shadow-colored: none;
+}

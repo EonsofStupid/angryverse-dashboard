@@ -43,8 +43,3 @@
   background: var(--background);
   color: hsl(var(--foreground));
 }
-
-.admin-theme {
-  background: var(--admin-background);
-  color: hsl(var(--admin-foreground));
-}
