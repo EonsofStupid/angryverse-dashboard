@@ -10,7 +10,8 @@ export const CursorEffects = () => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
       
-      if (effects?.interaction_tokens?.hover?.effects?.includes('trail')) {
+      // Only add trail if cursor effects are enabled in the theme
+      if (effects?.interaction_tokens?.cursor?.effects?.includes('trail')) {
         setTrails(prev => [
           { x: e.clientX, y: e.clientY, id: Date.now() },
           ...prev.slice(0, 7)
@@ -20,15 +21,15 @@ export const CursorEffects = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [effects?.interaction_tokens?.hover?.effects]);
+  }, [effects?.interaction_tokens?.cursor?.effects]);
 
-  // If no hover effects are configured, don't render anything
-  if (!effects?.interaction_tokens?.hover) return null;
+  // If no cursor effects are configured, don't render anything
+  if (!effects?.interaction_tokens?.cursor) return null;
 
   return (
     <>
       {/* Follow cursor effect */}
-      {effects.interaction_tokens.hover.effects?.includes('follow') && (
+      {effects.interaction_tokens.cursor.effects?.includes('follow') && (
         <div 
           className="cursor-follow"
           style={{ 
@@ -38,7 +39,7 @@ export const CursorEffects = () => {
             position: 'fixed',
             width: '20px',
             height: '20px',
-            backgroundColor: 'var(--theme-primary)',
+            backgroundColor: effects.interaction_tokens.cursor.colors?.primary || 'var(--theme-primary)',
             borderRadius: '50%',
             pointerEvents: 'none',
             zIndex: 9999,
@@ -49,7 +50,7 @@ export const CursorEffects = () => {
       )}
 
       {/* Trail effect */}
-      {effects.interaction_tokens.hover.effects?.includes('trail') && 
+      {effects.interaction_tokens.cursor.effects?.includes('trail') && 
         trails.map((trail, i) => (
           <div
             key={trail.id}
@@ -60,7 +61,7 @@ export const CursorEffects = () => {
               top: `${trail.y}px`,
               width: '8px',
               height: '8px',
-              backgroundColor: 'var(--theme-primary)',
+              backgroundColor: effects.interaction_tokens.cursor.colors?.primary || 'var(--theme-primary)',
               borderRadius: '50%',
               pointerEvents: 'none',
               zIndex: 9998,
@@ -73,7 +74,7 @@ export const CursorEffects = () => {
       }
 
       {/* Spotlight effect */}
-      {effects.interaction_tokens.hover.effects?.includes('spotlight') && (
+      {effects.interaction_tokens.cursor.effects?.includes('spotlight') && (
         <div
           className="cursor-spotlight"
           style={{
