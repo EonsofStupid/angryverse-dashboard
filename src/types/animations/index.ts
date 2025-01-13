@@ -1,6 +1,6 @@
 import { Duration } from './core';
-import { AnimationDirection, AnimationFillMode } from '@/types/theme/utils/effects/animation';
-import { AnimationState } from '@/types/theme/utils/effects/shared';
+import type { AnimationDirection, AnimationFillMode } from '@/types/theme/utils/effects/animation';
+import type { AnimationState } from '@/types/theme/utils/effects/shared';
 
 export * from './core';
 export * from './keyframes';

@@ -1,4 +1,4 @@
-export type Duration = `${number}${'ms' | 's'}`;
+export type Duration = `${number}ms` | `${number}s`;
 export type TimingFunction = 
   | 'linear' 
   | 'ease' 
