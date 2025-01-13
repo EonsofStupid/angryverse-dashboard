@@ -1,6 +1,6 @@
 import type { GlassEffects } from './effects/glass';
 import type { HoverEffects } from './effects/hover';
-import type { AnimationEffects } from './animation';
+import type { AnimationEffects } from './effects/animation';
 import type { InteractionTokens } from './effects/interaction';
 import type { SpecialEffectTokens } from './effects/special';
 import type { MotionTokens } from './effects/motion';
