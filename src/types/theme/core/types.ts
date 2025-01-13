@@ -1,8 +1,4 @@
-import type { ThemeEffects } from '../utils/effects';
-import type { ThemeColors } from '../utils/colors';
-import type { ThemeTypography } from '../utils/typography';
-
-export type ThemeStatus = 'active' | 'draft' | 'archived';
+export type ThemeStatus = 'active' | 'draft' | 'inactive';
 
 export interface Theme {
   id: string;
