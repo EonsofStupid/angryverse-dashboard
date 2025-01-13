@@ -26,17 +26,15 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "var(--theme-colors-cyber-pink)",
-          hover: "var(--theme-colors-cyber-pink-hover)",
+          DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "var(--theme-colors-cyber-cyan)",
-          hover: "var(--theme-colors-cyber-cyan-hover)",
+          DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
-          DEFAULT: "var(--theme-colors-cyber-purple)",
+          DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
         destructive: {
@@ -68,8 +66,8 @@ export default {
         },
       },
       animation: {
-        "fade-in": "fade-in var(--animation-normal) var(--ease-out)",
-        "scale-in": "scale-in var(--animation-fast) var(--ease-out)",
+        "fade-in": "fade-in 0.3s ease-out forwards",
+        "scale-in": "scale-in 0.2s ease-out forwards",
       },
     },
   },
