@@ -1,3 +1,14 @@
+/* Base Effect System */
+@import '../effects/glass/tokens.css';
+@import '../effects/glow/tokens.css';
+@import '../effects/shadows/tokens.css';
+
+/* Interaction System */
+@import '../interactions/magnetic/tokens.css';
+@import '../interactions/tilt/tokens.css';
+@import '../interactions/hover/tokens.css';
+@import '../interactions/scroll/tokens.css';
+
 :root {
   /* Glass Effect System */
   --glass-background: rgba(10, 10, 15, 0.5);
