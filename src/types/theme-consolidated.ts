@@ -1,7 +1,6 @@
-// Core imports
 import { z } from 'zod';
 
-// CSS & Style Types
+// Base Types
 export type CSSUnit = 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%';
 export type CSSValue<T extends CSSUnit = 'px'> = `${number}${T}`;
 export type HSLValue = `${number} ${number}% ${number}%`;
@@ -23,7 +22,7 @@ export type CSSColor =
   | `hsla(${HSLValue}, ${number})`
   | CSSVariable;
 
-// Base Effect State
+// Effect State
 export type EffectPriority = 'database' | 'fallback' | 'hybrid';
 export type EffectSource = 'database' | 'fallback';
 
@@ -68,13 +67,6 @@ export interface ThemeTypography {
 // Animation Types
 export type AnimationDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
 export type AnimationFillMode = 'none' | 'forwards' | 'backwards' | 'both';
-
-export interface AnimationState extends BaseEffectState {
-  direction: AnimationDirection;
-  fillMode: AnimationFillMode;
-  iterationCount: number | 'infinite';
-  delay: Duration;
-}
 
 // Glass Effects
 export interface GlassEffects extends BaseEffectState {
@@ -247,7 +239,20 @@ export const themeConfigurationSchema = z.object({
       source: z.enum(['database', 'fallback']),
       background: z.string(),
       blur: z.string(),
-      border: z.string()
+      border: z.string(),
+      shadow_composition: z.object({
+        offset_y: z.string(),
+        blur_radius: z.string(),
+        spread_radius: z.string(),
+        opacity: z.number()
+      }).optional(),
+      blur_levels: z.array(z.string()).optional(),
+      opacity_levels: z.array(z.number()).optional(),
+      border_styles: z.object({
+        light: z.string(),
+        medium: z.string(),
+        heavy: z.string()
+      }).optional()
     }),
     hover: z.object({
       enabled: z.boolean(),
@@ -256,9 +261,18 @@ export const themeConfigurationSchema = z.object({
       scale: z.number(),
       lift: z.string(),
       glow_strength: z.string(),
-      transition_duration: z.string()
+      transition_duration: z.string(),
+      glow_color: z.string().optional(),
+      glow_opacity: z.number().optional(),
+      glow_spread: z.string().optional(),
+      glow_blur: z.string().optional(),
+      shadow_normal: z.string().optional(),
+      shadow_hover: z.string().optional()
     }),
     animations: z.object({
+      enabled: z.boolean(),
+      priority: z.enum(['database', 'fallback', 'hybrid']),
+      source: z.enum(['database', 'fallback']),
       timing: z.object({
         fast: z.string(),
         normal: z.string(),
@@ -271,23 +285,36 @@ export const themeConfigurationSchema = z.object({
         ease_in: z.string(),
         ease_in_out: z.string()
       })
-    })
+    }),
+    interaction_tokens: z.object({
+      hover: z.object({
+        lift_distances: z.array(z.string()),
+        scale_values: z.array(z.number()),
+        transition_curves: z.array(z.string()),
+        shadow_levels: z.array(z.string())
+      }),
+      magnetic: z.object({
+        strength_levels: z.array(z.number()),
+        radius_values: z.array(z.number()),
+        smoothing_values: z.array(z.number())
+      }),
+      tilt: z.object({
+        max_tilt_values: z.array(z.number()),
+        perspective_values: z.array(z.number()),
+        scale_values: z.array(z.number())
+      })
+    }).optional()
   })
 });
 
 // Type Guards
 export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
-  if (!obj || typeof obj !== 'object') return false;
-  
-  const config = obj as ThemeConfiguration;
-  
-  return !!(
-    config.colors?.cyber &&
-    config.typography?.fonts &&
-    config.effects?.glass &&
-    config.effects?.hover &&
-    config.effects?.animations
-  );
+  try {
+    themeConfigurationSchema.parse(obj);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // Utility Types
@@ -296,7 +323,3 @@ export type DeepPartial<T> = {
 };
 
 export type ThemeUpdate = DeepPartial<ThemeConfiguration>;
-
-export type ThemeValidator = {
-  [K in keyof ThemeConfiguration]: (value: ThemeConfiguration[K]) => boolean;
-};
