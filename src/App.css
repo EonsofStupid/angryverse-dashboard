@@ -32,6 +32,8 @@
 
 .app {
   @apply min-h-screen w-full relative;
+  background: var(--background);
+  color: hsl(var(--foreground));
 }
 
 /* Theme-specific styles */
