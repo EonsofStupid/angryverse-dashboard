@@ -1,0 +1,25 @@
+.holographic {
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, var(--rainbow-intensity, 0.2)) 45%,
+    rgba(255, 255, 255, calc(var(--rainbow-intensity, 0.2) * 1.5)) 50%,
+    rgba(255, 255, 255, var(--rainbow-intensity, 0.2)) 55%,
+    transparent 100%
+  );
+  animation: holographic-shine var(--animation-speed, 3s) linear infinite;
+  mix-blend-mode: overlay;
+}
+
+@keyframes holographic-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
