@@ -1,34 +1,61 @@
-:root {
-  /* Theme Colors */
-  --theme-colors-cyber-dark: #1a1b26;
-  --theme-colors-cyber-pink: #ff007f;
-  --theme-colors-cyber-pink-hover: #ff1a8c;
-  --theme-colors-cyber-cyan: #00fff5;
-  --theme-colors-cyber-cyan-hover: #1affff;
-  --theme-colors-cyber-purple: #7928ca;
-  --theme-colors-cyber-green: #4ade80;
-  --theme-colors-cyber-green-hover: #22c55e;
-  --theme-colors-cyber-yellow: #fde047;
-  --theme-colors-cyber-yellow-hover: #facc15;
+/* Reset default theme variables with higher specificity */
+:root:not([data-theme]) {
+  /* Theme Colors with !important to override defaults */
+  --theme-colors-cyber-dark: #1a1b26 !important;
+  --theme-colors-cyber-pink: #ff007f !important;
+  --theme-colors-cyber-pink-hover: #ff1a8c !important;
+  --theme-colors-cyber-cyan: #00fff5 !important;
+  --theme-colors-cyber-cyan-hover: #1affff !important;
+  --theme-colors-cyber-purple: #7928ca !important;
+  --theme-colors-cyber-green: #4ade80 !important;
+  --theme-colors-cyber-green-hover: #22c55e !important;
+  --theme-colors-cyber-yellow: #fde047 !important;
+  --theme-colors-cyber-yellow-hover: #facc15 !important;
 
-  /* Semantic Colors */
-  --background: var(--theme-colors-cyber-dark);
-  --foreground: 220 28% 95%;
-  --card: var(--theme-colors-cyber-dark);
-  --card-foreground: 220 28% 95%;
-  --popover: var(--theme-colors-cyber-dark);
-  --popover-foreground: 220 28% 95%;
-  --primary: var(--theme-colors-cyber-pink);
-  --primary-foreground: 220 28% 95%;
-  --secondary: var(--theme-colors-cyber-cyan);
-  --secondary-foreground: 220 28% 95%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: var(--theme-colors-cyber-purple);
-  --accent-foreground: 220 28% 95%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: var(--theme-colors-cyber-pink);
+  /* Override semantic colors */
+  --background: var(--theme-colors-cyber-dark) !important;
+  --foreground: 220 28% 95% !important;
+  --card: var(--theme-colors-cyber-dark) !important;
+  --card-foreground: 220 28% 95% !important;
+  --popover: var(--theme-colors-cyber-dark) !important;
+  --popover-foreground: 220 28% 95% !important;
+  --primary: var(--theme-colors-cyber-pink) !important;
+  --primary-foreground: 220 28% 95% !important;
+  --secondary: var(--theme-colors-cyber-cyan) !important;
+  --secondary-foreground: 220 28% 95% !important;
+  --muted: 217.2 32.6% 17.5% !important;
+  --muted-foreground: 215 20.2% 65.1% !important;
+  --accent: var(--theme-colors-cyber-purple) !important;
+  --accent-foreground: 220 28% 95% !important;
+  --destructive: 0 62.8% 30.6% !important;
+  --destructive-foreground: 210 40% 98% !important;
+  --border: 217.2 32.6% 17.5% !important;
+  --input: 217.2 32.6% 17.5% !important;
+  --ring: var(--theme-colors-cyber-pink) !important;
+
+  /* Reset all base and accent variables */
+  --base-1: none !important;
+  --base-2: none !important;
+  --base-3: none !important;
+  --base-4: none !important;
+  --base-5: none !important;
+  --base-6: none !important;
+  --base-7: none !important;
+  --base-8: none !important;
+  --base-9: none !important;
+  --base-10: none !important;
+  --base-11: none !important;
+  --base-12: none !important;
+  --accent-1: none !important;
+  --accent-2: none !important;
+  --accent-3: none !important;
+  --accent-4: none !important;
+  --accent-5: none !important;
+  --accent-6: none !important;
+  --accent-7: none !important;
+  --accent-8: none !important;
+  --accent-9: none !important;
+  --accent-10: none !important;
+  --accent-11: none !important;
+  --accent-12: none !important;
 }
