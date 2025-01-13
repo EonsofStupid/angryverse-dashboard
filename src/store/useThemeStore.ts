@@ -24,7 +24,6 @@ const defaultTheme: Theme = {
   description: 'Default system theme',
   is_default: true,
   status: 'active',
-  created_by: '',
   configuration: {
     colors: {
       cyber: {
@@ -66,9 +65,38 @@ const defaultTheme: Theme = {
           spread_radius: '0px',
           opacity: 0.1
         }
+      },
+      hover: {
+        ...baseEffectState,
+        scale: 1.05,
+        lift: '-4px',
+        glow_strength: '10px',
+        transition_duration: '300ms',
+        glow_color: 'var(--theme-primary)',
+        glow_opacity: 0.5,
+        glow_spread: '4px',
+        glow_blur: '8px',
+        shadow_normal: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        shadow_hover: '0 8px 12px rgba(0, 0, 0, 0.15)'
+      },
+      animations: {
+        ...baseEffectState,
+        timing: {
+          fast: '100ms',
+          normal: '200ms',
+          slow: '300ms',
+          very_slow: '1000ms'
+        },
+        curves: {
+          linear: 'linear',
+          ease_out: 'cubic-bezier(0, 0, 0.2, 1)',
+          ease_in: 'cubic-bezier(0.4, 0, 1, 1)',
+          ease_in_out: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        }
       }
     }
   },
+  created_by: '',
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString()
 };
