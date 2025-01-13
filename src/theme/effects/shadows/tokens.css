@@ -1,0 +1,32 @@
+:root {
+  /* Shadow Base */
+  --shadow-color: 220 40% 2%;
+  --shadow-strength: 1%;
+  
+  /* Shadow Depths */
+  --shadow-1: 0 1px 2px -1px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 9%));
+  --shadow-2: 
+    0 3px 5px -2px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 3%)),
+    0 7px 14px -5px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 5%));
+  --shadow-3: 
+    0 -1px 3px 0 hsl(var(--shadow-color) / calc(var(--shadow-strength) + 2%)),
+    0 1px 2px -5px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 2%)),
+    0 2px 5px -5px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 4%)),
+    0 4px 12px -5px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 5%)),
+    0 12px 15px -5px hsl(var(--shadow-color) / calc(var(--shadow-strength) + 7%));
+  
+  /* Shadow Colors */
+  --shadow-color-primary: var(--theme-primary);
+  --shadow-color-secondary: var(--theme-secondary);
+  --shadow-color-accent: var(--theme-accent);
+  
+  /* Layered Shadows */
+  --shadow-layer-1: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-layer-2: 0 3px 6px rgba(0, 0, 0, 0.15);
+  --shadow-layer-3: 0 10px 20px rgba(0, 0, 0, 0.15);
+  
+  /* Colored Shadows */
+  --shadow-primary: 0 4px 14px rgba(var(--theme-primary), 0.25);
+  --shadow-secondary: 0 4px 14px rgba(var(--theme-secondary), 0.25);
+  --shadow-accent: 0 4px 14px rgba(var(--theme-accent), 0.25);
+}
