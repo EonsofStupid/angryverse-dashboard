@@ -74,9 +74,9 @@ export interface GlassEffects extends BaseEffectState {
   blur: string;
   border: string;
   shadow_composition: {
-    offset_y: string;
-    blur_radius: string;
-    spread_radius: string;
+    offset_y: CSSValue;
+    blur_radius: CSSValue;
+    spread_radius: CSSValue;
     opacity: number;
   };
   blur_levels: string[];
@@ -120,36 +120,48 @@ export interface AnimationEffects extends BaseEffectState {
 
 // Interaction Tokens
 export interface InteractionTokens extends BaseEffectState {
-  hover?: {
+  hover: {
     lift_distances: CSSValue[];
     scale_values: number[];
     transition_curves: string[];
     shadow_levels: string[];
   };
-  magnetic?: {
+  magnetic: {
     strength_levels: number[];
     radius_values: number[];
     smoothing_values: number[];
+    resistance_levels: number[];
   };
-  tilt?: {
+  tilt: {
     max_tilt_values: number[];
     perspective_values: number[];
     scale_values: number[];
+    transition_speeds: Duration[];
+  };
+  cursor: {
+    sizes: string[];
+    effects: ('follow' | 'trail' | 'spotlight' | 'ripple')[];
+    colors: {
+      primary: CSSColor;
+      secondary: CSSColor;
+      accent: CSSColor;
+    };
+    transition_speeds: Duration[];
   };
 }
 
 // Special Effects
 export interface SpecialEffectTokens extends BaseEffectState {
-  glitch?: {
+  glitch: {
     intensity_levels: number[];
     frequency_values: number[];
     color_schemes: string[][];
   };
-  neon?: {
+  neon: {
     glow_sizes: string[];
     flicker_speeds: string[];
   };
-  matrix?: {
+  matrix: {
     speed_levels: number[];
     density_values: number[];
   };
@@ -157,11 +169,11 @@ export interface SpecialEffectTokens extends BaseEffectState {
 
 // Motion Tokens
 export interface MotionTokens extends BaseEffectState {
-  paths?: {
+  paths: {
     ease_curves: string[];
     preset_paths: string[];
   };
-  scroll_triggers?: {
+  scroll_triggers: {
     thresholds: number[];
     animation_types: string[];
     directions: string[];
@@ -171,78 +183,33 @@ export interface MotionTokens extends BaseEffectState {
 
 // Theme Effects
 export interface ThemeEffects {
-  // Base Effects (Required)
   glass: GlassEffects;
   hover: HoverEffects;
   animations: AnimationEffects;
-
-  // Advanced Effects (Required)
   interaction_tokens: InteractionTokens;
   special_effect_tokens: SpecialEffectTokens;
   motion_tokens: MotionTokens;
-
-  // Effect State
-  enabled: boolean;
-  priority: EffectPriority;
-  source: EffectSource;
 }
 
-// Theme Configuration Interface
+// Theme Configuration
 export interface ThemeConfiguration {
   colors: ThemeColors;
   typography: ThemeTypography;
   effects: ThemeEffects;
-  
-  // Advanced Configuration
-  advanced_effects?: {
-    glass?: {
-      types: ('frosted' | 'tinted' | 'reflective' | 'patterned')[];
-      frost_levels: number[];
-      tint_colors: ('primary' | 'secondary' | 'accent')[];
-      reflection_strength: number[];
-      patterns: ('dots' | 'lines' | 'grid' | 'noise')[];
-    };
-    animations?: {
-      hover: ('scale' | 'glow' | 'lift' | 'shine')[];
-      loading: ('pulse' | 'spin' | 'bounce' | 'shimmer')[];
-      page_transitions: ('fade' | 'slide' | 'zoom' | 'flip')[];
-    };
-  };
-  
-  // Effect Details
-  effects_details?: {
-    glass?: {
-      blur_levels: string[];
-      background_opacity: number;
-      border_opacity: number;
-      shadow_composition: {
-        offset_y: string;
-        blur_radius: string;
-        spread_radius: string;
-        opacity: number;
-      };
-    };
-    hover?: {
-      scale: number;
-      transition_duration: string;
-      timing_function: string;
-      shadow_normal: string;
-      shadow_hover: string;
-    };
-  };
 }
 
-// Complete Theme Interface
+// Theme Status
+export type ThemeStatus = 'active' | 'inactive' | 'draft';
+
+// Complete Theme Type
 export interface Theme {
   id: string;
   name: string;
   description: string;
   is_default: boolean;
-  status: 'active' | 'draft' | 'archived';
+  status: ThemeStatus;
   configuration: ThemeConfiguration;
-  advanced_effects?: Record<string, unknown>;
-  effects_details?: Record<string, unknown>;
-  created_by?: string;
+  created_by: string;
   created_at: string;
   updated_at: string;
 }
@@ -351,3 +318,20 @@ export const themeConfigurationSchema = z.object({
     })
   })
 });
+
+// Type Guards
+export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
+  try {
+    themeConfigurationSchema.parse(obj);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Utility Types
+export type DeepPartial<T> = {
+  [P in keyof T]: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export type ThemeUpdate = DeepPartial<ThemeConfiguration>;
