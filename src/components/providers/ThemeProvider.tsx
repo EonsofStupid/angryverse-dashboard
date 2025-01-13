@@ -41,8 +41,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (pageTheme?.themes) {
         const themeData = pageTheme.themes as any;
-        const configuration = themeData.configuration as ThemeConfiguration;
-        
+        // First validate the configuration structure
+        if (!themeData.configuration || typeof themeData.configuration !== 'object') {
+          throw new Error('Theme configuration is missing or invalid');
+        }
+
+        // Type assertion with validation
+        const configuration = themeData.configuration as unknown as ThemeConfiguration;
         if (!isThemeConfiguration(configuration)) {
           throw new Error('Invalid theme configuration structure');
         }
@@ -74,9 +79,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       if (defaultError) throw defaultError;
 
       if (defaultTheme) {
-        const configuration = defaultTheme.configuration as ThemeConfiguration;
+        // Validate configuration structure
+        if (!defaultTheme.configuration || typeof defaultTheme.configuration !== 'object') {
+          throw new Error('Default theme configuration is missing or invalid');
+        }
+
+        const configuration = defaultTheme.configuration as unknown as ThemeConfiguration;
         if (!isThemeConfiguration(configuration)) {
-          throw new Error('Invalid theme configuration structure');
+          throw new Error('Invalid default theme configuration structure');
         }
 
         const theme: Theme = {
