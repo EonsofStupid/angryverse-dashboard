@@ -7,8 +7,8 @@ import type { MotionTokens } from './effects/motion';
 
 export interface ThemeEffects {
   glass: GlassEffects;
-  hover: HoverEffects;  // Changed from optional to required
-  animations: AnimationEffects;  // Changed from optional to required
+  hover: HoverEffects;  // Now required
+  animations: AnimationEffects;  // Now required
   interaction_tokens?: InteractionTokens;
   special_effect_tokens?: SpecialEffectTokens;
   motion_tokens?: MotionTokens;
