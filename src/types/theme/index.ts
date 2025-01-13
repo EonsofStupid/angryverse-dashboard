@@ -4,4 +4,3 @@ export * from './utils/colors';
 export * from './utils/typography';
 export * from './utils/css';
 export * from './utils/state';
-export * from './utils/database';
