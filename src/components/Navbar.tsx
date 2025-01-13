@@ -32,24 +32,33 @@ export const Navbar = () => {
             <div className="hidden md:flex items-center gap-6">
               <Link 
                 to="/" 
-                className="font-semibold text-foreground hover:text-primary transition-colors duration-200"
+                className="relative font-semibold text-foreground hover:text-primary transition-all duration-300 
+                          hover:scale-105 group cursor-pointer"
               >
                 Home
+                <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
+                               duration-300 blur-lg bg-primary/30 rounded-full scale-150"></span>
               </Link>
               {isAdmin && (
                 <>
                   <Link 
                     to="/admin" 
-                    className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    className="relative text-muted-foreground hover:text-foreground transition-all duration-300 
+                              hover:scale-105 group cursor-pointer"
                   >
                     Admin
+                    <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
+                                   duration-300 blur-lg bg-secondary/30 rounded-full scale-150"></span>
                   </Link>
                   <Link 
                     to="/admin/portal" 
                     onClick={handlePortalClick}
-                    className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    className="relative text-muted-foreground hover:text-foreground transition-all duration-300 
+                              hover:scale-105 group cursor-pointer"
                   >
                     Portal
+                    <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
+                                   duration-300 blur-lg bg-accent/30 rounded-full scale-150"></span>
                   </Link>
                 </>
               )}
@@ -58,13 +67,16 @@ export const Navbar = () => {
             {/* Mobile Menu Button */}
             <button 
               onClick={toggleMenu}
-              className="md:hidden text-foreground hover:text-primary transition-colors duration-200"
+              className="md:hidden relative text-foreground hover:text-primary transition-all duration-300 
+                        hover:scale-105 group"
             >
               {isMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 transform transition-transform duration-300 rotate-0 hover:rotate-90" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6 transform transition-transform duration-300 rotate-0 hover:rotate-180" />
               )}
+              <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
+                             duration-300 blur-lg bg-primary/30 rounded-full scale-150"></span>
             </button>
 
             <UserMenu />
@@ -75,26 +87,37 @@ export const Navbar = () => {
         <div
           className={cn(
             "md:hidden absolute w-full bg-background/80 backdrop-blur-md border-b border-white/10",
-            "transition-all duration-300 ease-in-out",
-            isMenuOpen ? "max-h-48 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+            "transition-all duration-500 ease-in-out transform",
+            isMenuOpen 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 -translate-y-2 pointer-events-none"
           )}
         >
-          <div className="container mx-auto px-4 py-4 space-y-4">
+          <div className={cn(
+            "container mx-auto px-4 py-4 space-y-4 transition-all duration-500",
+            isMenuOpen ? "transform translate-y-0" : "transform -translate-y-4"
+          )}>
             <Link 
               to="/" 
-              className="block font-semibold text-foreground hover:text-primary transition-colors duration-200"
+              className="block relative font-semibold text-foreground hover:text-primary 
+                        transition-all duration-300 hover:translate-x-2 group"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
+              <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
+                             transition-opacity duration-300 blur-lg bg-primary/30"></span>
             </Link>
             {isAdmin && (
               <>
                 <Link 
                   to="/admin" 
-                  className="block text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="block relative text-muted-foreground hover:text-foreground 
+                            transition-all duration-300 hover:translate-x-2 group"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Admin
+                  <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
+                                 transition-opacity duration-300 blur-lg bg-secondary/30"></span>
                 </Link>
                 <Link 
                   to="/admin/portal" 
@@ -102,9 +125,12 @@ export const Navbar = () => {
                     handlePortalClick(e);
                     setIsMenuOpen(false);
                   }}
-                  className="block text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  className="block relative text-muted-foreground hover:text-foreground 
+                            transition-all duration-300 hover:translate-x-2 group"
                 >
                   Portal
+                  <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
+                                 transition-opacity duration-300 blur-lg bg-accent/30"></span>
                 </Link>
               </>
             )}

@@ -10,7 +10,7 @@ export const CursorEffects = () => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
       
-      if (effects?.interaction_tokens?.cursor?.effects?.includes('trail')) {
+      if (effects?.interaction_tokens?.hover?.effects?.includes('trail')) {
         setTrails(prev => [
           { x: e.clientX, y: e.clientY, id: Date.now() },
           ...prev.slice(0, 7)
@@ -20,13 +20,13 @@ export const CursorEffects = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [effects?.interaction_tokens?.cursor?.effects]);
+  }, [effects?.interaction_tokens?.hover?.effects]);
 
-  if (!effects?.interaction_tokens?.cursor) return null;
+  if (!effects?.interaction_tokens?.hover) return null;
 
   return (
     <>
-      {effects.interaction_tokens.cursor.effects?.includes('follow') && (
+      {effects.interaction_tokens.hover.effects?.includes('follow') && (
         <div 
           className="cursor-follow"
           style={{ 
@@ -36,7 +36,7 @@ export const CursorEffects = () => {
         />
       )}
 
-      {effects.interaction_tokens.cursor.effects?.includes('trail') && 
+      {effects.interaction_tokens.hover.effects?.includes('trail') && 
         trails.map((trail, i) => (
           <div
             key={trail.id}
@@ -50,7 +50,7 @@ export const CursorEffects = () => {
         ))
       }
 
-      {effects.interaction_tokens.cursor.effects?.includes('spotlight') && (
+      {effects.interaction_tokens.hover.effects?.includes('spotlight') && (
         <div
           className="cursor-spotlight"
           style={{
