@@ -25,6 +25,86 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     fetchPageTheme
   } = useThemeStore();
 
+  const applyThemeVariables = useCallback(() => {
+    if (currentTheme?.configuration) {
+      const root = document.documentElement;
+      
+      // Apply color variables with proper CSS variable naming
+      if (currentTheme.configuration.colors?.cyber) {
+        Object.entries(currentTheme.configuration.colors.cyber).forEach(([key, value]) => {
+          if (typeof value === 'string') {
+            root.style.setProperty(`--theme-colors-cyber-${key}`, value);
+          } else if (typeof value === 'object' && value !== null) {
+            Object.entries(value).forEach(([subKey, subValue]) => {
+              const variableName = subKey === 'DEFAULT' 
+                ? `--theme-colors-cyber-${key}`
+                : `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`;
+              root.style.setProperty(variableName, subValue as string);
+            });
+          }
+        });
+      }
+
+      // Apply effect variables with proper scoping
+      if (currentTheme.configuration.effects) {
+        const { glass, hover, animations } = currentTheme.configuration.effects;
+        
+        // Glass effects
+        if (glass) {
+          root.style.setProperty('--theme-glass-background', glass.background);
+          root.style.setProperty('--theme-glass-blur', glass.blur);
+          root.style.setProperty('--theme-glass-border', glass.border);
+          
+          if (glass.shadow_composition) {
+            Object.entries(glass.shadow_composition).forEach(([key, value]) => {
+              root.style.setProperty(`--theme-glass-shadow-${key}`, value.toString());
+            });
+          }
+        }
+
+        // Hover effects
+        if (hover) {
+          root.style.setProperty('--theme-hover-scale', hover.scale.toString());
+          root.style.setProperty('--theme-hover-lift', hover.lift);
+          root.style.setProperty('--theme-hover-glow-strength', hover.glow_strength);
+          root.style.setProperty('--theme-hover-transition', hover.transition_duration);
+          root.style.setProperty('--theme-hover-glow-color', hover.glow_color);
+          root.style.setProperty('--theme-hover-shadow-normal', hover.shadow_normal);
+          root.style.setProperty('--theme-hover-shadow-hover', hover.shadow_hover);
+        }
+
+        // Animation effects
+        if (animations) {
+          Object.entries(animations.timing).forEach(([key, value]) => {
+            root.style.setProperty(`--theme-animation-${key}`, value);
+          });
+          Object.entries(animations.curves).forEach(([key, value]) => {
+            root.style.setProperty(`--theme-animation-curve-${key}`, value);
+          });
+        }
+      }
+
+      // Set semantic color mappings
+      root.style.setProperty('--theme-primary', 'var(--theme-colors-cyber-pink)');
+      root.style.setProperty('--theme-secondary', 'var(--theme-colors-cyber-cyan)');
+      root.style.setProperty('--theme-accent', 'var(--theme-colors-cyber-purple)');
+    }
+  }, [currentTheme]);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      console.log('Initializing theme...');
+      initializeTheme();
+    }
+  }, [isInitialized]);
+
+  useEffect(() => {
+    if (currentTheme?.configuration) {
+      console.log('Applying theme variables:', currentTheme.configuration);
+      applyThemeVariables();
+    }
+  }, [currentTheme, applyThemeVariables]);
+
   const initializeTheme = useCallback(async () => {
     console.log('Initializing theme...');
     try {
@@ -116,64 +196,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [location.pathname, setCurrentTheme, toast]);
 
-  useEffect(() => {
-    if (!isInitialized) {
-      initializeTheme();
-    }
-  }, [isInitialized, initializeTheme]);
-
-  useEffect(() => {
-    if (currentTheme?.configuration) {
-      const root = document.documentElement;
-      
-      // Apply color variables
-      if (currentTheme.configuration.colors?.cyber) {
-        Object.entries(currentTheme.configuration.colors.cyber).forEach(([key, value]) => {
-          if (typeof value === 'string') {
-            root.style.setProperty(`--theme-colors-cyber-${key}`, value);
-          } else if (typeof value === 'object' && value !== null) {
-            Object.entries(value).forEach(([subKey, subValue]) => {
-              root.style.setProperty(
-                `--theme-colors-cyber-${key}-${subKey.toLowerCase()}`,
-                subValue as string
-              );
-            });
-          }
-        });
-      }
-
-      // Apply effect variables
-      if (currentTheme.configuration.effects) {
-        const { glass, hover, animations } = currentTheme.configuration.effects;
-        
-        // Glass effects
-        if (glass) {
-          root.style.setProperty('--glass-background', glass.background);
-          root.style.setProperty('--glass-blur', glass.blur);
-          root.style.setProperty('--glass-border', glass.border);
-        }
-
-        // Hover effects
-        if (hover) {
-          root.style.setProperty('--hover-scale', hover.scale.toString());
-          root.style.setProperty('--hover-lift', hover.lift);
-          root.style.setProperty('--hover-glow-strength', hover.glow_strength);
-          root.style.setProperty('--hover-transition', hover.transition_duration);
-        }
-
-        // Animation effects
-        if (animations) {
-          Object.entries(animations.timing).forEach(([key, value]) => {
-            root.style.setProperty(`--animation-${key}`, value);
-          });
-          Object.entries(animations.curves).forEach(([key, value]) => {
-            root.style.setProperty(`--animation-curve-${key}`, value);
-          });
-        }
-      }
-    }
-  }, [currentTheme]);
-
   const value = {
     currentTheme,
     isLoading,
@@ -181,7 +203,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentTheme,
     fetchPageTheme,
     isAdmin,
-    applyThemeVariables: () => {} // This is a placeholder for now
+    applyThemeVariables
   };
 
   return (
