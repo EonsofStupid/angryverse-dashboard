@@ -73,15 +73,15 @@ export interface GlassEffects extends BaseEffectState {
   background: string;
   blur: string;
   border: string;
-  shadow_composition?: {
+  shadow_composition: {
     offset_y: CSSValue;
     blur_radius: CSSValue;
     spread_radius: CSSValue;
     opacity: number;
   };
-  blur_levels?: string[];
-  opacity_levels?: number[];
-  border_styles?: {
+  blur_levels: string[];
+  opacity_levels: number[];
+  border_styles: {
     light: string;
     medium: string;
     heavy: string;
@@ -94,12 +94,12 @@ export interface HoverEffects extends BaseEffectState {
   lift: CSSValue;
   glow_strength: string;
   transition_duration: Duration;
-  glow_color?: CSSColor;
-  glow_opacity?: number;
-  glow_spread?: string;
-  glow_blur?: string;
-  shadow_normal?: string;
-  shadow_hover?: string;
+  glow_color: CSSColor;
+  glow_opacity: number;
+  glow_spread: string;
+  glow_blur: string;
+  shadow_normal: string;
+  shadow_hover: string;
 }
 
 // Animation Effects
@@ -120,16 +120,16 @@ export interface AnimationEffects extends BaseEffectState {
 
 // Special Effects
 export interface SpecialEffectTokens extends BaseEffectState {
-  glitch?: {
+  glitch: {
     intensity_levels: number[];
     frequency_values: number[];
     color_schemes: string[][];
   };
-  neon?: {
+  neon: {
     glow_sizes: string[];
     flicker_speeds: string[];
   };
-  matrix?: {
+  matrix: {
     speed_levels: number[];
     density_values: number[];
   };
@@ -137,11 +137,11 @@ export interface SpecialEffectTokens extends BaseEffectState {
 
 // Motion Effects
 export interface MotionTokens extends BaseEffectState {
-  paths?: {
+  paths: {
     ease_curves: string[];
     preset_paths: string[];
   };
-  scroll_triggers?: {
+  scroll_triggers: {
     thresholds: number[];
     animation_types: string[];
     directions: string[];
@@ -151,18 +151,18 @@ export interface MotionTokens extends BaseEffectState {
 
 // Interaction Tokens
 export interface InteractionTokens extends BaseEffectState {
-  hover?: {
+  hover: {
     lift_distances: CSSValue[];
     scale_values: number[];
     transition_curves: string[];
     shadow_levels: string[];
   };
-  magnetic?: {
+  magnetic: {
     strength_levels: number[];
     radius_values: number[];
     smoothing_values: number[];
   };
-  tilt?: {
+  tilt: {
     max_tilt_values: number[];
     perspective_values: number[];
     scale_values: number[];
@@ -174,9 +174,9 @@ export interface ThemeEffects {
   glass: GlassEffects;
   hover: HoverEffects;
   animations: AnimationEffects;
-  interaction_tokens?: InteractionTokens;
-  special_effect_tokens?: SpecialEffectTokens;
-  motion_tokens?: MotionTokens;
+  interaction_tokens: InteractionTokens;
+  special_effect_tokens: SpecialEffectTokens;
+  motion_tokens: MotionTokens;
 }
 
 // Theme Configuration
@@ -193,13 +193,13 @@ export type ThemeStatus = 'active' | 'inactive' | 'draft';
 export interface Theme {
   id: string;
   name: string;
-  description?: string;
+  description: string;
   is_default: boolean;
   status: ThemeStatus;
   configuration: ThemeConfiguration;
-  created_by?: string;
-  created_at?: string;
-  updated_at?: string;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // Validation Schema
@@ -245,14 +245,14 @@ export const themeConfigurationSchema = z.object({
         blur_radius: z.string(),
         spread_radius: z.string(),
         opacity: z.number()
-      }).optional(),
-      blur_levels: z.array(z.string()).optional(),
-      opacity_levels: z.array(z.number()).optional(),
+      }),
+      blur_levels: z.array(z.string()),
+      opacity_levels: z.array(z.number()),
       border_styles: z.object({
         light: z.string(),
         medium: z.string(),
         heavy: z.string()
-      }).optional()
+      })
     }),
     hover: z.object({
       enabled: z.boolean(),
@@ -262,12 +262,12 @@ export const themeConfigurationSchema = z.object({
       lift: z.string(),
       glow_strength: z.string(),
       transition_duration: z.string(),
-      glow_color: z.string().optional(),
-      glow_opacity: z.number().optional(),
-      glow_spread: z.string().optional(),
-      glow_blur: z.string().optional(),
-      shadow_normal: z.string().optional(),
-      shadow_hover: z.string().optional()
+      glow_color: z.string(),
+      glow_opacity: z.number(),
+      glow_spread: z.string(),
+      glow_blur: z.string(),
+      shadow_normal: z.string(),
+      shadow_hover: z.string()
     }),
     animations: z.object({
       enabled: z.boolean(),
@@ -303,7 +303,7 @@ export const themeConfigurationSchema = z.object({
         perspective_values: z.array(z.number()),
         scale_values: z.array(z.number())
       })
-    }).optional()
+    })
   })
 });
 
@@ -319,7 +319,7 @@ export function isThemeConfiguration(obj: unknown): obj is ThemeConfiguration {
 
 // Utility Types
 export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+  [P in keyof T]: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
 export type ThemeUpdate = DeepPartial<ThemeConfiguration>;
