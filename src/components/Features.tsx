@@ -2,7 +2,7 @@ import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 import { useState, useRef, useEffect } from "react";
-import type { HoverConfig, FilterValue } from "@/types/theme/utils/interactions";
+import type { InteractionTokens } from "@/types/theme/utils/effects/interaction";
 import type { CSSColor } from "@/types/theme/utils/css";
 
 const features = [
@@ -47,7 +47,7 @@ export const Features = () => {
   const [activeGlowColor, setActiveGlowColor] = useState<CSSColor>("var(--theme-gray-neutral)");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const hoverConfig: HoverConfig = {
+  const hoverConfig = {
     scale: effects?.hover?.scale || 1.05,
     transitions: [
       {
@@ -63,7 +63,7 @@ export const Features = () => {
     ]
   };
 
-  const glowEffect: FilterValue = `drop-shadow(0 0 ${effects?.hover?.glow_strength || '10px'} ${activeGlowColor})`;
+  const glowEffect = `drop-shadow(0 0 ${effects?.hover?.glow_strength || '10px'} ${activeGlowColor})`;
 
   const glassStyle = {
     background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
