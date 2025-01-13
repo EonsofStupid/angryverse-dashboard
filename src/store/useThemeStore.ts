@@ -110,19 +110,20 @@ const convertDatabaseTheme = (dbTheme: any): Theme => {
     throw new Error('Invalid theme configuration structure');
   }
 
-  // Map database status to our ThemeStatus type
-  const statusMap: Record<string, Theme['status']> = {
-    'inactive': 'archived',
-    'active': 'active',
-    'draft': 'draft'
-  };
+  // Ensure effect state properties are present
+  if (!configuration.effects.glass.enabled) {
+    configuration.effects.glass = {
+      ...baseEffectState,
+      ...configuration.effects.glass
+    };
+  }
 
   return {
     id: dbTheme.id,
     name: dbTheme.name,
     description: dbTheme.description || '',
     is_default: !!dbTheme.is_default,
-    status: statusMap[dbTheme.status] || 'draft',
+    status: dbTheme.status || 'active',
     configuration: configuration,
     created_by: dbTheme.created_by,
     created_at: dbTheme.created_at,
