@@ -1,9 +1,8 @@
 import type { Duration, CSSValue } from '@/types/theme/utils/css';
-import type { KeyframeState } from '@/theme/animations/types/keyframes';
-import type { MotionPathState } from '@/theme/animations/types/motion-paths';
-import type { ScrollEffectState } from '@/theme/animations/types/scroll-effects';
 import type { EffectState } from '@/types/theme/utils/state';
 
+export type AnimationDirection = 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
+export type AnimationFillMode = 'none' | 'forwards' | 'backwards' | 'both';
 export type TimingFunction = 
   | 'linear' 
   | 'ease' 
@@ -11,6 +10,13 @@ export type TimingFunction =
   | 'ease-out' 
   | 'ease-in-out' 
   | `cubic-bezier(${number},${number},${number},${number})`;
+
+export interface AnimationState extends EffectState {
+  direction: AnimationDirection;
+  fillMode: AnimationFillMode;
+  iterationCount: number | 'infinite';
+  delay: Duration;
+}
 
 export interface AnimationEffects extends EffectState {
   timing: {
@@ -27,4 +33,4 @@ export interface AnimationEffects extends EffectState {
   };
 }
 
-export type { Duration, KeyframeState, MotionPathState, ScrollEffectState };
+export type { Duration, CSSValue };
