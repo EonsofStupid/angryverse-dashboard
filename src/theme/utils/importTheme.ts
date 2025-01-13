@@ -64,6 +64,7 @@ export const importThemePreset = async (presetId: string): Promise<Theme> => {
         is_default: false,
         status: 'active',
         configuration: parsedPreset.configuration,
+        created_by: preset.created_by || '',
         created_at: preset.created_at,
         updated_at: preset.updated_at
       });
