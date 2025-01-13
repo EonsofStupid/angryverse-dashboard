@@ -1,80 +1,66 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Base Theme Tokens */
+/* Base Tokens */
 @import './theme/tokens/colors.css';
 @import './theme/tokens/typography.css';
 @import './theme/tokens/spacing.css';
 @import './theme/tokens/effects.css';
+@import './theme/tokens/layout.css';
 
-/* Effects System */
-@import './theme/effects/glass.css';
-@import './theme/effects/glow/tokens.css';
-@import './theme/effects/shadows/tokens.css';
+/* Site Theme */
+@import './theme/site/base/colors.css';
+@import './theme/site/base/typography.css';
+@import './theme/site/effects/glass.css';
+@import './theme/site/effects/animations.css';
+@import './theme/site/effects/interactions.css';
 
-/* Interaction System */
-@import './theme/effects/interactions.css';
-@import './theme/effects/hover-interactions.css';
-@import './theme/effects/grow-interactions.css';
+/* Admin Theme */
+@import './theme/admin/base/colors.css';
+@import './theme/admin/base/typography.css';
+@import './theme/admin/effects/glass.css';
+@import './theme/admin/effects/animations.css';
+@import './theme/admin/effects/interactions.css';
 
-/* Motion System */
-@import './theme/effects/animations/motion.css';
-@import './theme/effects/animations/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-  }
-}
-
-@layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+
+  /* Reset Tailwind utility variables with higher specificity */
+  *, *::before, *::after {
+    --tw-border-spacing-x: 0 !important;
+    --tw-border-spacing-y: 0 !important;
+    --tw-translate-x: 0 !important;
+    --tw-translate-y: 0 !important;
+    --tw-rotate: 0 !important;
+    --tw-skew-x: 0 !important;
+    --tw-skew-y: 0 !important;
+    --tw-scale-x: 1 !important;
+    --tw-scale-y: 1 !important;
+    --tw-ring-offset-width: 0px !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-shadow-colored: 0 0 #0000 !important;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased min-h-screen w-full;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
