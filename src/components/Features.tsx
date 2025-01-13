@@ -4,6 +4,8 @@ import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 import { useState, useRef, useEffect } from "react";
 import type { InteractionTokens } from "@/types/theme/utils/effects/interaction";
 import type { CSSColor } from "@/types/theme/utils/css";
+import type { HoverEffects } from "@/types/theme/utils/effects/hover";
+import type { AnimationEffects } from "@/types/theme/utils/effects/animation";
 
 const features = [
   {
