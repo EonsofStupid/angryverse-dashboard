@@ -101,16 +101,18 @@ const defaultTheme: Theme = {
   updated_at: new Date().toISOString()
 };
 
+// Helper function to safely convert database theme to our Theme type
 const convertDatabaseTheme = (dbTheme: any): Theme => {
   const configuration = dbTheme.configuration as ThemeConfiguration;
   
+  // Validate the configuration structure
   if (!configuration?.colors?.cyber || !configuration?.typography?.fonts || !configuration?.effects?.glass) {
     throw new Error('Invalid theme configuration structure');
   }
 
   // Map database status to our ThemeStatus type
   const statusMap: Record<string, Theme['status']> = {
-    'inactive': 'inactive',
+    'inactive': 'archived',
     'active': 'active',
     'draft': 'draft'
   };
