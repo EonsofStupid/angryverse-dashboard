@@ -1,6 +1,7 @@
 import type { Duration, TimingFunction } from '../css';
+import type { EffectState } from '../state';
 
-export interface AnimationEffects {
+export interface AnimationEffects extends EffectState {
   timing: {
     fast: Duration;
     normal: Duration;

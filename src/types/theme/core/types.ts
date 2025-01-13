@@ -1,6 +1,6 @@
-import type { ThemeEffects } from '../utils/effects'
-import type { ThemeColors } from '../utils/colors'
-import type { ThemeTypography } from '../utils/typography'
+import type { ThemeEffects } from '../utils/effects';
+import type { ThemeColors } from '../utils/colors';
+import type { ThemeTypography } from '../utils/typography';
 
 export interface Theme {
   id: string;

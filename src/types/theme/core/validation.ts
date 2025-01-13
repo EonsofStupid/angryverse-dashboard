@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ThemeConfiguration } from './types';
 
 export const isThemeConfiguration = (value: unknown): value is ThemeConfiguration => {
   try {

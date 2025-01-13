@@ -1,22 +1,24 @@
+import type { CSSColor } from './css';
+
 export interface ThemeColors {
   cyber: {
-    dark: string;
+    dark: CSSColor;
     pink: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
     cyan: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
-    purple: string;
+    purple: CSSColor;
     green: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
     yellow: {
-      DEFAULT: string;
-      hover: string;
+      DEFAULT: CSSColor;
+      hover: CSSColor;
     };
   };
 }
