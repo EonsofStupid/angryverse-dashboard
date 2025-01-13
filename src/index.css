@@ -26,10 +26,15 @@
 @layer base {
   :root {
     --radius: 0.5rem;
+    font-family: var(--font-sans);
+    line-height: 1.5;
   }
 
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   body {
@@ -44,4 +49,13 @@
   --tw-ring-color: transparent;
   --tw-shadow: none;
   --tw-shadow-colored: none;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
 }
