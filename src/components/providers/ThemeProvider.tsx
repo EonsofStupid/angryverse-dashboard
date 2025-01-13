@@ -28,10 +28,11 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const applyThemeVariables = useCallback(() => {
     if (currentTheme?.configuration) {
       const root = document.documentElement;
+      const { colors, effects } = currentTheme.configuration;
       
-      // Apply color variables with proper CSS variable naming
-      if (currentTheme.configuration.colors?.cyber) {
-        Object.entries(currentTheme.configuration.colors.cyber).forEach(([key, value]) => {
+      // Apply color system
+      if (colors?.cyber) {
+        Object.entries(colors.cyber).forEach(([key, value]) => {
           if (typeof value === 'string') {
             root.style.setProperty(`--theme-colors-cyber-${key}`, value);
           } else if (typeof value === 'object' && value !== null) {
@@ -45,42 +46,111 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
 
-      // Apply effect variables with proper scoping
-      if (currentTheme.configuration.effects) {
-        const { glass, hover, animations } = currentTheme.configuration.effects;
-        
+      // Apply effects system
+      if (effects) {
         // Glass effects
-        if (glass) {
-          root.style.setProperty('--theme-glass-background', glass.background);
-          root.style.setProperty('--theme-glass-blur', glass.blur);
-          root.style.setProperty('--theme-glass-border', glass.border);
+        if (effects.glass) {
+          const { background, blur, border, shadow_composition } = effects.glass;
+          root.style.setProperty('--glass-background', background);
+          root.style.setProperty('--glass-blur', blur);
+          root.style.setProperty('--glass-border', border);
           
-          if (glass.shadow_composition) {
-            Object.entries(glass.shadow_composition).forEach(([key, value]) => {
-              root.style.setProperty(`--theme-glass-shadow-${key}`, value.toString());
+          if (shadow_composition) {
+            Object.entries(shadow_composition).forEach(([key, value]) => {
+              root.style.setProperty(`--glass-shadow-${key}`, value.toString());
             });
           }
         }
 
         // Hover effects
-        if (hover) {
-          root.style.setProperty('--theme-hover-scale', hover.scale.toString());
-          root.style.setProperty('--theme-hover-lift', hover.lift);
-          root.style.setProperty('--theme-hover-glow-strength', hover.glow_strength);
-          root.style.setProperty('--theme-hover-transition', hover.transition_duration);
-          root.style.setProperty('--theme-hover-glow-color', hover.glow_color);
-          root.style.setProperty('--theme-hover-shadow-normal', hover.shadow_normal);
-          root.style.setProperty('--theme-hover-shadow-hover', hover.shadow_hover);
+        if (effects.hover) {
+          const { 
+            scale, lift, glow_strength, transition_duration, 
+            glow_color, glow_opacity, glow_spread, glow_blur,
+            shadow_normal, shadow_hover 
+          } = effects.hover;
+          
+          root.style.setProperty('--hover-scale', scale.toString());
+          root.style.setProperty('--hover-lift', lift);
+          root.style.setProperty('--hover-glow-strength', glow_strength);
+          root.style.setProperty('--hover-transition', transition_duration);
+          root.style.setProperty('--hover-glow-color', glow_color);
+          root.style.setProperty('--hover-glow-opacity', glow_opacity.toString());
+          root.style.setProperty('--hover-glow-spread', glow_spread);
+          root.style.setProperty('--hover-glow-blur', glow_blur);
+          root.style.setProperty('--hover-shadow-normal', shadow_normal);
+          root.style.setProperty('--hover-shadow-hover', shadow_hover);
         }
 
         // Animation effects
-        if (animations) {
-          Object.entries(animations.timing).forEach(([key, value]) => {
-            root.style.setProperty(`--theme-animation-${key}`, value);
+        if (effects.animations) {
+          Object.entries(effects.animations.timing).forEach(([key, value]) => {
+            root.style.setProperty(`--animation-timing-${key}`, value);
           });
-          Object.entries(animations.curves).forEach(([key, value]) => {
-            root.style.setProperty(`--theme-animation-curve-${key}`, value);
+          Object.entries(effects.animations.curves).forEach(([key, value]) => {
+            root.style.setProperty(`--animation-curve-${key}`, value);
           });
+        }
+
+        // Special effects
+        if (effects.special_effect_tokens) {
+          const { neon, glitch, matrix } = effects.special_effect_tokens;
+          
+          if (neon) {
+            root.style.setProperty('--neon-glow-sizes', neon.glow_sizes.join(','));
+            root.style.setProperty('--neon-flicker-speeds', neon.flicker_speeds.join(','));
+          }
+          
+          if (glitch) {
+            root.style.setProperty('--glitch-intensity', glitch.intensity_levels.join(','));
+            root.style.setProperty('--glitch-frequency', glitch.frequency_values.join(','));
+          }
+          
+          if (matrix) {
+            root.style.setProperty('--matrix-speed', matrix.speed_levels.join(','));
+            root.style.setProperty('--matrix-density', matrix.density_values.join(','));
+          }
+        }
+
+        // Motion tokens
+        if (effects.motion_tokens) {
+          const { paths, scroll_triggers } = effects.motion_tokens;
+          
+          if (paths) {
+            root.style.setProperty('--motion-ease-curves', paths.ease_curves.join(','));
+            root.style.setProperty('--motion-preset-paths', paths.preset_paths.join(','));
+          }
+          
+          if (scroll_triggers) {
+            root.style.setProperty('--scroll-thresholds', scroll_triggers.thresholds.join(','));
+            root.style.setProperty('--scroll-animation-types', scroll_triggers.animation_types.join(','));
+            root.style.setProperty('--scroll-directions', scroll_triggers.directions.join(','));
+            root.style.setProperty('--scroll-distances', scroll_triggers.distances.join(','));
+          }
+        }
+
+        // Interaction tokens
+        if (effects.interaction_tokens) {
+          const { hover, magnetic, tilt } = effects.interaction_tokens;
+          
+          if (hover) {
+            root.style.setProperty('--hover-lift-distances', hover.lift_distances.join(','));
+            root.style.setProperty('--hover-scale-values', hover.scale_values.join(','));
+            root.style.setProperty('--hover-transition-curves', hover.transition_curves.join(','));
+            root.style.setProperty('--hover-shadow-levels', hover.shadow_levels.join(','));
+          }
+
+          if (magnetic) {
+            root.style.setProperty('--magnetic-strength', magnetic.strength_levels.join(','));
+            root.style.setProperty('--magnetic-radius', magnetic.radius_values.join(','));
+            root.style.setProperty('--magnetic-smoothing', magnetic.smoothing_values.join(','));
+          }
+
+          if (tilt) {
+            root.style.setProperty('--tilt-max', tilt.max_tilt_values.join(','));
+            root.style.setProperty('--tilt-perspective', tilt.perspective_values.join(','));
+            root.style.setProperty('--tilt-scale', tilt.scale_values.join(','));
+          }
         }
       }
 
