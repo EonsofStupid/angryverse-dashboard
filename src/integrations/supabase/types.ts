@@ -1171,7 +1171,7 @@ export type Database = {
     }
     Enums: {
       doc_category: "themes" | "rls" | "authorization"
-      theme_status: "active" | "inactive" | "draft"
+      theme_status: "active" | "archived" | "draft"
       user_role: "user" | "admin"
     }
     CompositeTypes: {
