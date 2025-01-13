@@ -1,4 +1,4 @@
-import type { Theme, ThemeConfiguration } from '@/types/theme';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 
 const baseEffectState = {
   enabled: true,
@@ -41,12 +41,11 @@ export const defaultThemeConfig: ThemeConfiguration = {
       background: 'rgba(0, 0, 0, 0.1)',
       blur: '8px',
       border: '1px solid rgba(255, 255, 255, 0.1)',
-      blur_levels: ['none', 'sm', 'md', 'lg', 'xl'],
-      opacity_levels: [0.1, 0.2, 0.3, 0.4, 0.5],
-      border_styles: {
-        light: '1px solid rgba(255, 255, 255, 0.1)',
-        medium: '2px solid rgba(255, 255, 255, 0.15)',
-        heavy: '3px solid rgba(255, 255, 255, 0.2)'
+      shadow_composition: {
+        offset_y: '4px',
+        blur_radius: '6px',
+        spread_radius: '0px',
+        opacity: 0.1
       }
     }
   }
@@ -58,6 +57,7 @@ export const defaultTheme: Theme = {
   description: 'Default system theme',
   is_default: true,
   status: 'active',
+  created_by: '',
   configuration: defaultThemeConfig,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString()

@@ -1,4 +1,4 @@
-import type { Theme, ThemeConfiguration } from '@/types/theme';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 
 const baseEffectState = {
   enabled: true,
@@ -40,7 +40,13 @@ export const adminThemeConfig: ThemeConfiguration = {
       ...baseEffectState,
       background: 'rgba(0, 0, 0, 0.1)',
       blur: '8px',
-      border: '1px solid rgba(255, 255, 255, 0.1)'
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      shadow_composition: {
+        offset_y: '4px',
+        blur_radius: '6px',
+        spread_radius: '0px',
+        opacity: 0.1
+      }
     }
   }
 };
@@ -51,6 +57,7 @@ export const adminTheme: Theme = {
   description: 'Default admin interface theme',
   is_default: false,
   status: 'active',
+  created_by: '',
   configuration: adminThemeConfig,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString()

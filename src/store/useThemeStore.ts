@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme, ThemeConfiguration } from '@/types/theme';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 
 interface ThemeState {
   currentTheme: Theme | null;
@@ -24,6 +24,7 @@ const defaultTheme: Theme = {
   description: 'Default system theme',
   is_default: true,
   status: 'active',
+  created_by: '',
   configuration: {
     colors: {
       cyber: {
@@ -58,7 +59,13 @@ const defaultTheme: Theme = {
         ...baseEffectState,
         background: 'rgba(0, 0, 0, 0.1)',
         blur: '8px',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        shadow_composition: {
+          offset_y: '4px',
+          blur_radius: '6px',
+          spread_radius: '0px',
+          opacity: 0.1
+        }
       }
     }
   },

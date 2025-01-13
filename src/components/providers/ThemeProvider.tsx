@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRoleCheck } from '@/hooks/useRoleCheck';
 import { isThemeConfiguration } from '@/types/theme/core';
-import type { Theme } from '@/types/theme/core';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
@@ -28,7 +28,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const initializeTheme = useCallback(async () => {
     console.log('Initializing theme...');
     try {
-      // First try to get a page-specific theme
       const { data: pageTheme, error: pageError } = await supabase
         .from('page_themes')
         .select(`
@@ -41,13 +40,31 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       if (pageError) throw pageError;
 
       if (pageTheme?.themes) {
-        console.log('Found page-specific theme:', pageTheme.themes);
-        setCurrentTheme(pageTheme.themes as Theme);
+        const themeData = pageTheme.themes as any;
+        const configuration = themeData.configuration as ThemeConfiguration;
+        
+        if (!isThemeConfiguration(configuration)) {
+          throw new Error('Invalid theme configuration structure');
+        }
+
+        const theme: Theme = {
+          id: themeData.id,
+          name: themeData.name,
+          description: themeData.description || '',
+          is_default: themeData.is_default,
+          status: themeData.status,
+          configuration,
+          created_by: themeData.created_by || '',
+          created_at: themeData.created_at,
+          updated_at: themeData.updated_at
+        };
+
+        console.log('Found page-specific theme:', theme);
+        setCurrentTheme(theme);
         setIsInitialized(true);
         return;
       }
 
-      // If no page theme, get the default theme
       const { data: defaultTheme, error: defaultError } = await supabase
         .from('themes')
         .select('*')
@@ -57,11 +74,25 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       if (defaultError) throw defaultError;
 
       if (defaultTheme) {
-        console.log('Loading default theme:', defaultTheme);
-        if (!isThemeConfiguration(defaultTheme.configuration)) {
+        const configuration = defaultTheme.configuration as ThemeConfiguration;
+        if (!isThemeConfiguration(configuration)) {
           throw new Error('Invalid theme configuration structure');
         }
-        setCurrentTheme(defaultTheme as Theme);
+
+        const theme: Theme = {
+          id: defaultTheme.id,
+          name: defaultTheme.name,
+          description: defaultTheme.description || '',
+          is_default: defaultTheme.is_default,
+          status: defaultTheme.status,
+          configuration,
+          created_by: defaultTheme.created_by || '',
+          created_at: defaultTheme.created_at,
+          updated_at: defaultTheme.updated_at
+        };
+
+        console.log('Loading default theme:', theme);
+        setCurrentTheme(theme);
       }
       
       setIsInitialized(true);
