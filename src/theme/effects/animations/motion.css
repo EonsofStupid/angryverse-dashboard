@@ -1,0 +1,104 @@
+/* Motion Path Animations */
+.motion-path {
+  animation-timing-function: var(--motion-path-easing);
+  animation-duration: var(--motion-path-duration);
+  animation-delay: var(--motion-path-delay);
+}
+
+.motion-path-linear {
+  offset-path: path('M0 0 L100 0');
+  offset-distance: 0%;
+  animation: move-along-path var(--motion-path-duration) var(--motion-path-easing) infinite;
+}
+
+.motion-path-curve {
+  offset-path: path('M0 0 C50 0, 50 100, 100 100');
+  offset-distance: 0%;
+  animation: move-along-path var(--motion-path-duration) var(--motion-path-easing) infinite;
+}
+
+/* Scroll-Linked Animations */
+.scroll-linked {
+  transition: transform var(--scroll-duration) var(--scroll-easing);
+  transform-origin: center;
+  will-change: transform;
+}
+
+.scroll-linked-parallax {
+  transform: translateY(calc(var(--scroll-offset) * var(--parallax-depth)));
+}
+
+.scroll-linked-scale {
+  transform: scale(calc(1 + (var(--scroll-offset) * 0.001)));
+}
+
+.scroll-linked-rotate {
+  transform: rotate(calc(var(--scroll-offset) * 0.1deg));
+}
+
+/* Parallax Effects */
+.parallax-container {
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.parallax-deep {
+  --parallax-depth: 0.8;
+}
+
+.parallax-medium {
+  --parallax-depth: 0.5;
+}
+
+.parallax-shallow {
+  --parallax-depth: 0.2;
+}
+
+/* Reveal Animations */
+.reveal-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.reveal-item {
+  animation: reveal var(--reveal-duration) var(--scroll-easing);
+  animation-fill-mode: both;
+  animation-delay: calc(var(--reveal-stagger) * var(--item-index, 0));
+}
+
+/* Float Animation */
+.float {
+  animation: float 6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Keyframe Animations */
+@keyframes move-along-path {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
