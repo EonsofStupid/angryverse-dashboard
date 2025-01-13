@@ -1,5 +1,17 @@
 /* Root Variables */
 :root {
+  /* Theme Colors - Cyber */
+  --theme-colors-cyber-dark: #1a1b26;
+  --theme-colors-cyber-pink: #ff007f;
+  --theme-colors-cyber-pink-hover: #ff1a8c;
+  --theme-colors-cyber-cyan: #00fff5;
+  --theme-colors-cyber-cyan-hover: #1affff;
+  --theme-colors-cyber-purple: #7928ca;
+  --theme-colors-cyber-green: #4ade80;
+  --theme-colors-cyber-green-hover: #22c55e;
+  --theme-colors-cyber-yellow: #fde047;
+  --theme-colors-cyber-yellow-hover: #facc15;
+
   /* Site Variables */
   --primary: var(--theme-colors-cyber-pink);
   --primary-foreground: 220 28% 95%;
@@ -23,6 +35,39 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: var(--theme-colors-cyber-pink);
+
+  /* Effect Variables */
+  --glass-background: rgba(0, 0, 0, 0.1);
+  --glass-blur: 8px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-shadow-y: 4px;
+  --glass-shadow-blur: 6px;
+  --glass-shadow-spread: 0px;
+  --glass-shadow-opacity: 0.1;
+
+  /* Hover Effects */
+  --hover-scale: 1.05;
+  --hover-lift: -4px;
+  --hover-glow-strength: 10px;
+  --hover-transition: 300ms;
+  --hover-glow-color: var(--theme-primary);
+  --hover-glow-opacity: 0.5;
+  --hover-glow-spread: 4px;
+  --hover-glow-blur: 8px;
+  --hover-shadow-normal: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-shadow-hover: 0 8px 12px rgba(0, 0, 0, 0.15);
+
+  /* Animation Timing */
+  --animation-fast: 100ms;
+  --animation-normal: 200ms;
+  --animation-slow: 300ms;
+  --animation-very-slow: 1000ms;
+
+  /* Animation Curves */
+  --ease-linear: linear;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Base Styles */
@@ -36,6 +81,25 @@
   @apply min-h-screen w-full relative;
   background: var(--background);
   color: hsl(var(--foreground));
+}
+
+/* Glass Effect */
+.glass {
+  background: var(--glass-background);
+  backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  box-shadow: 0 var(--glass-shadow-y) var(--glass-shadow-blur) var(--glass-shadow-spread) rgba(0, 0, 0, var(--glass-shadow-opacity));
+}
+
+/* Hover Effects */
+.hover-effect {
+  transition: all var(--hover-transition) var(--ease-out);
+}
+
+.hover-effect:hover {
+  transform: scale(var(--hover-scale)) translateY(var(--hover-lift));
+  box-shadow: var(--hover-shadow-hover);
+  filter: drop-shadow(0 0 var(--hover-glow-strength) var(--hover-glow-color));
 }
 
 /* Theme-specific styles */
