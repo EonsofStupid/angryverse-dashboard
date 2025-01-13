@@ -183,6 +183,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           <span className="text-sm">Loading theme...</span>
         </div>
       )}
+      
+      {error && (
+        <div className="fixed top-4 right-4 bg-destructive/80 text-destructive-foreground p-2 rounded-md">
+          Theme error: {error.message}
+        </div>
+      )}
     </ThemeContext.Provider>
   );
 };
