@@ -11,7 +11,7 @@ export const DataStream = () => {
       <div 
         className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
-          animation: `dataStream ${matrixEffects?.stream_speed || '15s'} linear infinite`,
+          animation: `dataStream ${matrixEffects?.speed_levels?.[1] || 15}s linear infinite`,
           zIndex: 15,
           transform: 'translateZ(0)'
         }}

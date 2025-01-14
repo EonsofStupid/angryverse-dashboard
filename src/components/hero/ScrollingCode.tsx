@@ -11,7 +11,7 @@ export const ScrollingCode = () => {
       <div 
         className="absolute top-0 left-0 w-[30%] h-[200%] font-mono"
         style={{
-          animation: `scrollCode ${matrixEffects?.scroll_speed || '30s'} linear infinite`,
+          animation: `scrollCode ${matrixEffects?.speed_levels?.[0] || 30}s linear infinite`,
           whiteSpace: 'pre-wrap',
           lineHeight: '1.5em',
           fontSize: '0.8em',
