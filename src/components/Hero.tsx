@@ -42,32 +42,32 @@ export const Hero = () => {
       <style>
         {`
           @keyframes moveLeft {
-            from { transform: translateX(100%); }
-            to { transform: translateX(-100%); }
+            from { transform: translateX(100%) translateZ(0); }
+            to { transform: translateX(-100%) translateZ(0); }
           }
           
           @keyframes moveUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(-100%); }
+            from { transform: translateY(100%) translateZ(0); }
+            to { transform: translateY(-100%) translateZ(0); }
           }
           
           @keyframes scrollCode {
-            from { transform: translateY(0); }
-            to { transform: translateY(-50%); }
+            from { transform: translateY(0) translateZ(0); }
+            to { transform: translateY(-50%) translateZ(0); }
           }
 
           @keyframes dataStream {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); }
+            0% { transform: translateY(0) translateZ(0); }
+            100% { transform: translateY(-100%) translateZ(0); }
           }
 
           @keyframes float {
             0%, 100% { 
-              transform: translateY(0) translateX(0) scale(1);
+              transform: translateY(0) translateX(0) scale(1) translateZ(0);
               box-shadow: 0 0 10px var(--theme-colors-cyber-pink);
             }
             50% { 
-              transform: translateY(-4px) translateX(-10px) scale(1.05);
+              transform: translateY(-4px) translateX(-10px) scale(1.05) translateZ(0);
               box-shadow: 0 0 20px var(--theme-colors-cyber-pink),
                          0 0 30px var(--theme-colors-cyber-cyan);
             }

@@ -11,8 +11,9 @@ export const DataStream = () => {
       <div 
         className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
-          animation: `dataStream ${animations?.timing?.very_slow || '30s'} linear infinite`,
-          zIndex: 3
+          animation: `dataStream ${animations?.timing?.very_slow || '15s'} linear infinite`,
+          zIndex: 15,
+          transform: 'translateZ(0)'
         }}
       >
         {Array.from({ length: 40 }).map((_, i) => (
@@ -20,11 +21,10 @@ export const DataStream = () => {
             key={i} 
             className="my-16 transition-all duration-300"
             style={{
-              opacity: 0.2,
+              opacity: 0.3,
               color: colors?.cyan?.DEFAULT || '#00fff5',
               textShadow: `0 0 15px ${colors?.cyan?.DEFAULT || '#00fff5'}`,
-              position: 'relative',
-              zIndex: 4
+              transform: 'translateZ(0)'
             }}
           >
             {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][

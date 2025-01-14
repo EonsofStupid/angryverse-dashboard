@@ -9,13 +9,15 @@ export const ScrollingCode = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
-        className="absolute top-0 left-0 w-[30%] h-full opacity-10 font-mono"
+        className="absolute top-0 left-0 w-[30%] h-[200%] font-mono"
         style={{
           animation: `scrollCode ${animations?.timing?.very_slow || '30s'} linear infinite`,
           whiteSpace: 'pre-wrap',
           lineHeight: '1.5em',
           fontSize: '0.8em',
-          zIndex: 5
+          opacity: 0.3,
+          zIndex: 15,
+          transform: 'translateZ(0)'
         }}
       >
         {Array.from({ length: 50 }).map((_, i) => (
@@ -24,6 +26,7 @@ export const ScrollingCode = () => {
             className="my-2"
             style={{
               color: colors?.pink?.DEFAULT || '#ff007f',
+              textShadow: `0 0 5px ${colors?.pink?.DEFAULT || '#ff007f'}`,
               transition: 'color 0.5s ease'
             }}
           >
