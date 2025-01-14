@@ -23,37 +23,17 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Get theme values
-  const glassEffect = currentTheme?.configuration?.effects?.glass;
-  const hoverEffect = currentTheme?.configuration?.effects?.hover;
-  const animations = currentTheme?.configuration?.effects?.animations;
-
-  const glassStyle = {
-    background: glassEffect?.background || 'rgba(0, 0, 0, 0.1)',
-    backdropFilter: `blur(${glassEffect?.blur || '8px'})`,
-    borderBottom: glassEffect?.border || '1px solid rgba(255, 255, 255, 0.1)'
-  };
-
-  const linkHoverStyle = {
-    transition: `all ${hoverEffect?.transition_duration || '300ms'} ${animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
-    transform: `scale(${hoverEffect?.scale || 1.05})`,
-    filter: `drop-shadow(0 0 ${hoverEffect?.glow_strength || '10px'} var(--theme-primary))`
-  };
-
   return (
     <>
-      <nav className="fixed top-0 w-full z-50" style={glassStyle}>
+      <nav className="fixed top-0 w-full z-50 glass animate-fade-in">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Link 
                 to="/" 
-                className="relative font-semibold text-foreground hover:text-primary transition-all duration-300 
-                          hover:scale-105 group cursor-pointer"
-                style={{
-                  transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-                }}
+                className="relative font-semibold text-foreground hover-lift hover-glow
+                          group cursor-pointer"
               >
                 Home
                 <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
@@ -63,11 +43,8 @@ export const Navbar = () => {
                 <>
                   <Link 
                     to="/admin" 
-                    className="relative text-muted-foreground hover:text-foreground transition-all duration-300 
-                              hover:scale-105 group cursor-pointer"
-                    style={{
-                      transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-                    }}
+                    className="relative text-muted-foreground hover:text-foreground hover-lift hover-glow
+                              group cursor-pointer"
                   >
                     Admin
                     <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
@@ -76,11 +53,8 @@ export const Navbar = () => {
                   <Link 
                     to="/admin/portal" 
                     onClick={handlePortalClick}
-                    className="relative text-muted-foreground hover:text-foreground transition-all duration-300 
-                              hover:scale-105 group cursor-pointer"
-                    style={{
-                      transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-                    }}
+                    className="relative text-muted-foreground hover:text-foreground hover-lift hover-glow
+                              group cursor-pointer"
                   >
                     Portal
                     <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 transition-opacity 
@@ -93,11 +67,7 @@ export const Navbar = () => {
             {/* Mobile Menu Button */}
             <button 
               onClick={toggleMenu}
-              className="md:hidden relative text-foreground hover:text-primary transition-all duration-300 
-                        hover:scale-105 group"
-              style={{
-                transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-              }}
+              className="md:hidden relative text-foreground hover-lift hover-glow group"
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6 transform transition-transform duration-300 rotate-0 hover:rotate-90" />
@@ -115,13 +85,12 @@ export const Navbar = () => {
         {/* Mobile Navigation */}
         <div
           className={cn(
-            "md:hidden absolute w-full backdrop-blur-md border-b border-white/10",
+            "md:hidden absolute w-full glass",
             "transition-all duration-500 ease-in-out transform",
             isMenuOpen 
               ? "opacity-100 translate-y-0" 
               : "opacity-0 -translate-y-2 pointer-events-none"
           )}
-          style={glassStyle}
         >
           <div className={cn(
             "container mx-auto px-4 py-4 space-y-4 transition-all duration-500",
@@ -129,12 +98,9 @@ export const Navbar = () => {
           )}>
             <Link 
               to="/" 
-              className="block relative font-semibold text-foreground hover:text-primary 
-                        transition-all duration-300 hover:translate-x-2 group"
+              className="block relative font-semibold text-foreground hover-lift hover-glow
+                        group"
               onClick={() => setIsMenuOpen(false)}
-              style={{
-                transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-              }}
             >
               Home
               <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
@@ -144,12 +110,9 @@ export const Navbar = () => {
               <>
                 <Link 
                   to="/admin" 
-                  className="block relative text-muted-foreground hover:text-foreground 
-                            transition-all duration-300 hover:translate-x-2 group"
+                  className="block relative text-muted-foreground hover:text-foreground hover-lift hover-glow
+                            group"
                   onClick={() => setIsMenuOpen(false)}
-                  style={{
-                    transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-                  }}
                 >
                   Admin
                   <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
@@ -161,11 +124,8 @@ export const Navbar = () => {
                     handlePortalClick(e);
                     setIsMenuOpen(false);
                   }}
-                  className="block relative text-muted-foreground hover:text-foreground 
-                            transition-all duration-300 hover:translate-x-2 group"
-                  style={{
-                    transition: `all ${animations?.timing?.normal || '200ms'} ${animations?.curves?.ease_out}`
-                  }}
+                  className="block relative text-muted-foreground hover:text-foreground hover-lift hover-glow
+                            group"
                 >
                   Portal
                   <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
