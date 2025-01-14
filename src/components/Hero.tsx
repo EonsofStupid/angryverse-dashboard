@@ -3,6 +3,7 @@ import { DataStream } from "./hero/DataStream";
 import { GlowingLines } from "./hero/GlowingLines";
 import { HeroContent } from "./hero/HeroContent";
 import { useTheme } from "@/hooks/useTheme";
+import { cn } from "@/lib/utils";
 
 export const Hero = () => {
   const { currentTheme } = useTheme();
@@ -24,7 +25,12 @@ export const Hero = () => {
 
   return (
     <section 
-      className="min-h-screen pt-16 flex items-center relative overflow-hidden"
+      className={cn(
+        "min-h-screen pt-16 flex items-center relative overflow-hidden",
+        "before:absolute before:inset-0 before:bg-gradient-to-b",
+        "before:from-background/10 before:to-background/5",
+        "after:absolute after:inset-0 after:bg-grid-pattern"
+      )}
       style={{
         perspective: '1000px'
       }}
@@ -93,6 +99,13 @@ export const Hero = () => {
           @keyframes neon-flicker {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.8; }
+          }
+
+          .bg-grid-pattern {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, transparent, black, transparent);
           }
         `}
       </style>

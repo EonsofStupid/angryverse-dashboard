@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "../ui/button";
 import { useTheme } from "@/hooks/useTheme";
+import { cn } from "@/lib/utils";
 
 export const HeroContent = () => {
   const { currentTheme } = useTheme();
@@ -22,7 +23,10 @@ export const HeroContent = () => {
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center space-y-8">
         <h1 
-          className="text-4xl md:text-6xl font-cyber font-bold leading-tight animate-float neon-text"
+          className={cn(
+            "text-4xl md:text-6xl font-bold leading-tight",
+            "animate-float neon-text bg-clip-text"
+          )}
           style={{
             textShadow: `0 0 ${specialEffects?.neon?.glow_sizes?.[1] || '4px'} var(--theme-colors-cyber-pink)`
           }}
@@ -45,9 +49,11 @@ export const HeroContent = () => {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button
             size="lg"
-            className="glass hover:scale-105 transition-all duration-500"
+            className={cn(
+              "glass hover:scale-105 transition-all duration-500",
+              "bg-gradient-to-r from-cyber-pink to-cyber-cyan"
+            )}
             style={{
-              background: 'linear-gradient(to right, var(--theme-colors-cyber-pink), var(--theme-colors-cyber-cyan))',
               boxShadow: `0 0 ${hoverEffect?.glow_strength || '10px'} var(--theme-colors-cyber-pink)`,
               ...buttonHoverStyle
             }}
@@ -57,12 +63,11 @@ export const HeroContent = () => {
           <Button
             variant="outline"
             size="lg"
-            className="glass hover:scale-105 transition-all duration-500"
-            style={{
-              borderColor: 'var(--theme-colors-cyber-cyan)',
-              color: 'var(--theme-colors-cyber-cyan)',
-              ...buttonHoverStyle
-            }}
+            className={cn(
+              "glass hover:scale-105 transition-all duration-500",
+              "border-cyber-cyan text-cyber-cyan"
+            )}
+            style={buttonHoverStyle}
           >
             Learn More
           </Button>

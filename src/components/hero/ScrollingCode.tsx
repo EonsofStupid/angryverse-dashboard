@@ -1,22 +1,30 @@
 import React from 'react';
+import { useTheme } from "@/hooks/useTheme";
+import { cn } from "@/lib/utils";
 
 export const ScrollingCode = () => {
+  const { currentTheme } = useTheme();
+  const animations = currentTheme?.configuration?.effects?.animations;
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
-        className="absolute top-0 left-0 w-[30%] h-full opacity-10 font-mono"
+        className={cn(
+          "absolute top-0 left-0 w-[30%] h-full opacity-10 font-mono",
+          "animate-[scrollCode_20s_linear_infinite]"
+        )}
         style={{
-          animation: 'scrollCode 20s linear infinite',
           content: "'<div>...</div><span>...</span><code>...</code>'",
           whiteSpace: 'pre-wrap',
           lineHeight: '1.5em',
           fontSize: '0.8em',
-          zIndex: 1
+          zIndex: 1,
+          animationDuration: animations?.timing?.very_slow || '20s'
         }}
       >
         {Array.from({ length: 50 }).map((_, i) => {
-          const progress = i / 50; // Calculate progress (0 to 1)
-          const hue = 340 - (progress * 160); // Transition from pink (340) to cyan (180)
+          const progress = i / 50;
+          const hue = 340 - (progress * 160);
           
           return (
             <div 
@@ -24,7 +32,7 @@ export const ScrollingCode = () => {
               className="my-2"
               style={{
                 color: `hsl(${hue}, 100%, 80%)`,
-                transition: 'color 0.5s ease'
+                transition: `color ${animations?.timing?.normal || '300ms'} ${animations?.curves?.ease_out || 'ease'}`
               }}
             >
               {`const Component${i} = () => {
