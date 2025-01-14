@@ -21,10 +21,11 @@ export const HeroContent = () => {
         >
           Why Be The Best If{" "}
           <span 
-            className="bg-clip-text text-transparent"
+            className="bg-clip-text text-transparent relative"
             style={{
               backgroundImage: `linear-gradient(to right, ${colors?.pink?.DEFAULT || '#ff007f'}, ${colors?.cyan?.DEFAULT || '#00fff5'})`,
-              filter: `drop-shadow(0 0 ${hover?.glow_strength || '10px'} ${colors?.pink?.DEFAULT || '#ff007f'})`
+              filter: `drop-shadow(0 0 ${hover?.glow_strength || '10px'} ${colors?.pink?.DEFAULT || '#ff007f'})`,
+              textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'
             }}
           >
             No One Knows It?
