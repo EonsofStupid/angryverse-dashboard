@@ -5,18 +5,28 @@ import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 export const HeroContent = () => {
   const { effects } = useThemeEffects();
   
+  const hoverTokens = effects?.interaction_tokens?.hover;
+  const specialEffects = effects?.special_effect_tokens;
+
   const glowStyle = {
-    filter: `drop-shadow(0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-colors-cyber-pink))`,
+    filter: `drop-shadow(0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-primary))`,
     transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`,
+  };
+
+  const buttonHoverStyle = {
+    transform: `scale(${hoverTokens?.scale_values?.[1] || 1.05})`,
+    transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${hoverTokens?.transition_curves?.[0] || 'ease-out'}`,
   };
 
   return (
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center space-y-8">
         <h1 
-          className="text-4xl md:text-6xl font-bold leading-tight animate-float"
+          className="text-4xl md:text-6xl font-cyber font-bold leading-tight animate-float"
           style={{
-            textShadow: `0 0 ${effects?.special_effect_tokens?.neon?.glow_sizes?.[1] || '4px'} var(--theme-colors-cyber-pink)`
+            textShadow: specialEffects?.neon?.glow_sizes?.[1] 
+              ? `0 0 ${specialEffects.neon.glow_sizes[1]} var(--theme-primary)`
+              : 'none'
           }}
         >
           Why Be The Best If{" "}
@@ -24,8 +34,8 @@ export const HeroContent = () => {
             className="bg-clip-text text-transparent"
             style={{
               backgroundImage: `linear-gradient(to right, 
-                var(--theme-colors-cyber-pink), 
-                var(--theme-colors-cyber-cyan)
+                var(--theme-primary), 
+                var(--theme-secondary)
               )`,
               ...glowStyle
             }}
@@ -43,12 +53,11 @@ export const HeroContent = () => {
             className="glass hover:scale-105 transition-all duration-500"
             style={{
               background: `linear-gradient(to right, 
-                var(--theme-colors-cyber-pink), 
-                var(--theme-colors-cyber-cyan)
+                var(--theme-primary), 
+                var(--theme-secondary)
               )`,
-              boxShadow: `0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-colors-cyber-pink)`,
-              transform: `scale(${effects?.interaction_tokens?.hover?.scale_values?.[1] || 1.05})`,
-              transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`
+              boxShadow: `0 0 ${effects?.hover?.glow_strength || '10px'} var(--theme-primary)`,
+              ...buttonHoverStyle
             }}
           >
             Get Started
@@ -58,10 +67,9 @@ export const HeroContent = () => {
             size="lg"
             className="glass hover:scale-105 transition-all duration-500"
             style={{
-              borderColor: 'var(--theme-colors-cyber-cyan)',
-              color: 'var(--theme-colors-cyber-cyan)',
-              transform: `scale(${effects?.interaction_tokens?.hover?.scale_values?.[1] || 1.05})`,
-              transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'}`
+              borderColor: 'var(--theme-secondary)',
+              color: 'var(--theme-secondary)',
+              ...buttonHoverStyle
             }}
           >
             Learn More
