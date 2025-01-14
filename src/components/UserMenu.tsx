@@ -106,7 +106,7 @@ export const UserMenu = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="relative hover:bg-accent/50 transition-colors"
+          className="relative hover:bg-accent/50 transition-colors z-[999]"
           onClick={() => handleOpenChange(true)}
         >
           <Avatar>
@@ -119,7 +119,7 @@ export const UserMenu = () => {
       <SheetContent 
         className={cn(
           "w-[300px] sm:w-[400px] transition-all duration-300",
-          "fixed inset-y-0 right-0 z-50 flex flex-col",
+          "fixed inset-y-0 right-0 z-[999] flex flex-col",
           isAnimating ? "transform translate-x-0" : "",
           !isAnimating && "glass"
         )}
