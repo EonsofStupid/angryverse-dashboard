@@ -13,7 +13,7 @@ export const HeroContent = () => {
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center space-y-8">
         <h1 
-          className="text-4xl md:text-6xl font-bold leading-tight animate-float neon-text"
+          className="text-4xl md:text-6xl font-bold leading-tight neon-text"
           style={{
             textShadow: `0 0 10px ${colors?.pink?.DEFAULT || '#ff007f'}`,
             animation: `float ${animations?.timing?.very_slow || '3s'} ease-in-out infinite`
