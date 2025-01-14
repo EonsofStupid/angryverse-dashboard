@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthForm } from "./auth/AuthForm";
 import { UserProfile } from "./auth/UserProfile";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
+import { cn } from "@/lib/utils";
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
@@ -21,6 +22,7 @@ export const UserMenu = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -89,14 +91,23 @@ export const UserMenu = () => {
     };
   }, [navigate, toast, setUser]);
 
+  const handleOpenChange = (isOpen: boolean) => {
+    setIsAnimating(true);
+    setOpen(isOpen);
+    // Reset animating state after animation completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 300); // Match this with your animation duration
+  };
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button 
           variant="ghost" 
           size="icon" 
           className="relative hover:bg-accent/50 transition-colors"
-          onClick={() => setOpen(true)}
+          onClick={() => handleOpenChange(true)}
         >
           <Avatar>
             <AvatarFallback>
@@ -105,7 +116,15 @@ export const UserMenu = () => {
           </Avatar>
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-[300px] sm:w-[400px] glass">
+      <SheetContent 
+        className={cn(
+          "w-[300px] sm:w-[400px] transition-all duration-300",
+          "fixed inset-y-0 right-0 z-50 flex flex-col",
+          isAnimating ? "transform translate-x-0" : "",
+          !isAnimating && "glass"
+        )}
+        side="right"
+      >
         <VisuallyHidden>
           <DialogTitle>User Menu</DialogTitle>
           <DialogDescription>
@@ -117,7 +136,7 @@ export const UserMenu = () => {
             <AuthForm theme={theme} />
           ) : (
             <UserProfile 
-              onClose={() => setOpen(false)} 
+              onClose={() => handleOpenChange(false)} 
               isAdmin={isAdmin} 
               isCheckingRole={false}
             />
