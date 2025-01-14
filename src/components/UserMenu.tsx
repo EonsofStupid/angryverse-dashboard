@@ -94,6 +94,10 @@ export const UserMenu = () => {
   const handleOpenChange = (isOpen: boolean) => {
     setIsAnimating(true);
     setOpen(isOpen);
+    // Reset animating state after animation completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 300); // Match this with your animation duration
   };
 
   return (
@@ -103,6 +107,7 @@ export const UserMenu = () => {
           variant="ghost" 
           size="icon" 
           className="relative hover:bg-accent/50 transition-colors"
+          onClick={() => handleOpenChange(true)}
         >
           <Avatar>
             <AvatarFallback>
@@ -113,13 +118,10 @@ export const UserMenu = () => {
       </SheetTrigger>
       <SheetContent 
         className={cn(
-          "w-[300px] sm:w-[400px]",
-          "fixed inset-y-0 right-0 z-[100]",
-          "flex h-full flex-col",
-          "transition-all duration-300",
-          !open && "translate-x-full",
-          open && "translate-x-0",
-          "glass"
+          "w-[300px] sm:w-[400px] transition-all duration-300",
+          "fixed inset-y-0 right-0 z-50 flex flex-col",
+          isAnimating ? "transform translate-x-0" : "",
+          !isAnimating && "glass"
         )}
         side="right"
       >
