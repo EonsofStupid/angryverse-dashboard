@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Link, useNavigate } from "react-router-dom";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { useTheme } from "@/hooks/useTheme";
+import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
