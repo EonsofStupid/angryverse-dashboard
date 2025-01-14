@@ -1,6 +1,9 @@
 import React from 'react';
+import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 
 export const ScrollingCode = () => {
+  const { effects } = useThemeEffects();
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
@@ -15,7 +18,7 @@ export const ScrollingCode = () => {
         }}
       >
         {Array.from({ length: 50 }).map((_, i) => {
-          const progress = i / 50; // Calculate progress (0 to 1)
+          const progress = i / 50;
           const hue = 340 - (progress * 160); // Transition from pink (340) to cyan (180)
           
           return (
@@ -24,7 +27,7 @@ export const ScrollingCode = () => {
               className="my-2"
               style={{
                 color: `hsl(${hue}, 100%, 80%)`,
-                transition: 'color 0.5s ease'
+                transition: `color ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'ease-out'}`
               }}
             >
               {`const Component${i} = () => {

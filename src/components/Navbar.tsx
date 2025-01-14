@@ -13,6 +13,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { currentTheme } = useTheme();
+  const { effects } = useThemeEffects();
 
   const handlePortalClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -23,9 +24,15 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const navStyle = {
+    background: `rgba(26, 27, 38, ${effects?.glass?.background_opacity || 0.1})`,
+    backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
+    borderBottom: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)'
+  };
+
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 glass border-b border-white/10">
+      <nav className="fixed top-0 w-full z-50" style={navStyle}>
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Desktop Navigation */}
