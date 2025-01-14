@@ -4,14 +4,14 @@ import { useTheme } from "@/hooks/useTheme";
 export const DataStream = () => {
   const { currentTheme } = useTheme();
   const colors = currentTheme?.configuration?.colors?.cyber;
-  const animations = currentTheme?.configuration?.effects?.animations;
+  const matrixEffects = currentTheme?.configuration?.effects?.special_effect_tokens?.matrix;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div 
         className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
-          animation: `dataStream ${animations?.timing?.very_slow || '15s'} linear infinite`,
+          animation: `dataStream ${matrixEffects?.stream_speed || '15s'} linear infinite`,
           zIndex: 15,
           transform: 'translateZ(0)'
         }}

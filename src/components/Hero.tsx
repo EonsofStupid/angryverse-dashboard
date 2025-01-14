@@ -10,6 +10,7 @@ export const Hero = () => {
   const glassEffect = currentTheme?.configuration?.effects?.glass;
   const animations = currentTheme?.configuration?.effects?.animations;
   const specialEffects = currentTheme?.configuration?.effects?.special_effect_tokens;
+  const matrixEffects = specialEffects?.matrix;
 
   const gradientStyle = {
     background: `linear-gradient(to bottom right, 
