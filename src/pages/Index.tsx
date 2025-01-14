@@ -5,7 +5,6 @@ import { VisualDatabase } from "@/components/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
-import { CursorEffects } from "@/components/effects/CursorEffects";
 import { MotionEffects } from "@/components/effects/MotionEffects";
 
 const Index = () => {
@@ -13,7 +12,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-transparent text-white">
-      <CursorEffects />
       <MotionEffects />
       
       <div className="relative z-10">

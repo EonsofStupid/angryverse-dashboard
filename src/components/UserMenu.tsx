@@ -92,7 +92,12 @@ export const UserMenu = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover-glow">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="relative hover:bg-accent/50 transition-colors"
+          onClick={() => setOpen(true)}
+        >
           <Avatar>
             <AvatarFallback>
               <User className="h-5 w-5" />
