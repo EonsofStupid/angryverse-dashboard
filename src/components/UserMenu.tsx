@@ -102,9 +102,20 @@ export const UserMenu = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="relative hover:bg-accent/50 transition-colors"
+          className={cn(
+            "relative transition-all duration-300",
+            "hover:bg-transparent group",
+            "focus-visible:ring-1 focus-visible:ring-primary/50",
+            "after:absolute after:inset-0 after:rounded-full",
+            "after:transition-all after:duration-300",
+            "hover:after:bg-[rgba(155,135,245,0.1)]",
+            "hover:after:backdrop-blur-md",
+            "hover:after:border hover:after:border-white/10",
+            "hover:after:shadow-[inset_0_0.5px_0.5px_0_rgba(255,255,255,0.3),0_4px_12px_rgba(155,135,245,0.2)]",
+            "hover:after:scale-110"
+          )}
         >
-          <Avatar>
+          <Avatar className="relative z-10">
             <AvatarFallback>
               <User className="h-5 w-5" />
             </AvatarFallback>
