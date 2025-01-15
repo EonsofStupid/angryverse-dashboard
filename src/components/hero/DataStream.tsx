@@ -16,7 +16,7 @@ export const DataStream = () => {
           transform: 'translateZ(0)'
         }}
       >
-        {Array.from({ length: 80 }).map((_, i) => (
+        {Array.from({ length: 120 }).map((_, i) => (
           <div 
             key={i} 
             className="my-16 transition-all duration-300"
