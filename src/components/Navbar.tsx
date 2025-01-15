@@ -6,6 +6,7 @@ import { useNavAnimation } from "./navigation/hooks/useNavAnimation";
 import { useNavTheme } from "./navigation/hooks/useNavTheme";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export const Navbar = () => {
   const { isMenuOpen, toggleMenu, setIsMenuOpen } = useNavAnimation();
