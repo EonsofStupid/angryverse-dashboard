@@ -16,13 +16,13 @@ import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
 
 const THEME_COLORS = [
-  'rgba(139, 92, 246, 0.5)', // Vivid Purple
-  'rgba(217, 70, 239, 0.5)', // Magenta Pink
-  'rgba(249, 115, 22, 0.5)', // Bright Orange
-  'rgba(14, 165, 233, 0.5)', // Ocean Blue
-  'rgba(255, 0, 127, 0.5)',  // Cyber Pink
-  'rgba(0, 255, 245, 0.5)',  // Cyber Cyan
-  'rgba(121, 40, 202, 0.5)'  // Cyber Purple
+  'rgba(139, 92, 246, 0.5)',  // Vivid Purple
+  'rgba(217, 70, 239, 0.5)',  // Magenta Pink
+  'rgba(249, 115, 22, 0.5)',  // Bright Orange
+  'rgba(14, 165, 233, 0.5)',  // Ocean Blue
+  'rgba(255, 0, 127, 0.5)',   // Cyber Pink
+  'rgba(0, 255, 245, 0.5)',   // Cyber Cyan
+  'rgba(121, 40, 202, 0.5)'   // Cyber Purple
 ];
 
 const getRandomColors = () => {
@@ -132,7 +132,7 @@ export const UserMenu = () => {
             "hover:after:scale-110",
             "before:absolute before:inset-0 before:rounded-full",
             "before:transition-all before:duration-300",
-            "before:opacity-0 hover:before:opacity-100",
+            "before:opacity-50 hover:before:opacity-100",
             "overflow-hidden",
             "z-50"
           )}
@@ -147,7 +147,7 @@ export const UserMenu = () => {
             "before:rounded-full before:p-[2px]",
             "before:bg-[var(--avatar-gradient)]",
             "before:content-['']",
-            "before:opacity-50 hover:before:opacity-100",
+            "before:opacity-100",
             "after:absolute after:inset-[2px]",
             "after:rounded-full after:bg-background",
             "after:content-['']",
