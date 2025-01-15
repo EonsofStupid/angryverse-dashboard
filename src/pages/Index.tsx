@@ -5,12 +5,15 @@ import { VisualDatabase } from "@/components/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
+import { MotionEffects } from "@/components/effects/MotionEffects";
 
 const Index = () => {
   const { currentTheme, isLoading, error } = useTheme();
 
   return (
     <div className="min-h-screen bg-transparent text-white">
+      <MotionEffects />
+      
       <div className="relative z-10">
         <Navbar />
         <Hero />

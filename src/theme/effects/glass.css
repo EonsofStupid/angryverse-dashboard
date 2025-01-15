@@ -1,23 +1,28 @@
 .glass {
+  @apply bg-opacity-10 backdrop-blur-md border border-white/10;
   background: var(--glass-background);
   backdrop-filter: blur(var(--glass-blur));
   border: var(--glass-border);
+  box-shadow: var(--shadow-1);
   transition: all var(--animation-normal) var(--ease-in-out);
 }
 
 .glass-frost {
-  --glass-background: rgba(255, 255, 255, 0.15);
+  --glass-background: rgba(255, 255, 255, var(--glass-opacity-light));
   --glass-blur: var(--glass-blur-xl);
+  --glass-border: var(--glass-border-light);
 }
 
 .glass-tint {
-  --glass-background: rgba(var(--theme-primary), 0.2);
+  --glass-background: rgba(var(--theme-primary), var(--glass-opacity-medium));
   --glass-blur: var(--glass-blur-lg);
+  --glass-border: var(--glass-border-medium);
 }
 
 .glass-reflect {
-  --glass-background: rgba(255, 255, 255, 0.2);
+  --glass-background: rgba(255, 255, 255, var(--glass-opacity-medium));
   --glass-blur: var(--glass-blur-md);
+  --glass-border: var(--glass-border-medium);
   position: relative;
   overflow: hidden;
 }
@@ -39,9 +44,32 @@
 }
 
 .glass-pattern {
-  --glass-background: rgba(255, 255, 255, 0.1);
+  --glass-background: rgba(255, 255, 255, var(--glass-opacity-light));
   --glass-blur: var(--glass-blur-md);
+  --glass-border: var(--glass-border-light);
   background-size: 20px 20px;
+}
+
+/* Glow variations */
+.glass-glow {
+  box-shadow: var(--glow-multi-primary);
+}
+
+.glass-glow-accent {
+  box-shadow: var(--glow-multi-accent);
+}
+
+/* Shadow variations */
+.glass-shadow-sm {
+  box-shadow: var(--shadow-1);
+}
+
+.glass-shadow-md {
+  box-shadow: var(--shadow-2);
+}
+
+.glass-shadow-lg {
+  box-shadow: var(--shadow-3);
 }
 
 @keyframes shine {

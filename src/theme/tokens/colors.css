@@ -1,82 +1,61 @@
-/* Base HSL Color System */
-:root {
-  /* Core Colors - HSL Format */
-  --base-1: 240 20% 99.02%;
-  --base-2: 240 20% 98.04%;
-  --base-3: 240 11.11% 94.71%;
-  --base-4: 240 9.52% 91.76%;
-  --base-5: 230 10.71% 89.02%;
-  --base-6: 240 10.14% 86.47%;
-  --base-7: 233.33 9.89% 82.16%;
-  --base-8: 230.77 10.24% 75.10%;
-  --base-9: 230.77 5.94% 57.06%;
-  --base-10: 226.15 5.39% 52.75%;
-  --base-11: 220 5.88% 40%;
-  --base-12: 210 12.5% 12.55%;
+/* Reset default theme variables with higher specificity */
+:root:not([data-theme]) {
+  /* Theme Colors with !important to override defaults */
+  --theme-colors-cyber-dark: #1a1b26 !important;
+  --theme-colors-cyber-pink: #ff007f !important;
+  --theme-colors-cyber-pink-hover: #ff1a8c !important;
+  --theme-colors-cyber-cyan: #00fff5 !important;
+  --theme-colors-cyber-cyan-hover: #1affff !important;
+  --theme-colors-cyber-purple: #7928ca !important;
+  --theme-colors-cyber-green: #4ade80 !important;
+  --theme-colors-cyber-green-hover: #22c55e !important;
+  --theme-colors-cyber-yellow: #fde047 !important;
+  --theme-colors-cyber-yellow-hover: #facc15 !important;
 
-  /* Accent Colors - HSL Format */
-  --accent-1: 210 100% 99.22%;
-  --accent-2: 207.27 100% 97.84%;
-  --accent-3: 205 92.31% 94.90%;
-  --accent-4: 202.86 100% 91.76%;
-  --accent-5: 205.57 100% 88.04%;
-  --accent-6: 207 93.02% 83.14%;
-  --accent-7: 206.54 85.25% 76.08%;
-  --accent-8: 205.66 81.92% 65.29%;
-  --accent-9: 206.12 100% 50%;
-  --accent-10: 206.55 95.92% 48.04%;
-  --accent-11: 207.98 88.13% 42.94%;
-  --accent-12: 216.14 70.94% 22.94%;
+  /* Override semantic colors */
+  --background: var(--theme-colors-cyber-dark) !important;
+  --foreground: 220 28% 95% !important;
+  --card: var(--theme-colors-cyber-dark) !important;
+  --card-foreground: 220 28% 95% !important;
+  --popover: var(--theme-colors-cyber-dark) !important;
+  --popover-foreground: 220 28% 95% !important;
+  --primary: var(--theme-colors-cyber-pink) !important;
+  --primary-foreground: 220 28% 95% !important;
+  --secondary: var(--theme-colors-cyber-cyan) !important;
+  --secondary-foreground: 220 28% 95% !important;
+  --muted: 217.2 32.6% 17.5% !important;
+  --muted-foreground: 215 20.2% 65.1% !important;
+  --accent: var(--theme-colors-cyber-purple) !important;
+  --accent-foreground: 220 28% 95% !important;
+  --destructive: 0 62.8% 30.6% !important;
+  --destructive-foreground: 210 40% 98% !important;
+  --border: 217.2 32.6% 17.5% !important;
+  --input: 217.2 32.6% 17.5% !important;
+  --ring: var(--theme-colors-cyber-pink) !important;
 
-  /* Theme Semantic Colors */
-  --background: hsl(var(--base-1));
-  --foreground: hsl(var(--base-12));
-  --card: hsl(var(--base-2));
-  --card-foreground: hsl(var(--base-12));
-  --popover: hsl(var(--base-1));
-  --popover-foreground: hsl(var(--base-12));
-  --primary: hsl(0 0% 0%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(var(--base-2));
-  --secondary-foreground: hsl(var(--base-11));
-  --muted: hsl(var(--base-2));
-  --muted-foreground: hsl(var(--base-11));
-  --accent: hsl(var(--accent-10));
-  --accent-foreground: hsl(0 0% 100%);
-  --destructive: hsl(358.48 69.30% 55.29%);
-  --destructive-foreground: hsl(350.65 62.60% 24.12%);
-  --border: hsl(var(--base-6));
-  --input: hsl(var(--base-6));
-  --ring: hsl(var(--base-6));
-  --radius: 0.5rem;
-  --success: hsl(151 55% 45%);
-  --success-foreground: hsl(210 40% 98%);
-}
-
-/* Site Theme Colors */
-.site-theme {
-  --theme-colors-cyber-dark: hsl(var(--base-12));
-  --theme-colors-cyber-pink: hsl(330 100% 50%);
-  --theme-colors-cyber-pink-hover: hsl(330 100% 55%);
-  --theme-colors-cyber-cyan: hsl(180 100% 50%);
-  --theme-colors-cyber-cyan-hover: hsl(180 100% 60%);
-  --theme-colors-cyber-purple: hsl(280 70% 50%);
-  --theme-colors-cyber-green: hsl(145 63% 42%);
-  --theme-colors-cyber-green-hover: hsl(145 63% 47%);
-  --theme-colors-cyber-yellow: hsl(35 90% 58%);
-  --theme-colors-cyber-yellow-hover: hsl(35 90% 63%);
-}
-
-/* Admin Theme Colors */
-.admin-theme {
-  --theme-colors-cyber-dark: hsl(var(--base-12));
-  --theme-colors-cyber-pink: hsl(280 70% 50%);
-  --theme-colors-cyber-pink-hover: hsl(280 70% 55%);
-  --theme-colors-cyber-cyan: hsl(190 80% 48%);
-  --theme-colors-cyber-cyan-hover: hsl(190 80% 53%);
-  --theme-colors-cyber-purple: hsl(260 60% 50%);
-  --theme-colors-cyber-green: hsl(145 63% 42%);
-  --theme-colors-cyber-green-hover: hsl(145 63% 47%);
-  --theme-colors-cyber-yellow: hsl(35 90% 58%);
-  --theme-colors-cyber-yellow-hover: hsl(35 90% 63%);
+  /* Reset all base and accent variables */
+  --base-1: none !important;
+  --base-2: none !important;
+  --base-3: none !important;
+  --base-4: none !important;
+  --base-5: none !important;
+  --base-6: none !important;
+  --base-7: none !important;
+  --base-8: none !important;
+  --base-9: none !important;
+  --base-10: none !important;
+  --base-11: none !important;
+  --base-12: none !important;
+  --accent-1: none !important;
+  --accent-2: none !important;
+  --accent-3: none !important;
+  --accent-4: none !important;
+  --accent-5: none !important;
+  --accent-6: none !important;
+  --accent-7: none !important;
+  --accent-8: none !important;
+  --accent-9: none !important;
+  --accent-10: none !important;
+  --accent-11: none !important;
+  --accent-12: none !important;
 }

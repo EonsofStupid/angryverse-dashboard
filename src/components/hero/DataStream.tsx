@@ -1,76 +1,45 @@
 import React from 'react';
+import { useTheme } from "@/hooks/useTheme";
 
 export const DataStream = () => {
+  const { currentTheme } = useTheme();
+  const colors = currentTheme?.configuration?.colors?.cyber;
+
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-15">
       <div 
-        className="absolute top-0 right-0 w-[15%] h-full"
+        className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
-          background: 'linear-gradient(90deg, transparent, rgba(255, 192, 203, 0.05))',
-          boxShadow: 'inset -20px 0 30px rgba(255, 192, 203, 0.06)',
-          zIndex: 2
+          animation: `dataStream 30s linear infinite`,
+          transform: 'translateZ(0)'
         }}
       >
-        <div 
-          className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
-          style={{
-            animation: 'dataStream 30s linear infinite',
-            zIndex: 3
-          }}
-        >
-          {Array.from({ length: 40 }).map((_, i) => {
-            const progress = i / 40;
-            const hue = 340 - (progress * 160);
-            
-            return (
-              <div 
-                key={i} 
-                className="my-16 transition-all duration-300"
-                style={{
-                  opacity: 0.2,
-                  color: `hsl(${hue}, 100%, 80%)`,
-                  textShadow: '0 0 15px currentColor',
-                  position: 'relative',
-                  zIndex: 4
-                }}
-              >
-                {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][
-                  Math.floor(Math.random() * 20)
-                ]}
-                <div 
-                  className="absolute left-0 w-full h-1"
-                  style={{
-                    background: `linear-gradient(to right, hsla(${hue}, 100%, 80%, 0.1), transparent)`,
-                    transform: 'translateY(-50%)',
-                    animation: 'pulse 2s ease-in-out infinite',
-                    zIndex: -1
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        {Array.from({ length: 5 }).map((_, i) => {
-          const progress = i / 5;
-          const hue = 340 - (progress * 160);
-          
-          return (
-            <div
-              key={`orb-${i}`}
-              className="absolute w-5 h-5 rounded-full"
-              style={{
-                right: `${Math.random() * 60 + 20}%`,
-                top: `${(i * 20)}%`,
-                animation: `float ${5 + i}s ease-in-out infinite`,
-                background: `hsla(${hue}, 100%, 80%, 0.15)`,
-                boxShadow: `0 0 20px hsla(${hue}, 100%, 80%, 0.2)`,
-                zIndex: 5
-              }}
-            />
-          );
-        })}
+        {Array.from({ length: 120 }).map((_, i) => (
+          <div 
+            key={i} 
+            className="my-12 transition-all duration-300"
+            style={{
+              opacity: 0.3,
+              color: colors?.cyan?.DEFAULT || '#00fff5',
+              textShadow: `0 0 15px ${colors?.cyan?.DEFAULT || '#00fff5'}`,
+              transform: 'translateZ(0)'
+            }}
+          >
+            {['⌬', '⎔', '⌘', '⌥', '⎈', '⚡', '☢', '↯', '⚔', '☠', '⚒', '⯐', '⯑', '⯒', '❖', '◈', '▣', '▤', '▥', '▦'][
+              Math.floor(Math.random() * 20)
+            ]}
+          </div>
+        ))}
       </div>
+
+      <style>
+        {`
+          @keyframes dataStream {
+            0% { transform: translateY(0) translateZ(0); }
+            100% { transform: translateY(-50%) translateZ(0); }
+          }
+        `}
+      </style>
     </div>
   );
 };

@@ -1,0 +1,21 @@
+:root {
+  /* Tilt Effect Base */
+  --tilt-perspective: var(--theme-tilt-perspective, 1000px);
+  --tilt-scale: var(--theme-tilt-scale, 1.05);
+  --tilt-amount: var(--theme-tilt-amount, 10deg);
+  --tilt-reset-duration: var(--animation-normal, 300ms);
+  
+  /* Animation */
+  --tilt-duration: var(--animation-normal, 300ms);
+  --tilt-easing: var(--animation-curve-ease-out, cubic-bezier(0.33, 1, 0.68, 1));
+}
+
+.tilt {
+  transform-style: preserve-3d;
+  perspective: var(--tilt-perspective);
+  transition: transform var(--tilt-duration) var(--tilt-easing);
+}
+
+.tilt:hover {
+  transition-duration: var(--tilt-reset-duration);
+}

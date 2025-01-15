@@ -5,7 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useThemeStore } from "@/store/useThemeStore";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
-import type { Theme, ThemeConfiguration } from "@/types/theme";
+import type { Theme, ThemeConfiguration } from "@/types/theme/core";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const isValidThemeConfiguration = (config: unknown): config is ThemeConfiguration => {
   if (typeof config !== 'object' || !config) return false;
@@ -17,12 +18,14 @@ const isValidThemeConfiguration = (config: unknown): config is ThemeConfiguratio
     conf.effects?.glass &&
     typeof conf.effects.glass.background === 'string' &&
     typeof conf.effects.glass.blur === 'string' &&
-    typeof conf.effects.glass.border === 'string'
+    typeof conf.effects.glass.border === 'string' &&
+    conf.effects.glass.shadow_composition
   );
 };
 
 export const ThemeSettings = () => {
   const { theme, setTheme, currentTheme, setCurrentTheme } = useThemeStore();
+  const { user } = useAuthStore();
   const { toast } = useToast();
 
   const restoreDefaultTheme = async () => {
@@ -47,6 +50,7 @@ export const ThemeSettings = () => {
           is_default: true,
           status: 'active',
           configuration: defaultTheme.configuration,
+          created_by: user?.id || '',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
