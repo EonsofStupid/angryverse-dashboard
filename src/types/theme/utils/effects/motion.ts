@@ -1,6 +1,6 @@
-import type { CSSValue } from '@/types/theme/utils/css'
-import type { Duration, TimingFunction } from '@/types/theme/utils/animation'
-import type { EffectState } from '@/types/theme/utils/state'
+import type { CSSValue } from '@/types/theme/utils/css';
+import type { Duration, TimingFunction } from '@/types/theme/utils/css';
+import type { EffectState } from '@/types/theme/utils/state';
 
 export interface MotionTokens extends EffectState {
   paths?: {

@@ -1,6 +1,6 @@
-import type { CSSColor } from '@/types/theme/utils/css'
-import type { Duration } from '@/types/theme/utils/animation'
-import type { EffectState } from '@/types/theme/utils/state'
+import type { CSSColor } from '@/types/theme/utils/css';
+import type { Duration } from '@/types/theme/utils/css';
+import type { EffectState } from '@/types/theme/utils/state';
 
 export interface SpecialEffectTokens extends EffectState {
   glitch?: {

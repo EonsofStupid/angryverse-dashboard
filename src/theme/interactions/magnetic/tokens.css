@@ -1,0 +1,31 @@
+:root {
+  /* Magnetic Effect Base */
+  --magnetic-strength: var(--theme-magnetic-strength, 1);
+  --magnetic-radius: var(--theme-magnetic-radius, 100px);
+  --magnetic-smoothing: var(--theme-magnetic-smoothing, 0.15);
+  
+  /* Animation */
+  --magnetic-duration: var(--animation-normal, 300ms);
+  --magnetic-easing: var(--animation-curve-ease-out, cubic-bezier(0.33, 1, 0.68, 1));
+  --magnetic-reset-duration: var(--animation-fast, 200ms);
+  
+  /* Transform */
+  --magnetic-scale: var(--theme-magnetic-scale, 1.1);
+  --magnetic-rotation: var(--theme-magnetic-rotation, 5deg);
+  --magnetic-perspective: var(--theme-magnetic-perspective, 1000px);
+  
+  /* Boundaries */
+  --magnetic-min-distance: var(--theme-magnetic-min-distance, 10px);
+  --magnetic-max-distance: var(--theme-magnetic-max-distance, 200px);
+  --magnetic-threshold: var(--theme-magnetic-threshold, 0.1);
+}
+
+.magnetic {
+  transform-style: preserve-3d;
+  perspective: var(--magnetic-perspective);
+  transition: transform var(--magnetic-duration) var(--magnetic-easing);
+}
+
+.magnetic:hover {
+  transition-duration: var(--magnetic-reset-duration);
+}

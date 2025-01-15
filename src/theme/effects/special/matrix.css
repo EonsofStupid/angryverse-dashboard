@@ -1,0 +1,25 @@
+.matrix-rain {
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-rain::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 100px);
+  background: linear-gradient(180deg, 
+    transparent 0%,
+    var(--theme-colors-cyber-green) 50%,
+    transparent 100%
+  );
+  animation: matrix-fall calc(var(--matrix-speed, 2) * 1s) linear infinite;
+  opacity: var(--matrix-density, 0.2);
+}
+
+@keyframes matrix-fall {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}

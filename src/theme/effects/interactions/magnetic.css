@@ -1,0 +1,14 @@
+.magnetic {
+  transform-style: preserve-3d;
+  transform: perspective(var(--magnetic-perspective, 1000px));
+  transition: transform var(--magnetic-duration, 300ms) var(--magnetic-easing, cubic-bezier(0.33, 1, 0.68, 1));
+}
+
+.magnetic:hover {
+  --strength: var(--magnetic-strength, 1);
+  --radius: var(--magnetic-radius, 100px);
+  transform: 
+    perspective(var(--magnetic-perspective, 1000px))
+    rotateX(calc(var(--strength) * var(--mouseY) * 1deg))
+    rotateY(calc(var(--strength) * var(--mouseX) * 1deg));
+}
