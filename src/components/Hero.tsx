@@ -8,9 +8,6 @@ export const Hero = () => {
   const { currentTheme } = useTheme();
   
   const glassEffect = currentTheme?.configuration?.effects?.glass;
-  const animations = currentTheme?.configuration?.effects?.animations;
-  const specialEffects = currentTheme?.configuration?.effects?.special_effect_tokens;
-  const matrixEffects = specialEffects?.matrix;
 
   const gradientStyle = {
     background: `linear-gradient(to bottom right, 
@@ -25,7 +22,7 @@ export const Hero = () => {
 
   return (
     <section 
-      className="min-h-screen pt-16 flex items-center relative overflow-hidden"
+      className="min-h-screen pt-16 flex items-center relative overflow-hidden z-1"
       style={{
         perspective: '1000px'
       }}
@@ -59,7 +56,7 @@ export const Hero = () => {
 
           @keyframes dataStream {
             0% { transform: translateY(0) translateZ(0); }
-            100% { transform: translateY(-100%) translateZ(0); }
+            100% { transform: translateY(-50%) translateZ(0); }
           }
 
           @keyframes float {

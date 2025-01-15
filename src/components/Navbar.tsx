@@ -27,8 +27,9 @@ export const Navbar = () => {
   return (
     <>
       <nav className={cn(
-        "fixed top-0 w-full z-50",
+        "fixed top-0 w-full",
         "transition-all duration-300 ease-in-out",
+        "z-50",
         scrolled ? [
           'glass-frost',
           'shadow-lg',

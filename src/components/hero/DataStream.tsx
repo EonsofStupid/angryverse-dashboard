@@ -4,15 +4,13 @@ import { useTheme } from "@/hooks/useTheme";
 export const DataStream = () => {
   const { currentTheme } = useTheme();
   const colors = currentTheme?.configuration?.colors?.cyber;
-  const matrixEffects = currentTheme?.configuration?.effects?.special_effect_tokens?.matrix;
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-15">
       <div 
         className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
           animation: `dataStream 30s linear infinite`,
-          zIndex: 15,
           transform: 'translateZ(0)'
         }}
       >
