@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -14,6 +14,22 @@ import { AuthForm } from "./auth/AuthForm";
 import { UserProfile } from "./auth/UserProfile";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
+
+const THEME_COLORS = [
+  'rgba(139, 92, 246, 0.2)', // Vivid Purple
+  'rgba(217, 70, 239, 0.2)', // Magenta Pink
+  'rgba(249, 115, 22, 0.2)', // Bright Orange
+  'rgba(14, 165, 233, 0.2)', // Ocean Blue
+  'rgba(255, 0, 127, 0.2)',  // Cyber Pink
+  'rgba(0, 255, 245, 0.2)',  // Cyber Cyan
+  'rgba(121, 40, 202, 0.2)'  // Cyber Purple
+];
+
+const getRandomColors = () => {
+  const shuffled = [...THEME_COLORS].sort(() => 0.5 - Math.random());
+  const numColors = Math.floor(Math.random() * 2) + 4; // Random number between 4-5
+  return shuffled.slice(0, numColors);
+};
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
@@ -96,6 +112,9 @@ export const UserMenu = () => {
     setOpen(isOpen);
   };
 
+  const colors = useMemo(() => getRandomColors(), []); // Get random theme colors
+  const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
+
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
@@ -108,14 +127,28 @@ export const UserMenu = () => {
             "focus-visible:ring-1 focus-visible:ring-primary/50",
             "after:absolute after:inset-0 after:rounded-full",
             "after:transition-all after:duration-300",
-            "hover:after:bg-[rgba(155,135,245,0.1)]",
+            "hover:after:bg-[rgba(155,135,245,0.2)]",
             "hover:after:backdrop-blur-md",
-            "hover:after:border hover:after:border-white/10",
-            "hover:after:shadow-[inset_0_0.5px_0.5px_0_rgba(255,255,255,0.3),0_4px_12px_rgba(155,135,245,0.2)]",
-            "hover:after:scale-110"
+            "hover:after:scale-110",
+            "before:absolute before:inset-0 before:rounded-full",
+            "before:transition-all before:duration-300",
+            "before:opacity-0 hover:before:opacity-100",
+            "overflow-hidden"
           )}
+          style={{
+            '--avatar-gradient': gradientBorder
+          } as React.CSSProperties}
         >
-          <Avatar className="relative z-10">
+          <Avatar className={cn(
+            "relative z-10",
+            "before:absolute before:inset-0",
+            "before:rounded-full before:p-[2px]",
+            "before:bg-[var(--avatar-gradient)]",
+            "before:content-['']",
+            "after:absolute after:inset-[2px]",
+            "after:rounded-full after:bg-background",
+            "after:content-['']"
+          )}>
             <AvatarFallback>
               <User className="h-5 w-5" />
             </AvatarFallback>
