@@ -11,7 +11,7 @@ export const DataStream = () => {
       <div 
         className="absolute top-0 right-4 font-mono text-6xl whitespace-nowrap"
         style={{
-          animation: `dataStream ${matrixEffects?.speed_levels?.[1] || 15}s linear infinite`,
+          animation: `dataStream 30s linear infinite`,
           zIndex: 15,
           transform: 'translateZ(0)'
         }}
@@ -19,7 +19,7 @@ export const DataStream = () => {
         {Array.from({ length: 120 }).map((_, i) => (
           <div 
             key={i} 
-            className="my-16 transition-all duration-300"
+            className="my-12 transition-all duration-300"
             style={{
               opacity: 0.3,
               color: colors?.cyan?.DEFAULT || '#00fff5',
