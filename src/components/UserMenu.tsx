@@ -27,11 +27,13 @@ const THEME_COLORS = [
 
 const getRandomColors = () => {
   const shuffled = [...THEME_COLORS].sort(() => 0.5 - Math.random());
-  const numColors = Math.floor(Math.random() * 2) + 4; // Random number between 4-5
+  const numColors = Math.floor(Math.random() * 2) + 4;
   return shuffled.slice(0, numColors);
 };
 
 export const UserMenu = () => {
+  console.log("UserMenu component mounting"); // Debug mount
+
   const [open, setOpen] = useState(false);
   const { user, setUser } = useAuthStore();
   const { theme } = useThemeStore();
@@ -41,8 +43,9 @@ export const UserMenu = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    console.log("UserMenu useEffect running"); // Debug effect
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
+      console.log("Auth state changed:", event, session); // Debug auth state
       
       // Debug RLS access
       const profileTest = await supabase.from('profiles').select('*');
@@ -102,7 +105,7 @@ export const UserMenu = () => {
     });
 
     const checkSession = async () => {
-      console.log("Checking session...");
+      console.log("Checking session..."); // Debug session check
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Session check error:", error);
@@ -117,17 +120,21 @@ export const UserMenu = () => {
     checkSession();
 
     return () => {
+      console.log("UserMenu cleanup running"); // Debug cleanup
       subscription.unsubscribe();
     };
   }, [navigate, toast, setUser]);
 
   const handleOpenChange = (isOpen: boolean) => {
+    console.log("Sheet open state changing to:", isOpen); // Debug sheet state
     setIsAnimating(true);
     setOpen(isOpen);
   };
 
   const colors = useMemo(() => getRandomColors(), []); // Get random theme colors
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
+
+  console.log("UserMenu rendering, open state:", open); // Debug render
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -158,7 +165,7 @@ export const UserMenu = () => {
           }} />
           <Avatar className={cn(
             "relative z-10 transition-all duration-300",
-            "w-9 h-9", // Increased size by ~15%
+            "w-9 h-9",
             "before:absolute before:inset-0",
             "before:rounded-full before:p-[2px]",
             "before:bg-[var(--avatar-gradient)]",
