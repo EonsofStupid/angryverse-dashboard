@@ -125,14 +125,6 @@ export const UserMenu = () => {
             "relative transition-all duration-300",
             "hover:bg-transparent group",
             "focus-visible:ring-1 focus-visible:ring-primary/50",
-            "after:absolute after:inset-0 after:rounded-full",
-            "after:transition-all after:duration-300",
-            "hover:after:bg-[rgba(155,135,245,0.3)]",
-            "hover:after:backdrop-blur-md",
-            "hover:after:scale-125",
-            "before:absolute before:inset-0 before:rounded-full",
-            "before:transition-all before:duration-300",
-            "before:opacity-50 hover:before:opacity-100",
             "overflow-hidden",
             "z-50"
           )}
@@ -140,6 +132,16 @@ export const UserMenu = () => {
             '--avatar-gradient': gradientBorder
           } as React.CSSProperties}
         >
+          <div className={cn(
+            "absolute inset-0 rounded-full",
+            "transition-opacity duration-300",
+            "opacity-0 group-hover:opacity-100"
+          )}
+          style={{
+            background: gradientBorder,
+            filter: "blur(8px)",
+            transform: "scale(1.2)"
+          }} />
           <Avatar className={cn(
             "relative z-10 transition-all duration-300",
             "w-9 h-9", // Increased size by ~15%
