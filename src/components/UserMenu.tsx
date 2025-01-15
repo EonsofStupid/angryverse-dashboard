@@ -44,14 +44,23 @@ export const UserMenu = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
       
+      // Debug RLS access
+      const profileTest = await supabase.from('profiles').select('*');
+      console.log("Profiles access test:", profileTest);
+      
+      const rolesTest = await supabase.from('user_roles').select('*');
+      console.log("Roles access test:", rolesTest);
+      
       switch (event) {
         case 'INITIAL_SESSION':
           if (session?.user) {
+            console.log("Setting initial user:", session.user);
             setUser(session.user);
           }
           break;
         case 'SIGNED_IN':
           if (session) {
+            console.log("User signed in:", session.user);
             setUser(session.user);
             setOpen(false);
             navigate('/');
@@ -62,6 +71,7 @@ export const UserMenu = () => {
           }
           break;
         case 'SIGNED_OUT':
+          console.log("User signed out");
           setUser(null);
           toast({
             title: "Signed out",
@@ -73,6 +83,7 @@ export const UserMenu = () => {
           break;
         case 'USER_UPDATED':
           if (session?.user) {
+            console.log("User updated:", session.user);
             setUser(session.user);
             toast({
               title: "Profile updated",
@@ -81,6 +92,7 @@ export const UserMenu = () => {
           }
           break;
         case 'PASSWORD_RECOVERY':
+          console.log("Password recovery initiated");
           toast({
             title: "Password recovery",
             description: "Check your email for password reset instructions.",
@@ -90,12 +102,14 @@ export const UserMenu = () => {
     });
 
     const checkSession = async () => {
+      console.log("Checking session...");
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Session check error:", error);
         return;
       }
       if (session?.user) {
+        console.log("Found existing session:", session.user);
         setUser(session.user);
       }
     };
