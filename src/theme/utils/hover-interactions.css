@@ -1,0 +1,23 @@
+.hover-lift {
+  transition: transform var(--animation-normal) var(--ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(calc(var(--spacing-1) * -1));
+}
+
+.hover-scale {
+  transition: transform var(--animation-normal) var(--ease-out);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-glow {
+  transition: filter var(--animation-normal) var(--ease-out);
+}
+
+.hover-glow:hover {
+  filter: drop-shadow(0 0 var(--glow-strength-md) var(--glow-color-primary));
+}
