@@ -165,14 +165,12 @@ export const UserMenu = () => {
       <SheetContent 
         className={cn(
           "w-[300px] sm:w-[400px]",
-          "fixed inset-y-0 right-0",
+          "fixed inset-y-0 right-0 z-[100]",
           "flex h-full flex-col",
           "transition-all duration-300",
           !open && "translate-x-full",
           open && "translate-x-0",
-          "glass",
-          // Ensure highest z-index and proper stacking
-          "z-[100]"
+          "glass"
         )}
         side="right"
       >

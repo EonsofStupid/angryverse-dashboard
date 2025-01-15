@@ -8,6 +8,8 @@ export const Hero = () => {
   const { currentTheme } = useTheme();
   
   const glassEffect = currentTheme?.configuration?.effects?.glass;
+  const animations = currentTheme?.configuration?.effects?.animations;
+  const specialEffects = currentTheme?.configuration?.effects?.special_effect_tokens;
 
   const gradientStyle = {
     background: `linear-gradient(to bottom right, 
@@ -22,9 +24,9 @@ export const Hero = () => {
 
   return (
     <section 
-      className="min-h-screen pt-16 flex items-center relative overflow-hidden"
+      className="min-h-screen pt-16 flex items-center relative overflow-hidden z-1"
       style={{
-        isolation: 'isolate' // Create new stacking context without perspective
+        perspective: '1000px'
       }}
     >
       <div 
@@ -32,12 +34,10 @@ export const Hero = () => {
         style={gradientStyle}
       />
       
-      <div className="relative w-full">
-        <ScrollingCode />
-        <DataStream />
-        <GlowingLines />
-        <HeroContent />
-      </div>
+      <ScrollingCode />
+      <DataStream />
+      <GlowingLines />
+      <HeroContent />
 
       <style>
         {`
@@ -63,14 +63,36 @@ export const Hero = () => {
 
           @keyframes float {
             0%, 100% { 
-              transform: translateY(0) translateX(0) scale(1);
+              transform: translateY(0) translateX(0) scale(1) translateZ(0);
               box-shadow: 0 0 10px var(--theme-colors-cyber-pink);
             }
             50% { 
-              transform: translateY(-4px) translateX(-10px) scale(1.05);
+              transform: translateY(-4px) translateX(-10px) scale(1.05) translateZ(0);
               box-shadow: 0 0 20px var(--theme-colors-cyber-pink),
                          0 0 30px var(--theme-colors-cyber-cyan);
             }
+          }
+
+          .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all ${animations?.timing?.normal || '300ms'} 
+                       ${animations?.curves?.ease_out || 'cubic-bezier(0, 0, 0.2, 1)'};
+          }
+
+          .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+          }
+
+          .neon-text {
+            text-shadow: 0 0 ${specialEffects?.neon?.glow_sizes?.[1] || '4px'} var(--theme-colors-cyber-pink);
+            animation: neon-flicker ${specialEffects?.neon?.flicker_speeds?.[1] || '2s'} infinite;
+          }
+
+          @keyframes neon-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
           }
         `}
       </style>
