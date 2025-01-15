@@ -32,8 +32,6 @@ const getRandomColors = () => {
 };
 
 export const UserMenu = () => {
-  console.log("UserMenu component mounting"); // Debug mount
-
   const [open, setOpen] = useState(false);
   const { user, setUser } = useAuthStore();
   const { theme } = useThemeStore();
@@ -43,27 +41,10 @@ export const UserMenu = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    console.log("UserMenu useEffect running"); // Debug effect
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session); // Debug auth state
-      
-      // Debug RLS access
-      const profileTest = await supabase.from('profiles').select('*');
-      console.log("Profiles access test:", profileTest);
-      
-      const rolesTest = await supabase.from('user_roles').select('*');
-      console.log("Roles access test:", rolesTest);
-      
       switch (event) {
-        case 'INITIAL_SESSION':
-          if (session?.user) {
-            console.log("Setting initial user:", session.user);
-            setUser(session.user);
-          }
-          break;
         case 'SIGNED_IN':
           if (session) {
-            console.log("User signed in:", session.user);
             setUser(session.user);
             setOpen(false);
             navigate('/');
@@ -74,45 +55,22 @@ export const UserMenu = () => {
           }
           break;
         case 'SIGNED_OUT':
-          console.log("User signed out");
           setUser(null);
           toast({
             title: "Signed out",
             description: "You have been successfully signed out.",
           });
           break;
-        case 'TOKEN_REFRESHED':
-          console.log("Token refreshed successfully");
-          break;
-        case 'USER_UPDATED':
-          if (session?.user) {
-            console.log("User updated:", session.user);
-            setUser(session.user);
-            toast({
-              title: "Profile updated",
-              description: "Your profile has been successfully updated.",
-            });
-          }
-          break;
-        case 'PASSWORD_RECOVERY':
-          console.log("Password recovery initiated");
-          toast({
-            title: "Password recovery",
-            description: "Check your email for password reset instructions.",
-          });
-          break;
       }
     });
 
     const checkSession = async () => {
-      console.log("Checking session..."); // Debug session check
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
         console.error("Session check error:", error);
         return;
       }
       if (session?.user) {
-        console.log("Found existing session:", session.user);
         setUser(session.user);
       }
     };
@@ -120,63 +78,38 @@ export const UserMenu = () => {
     checkSession();
 
     return () => {
-      console.log("UserMenu cleanup running"); // Debug cleanup
       subscription.unsubscribe();
     };
   }, [navigate, toast, setUser]);
 
   const handleOpenChange = (isOpen: boolean) => {
-    console.log("Sheet open state changing to:", isOpen); // Debug sheet state
     setIsAnimating(true);
     setOpen(isOpen);
   };
 
-  const colors = useMemo(() => getRandomColors(), []); // Get random theme colors
+  const colors = useMemo(() => getRandomColors(), []); 
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
-
-  console.log("UserMenu rendering, open state:", open); // Debug render
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button 
           variant="ghost" 
-          size="icon" 
-          className={cn(
-            "relative transition-all duration-300",
-            "hover:bg-transparent group",
-            "focus-visible:ring-1 focus-visible:ring-primary/50",
-            "overflow-hidden",
-            "z-50"
-          )}
+          size="icon"
+          className="relative transition-all duration-300 hover:bg-transparent group focus-visible:ring-1 focus-visible:ring-primary/50 overflow-hidden z-50"
           style={{
             '--avatar-gradient': gradientBorder
           } as React.CSSProperties}
         >
-          <div className={cn(
-            "absolute inset-0 rounded-full",
-            "transition-opacity duration-300",
-            "opacity-0 group-hover:opacity-100"
-          )}
-          style={{
-            background: gradientBorder,
-            filter: "blur(8px)",
-            transform: "scale(1.2)"
-          }} />
-          <Avatar className={cn(
-            "relative z-10 transition-all duration-300",
-            "w-9 h-9",
-            "before:absolute before:inset-0",
-            "before:rounded-full before:p-[2px]",
-            "before:bg-[var(--avatar-gradient)]",
-            "before:content-['']",
-            "before:opacity-100",
-            "after:absolute after:inset-[2px]",
-            "after:rounded-full after:bg-background",
-            "after:content-['']",
-            "group-hover:scale-110",
-            "group-hover:shadow-[0_0_25px_rgba(155,135,245,0.8)]"
-          )}>
+          <div 
+            className="absolute inset-0 rounded-full transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+            style={{
+              background: gradientBorder,
+              filter: "blur(8px)",
+              transform: "scale(1.2)"
+            }} 
+          />
+          <Avatar className="relative z-10 transition-all duration-300 w-9 h-9 before:absolute before:inset-0 before:rounded-full before:p-[2px] before:bg-[var(--avatar-gradient)] before:content-[''] before:opacity-100 after:absolute after:inset-[2px] after:rounded-full after:bg-background after:content-[''] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(155,135,245,0.8)]">
             <AvatarFallback className="bg-transparent">
               <User className="h-5 w-5 text-foreground/80" />
             </AvatarFallback>
@@ -184,15 +117,7 @@ export const UserMenu = () => {
         </Button>
       </SheetTrigger>
       <SheetContent 
-        className={cn(
-          "w-[300px] sm:w-[400px]",
-          "fixed inset-y-0 right-0 z-[100]",
-          "flex h-full flex-col",
-          "transition-all duration-300",
-          !open && "translate-x-full",
-          open && "translate-x-0",
-          "glass"
-        )}
+        className="w-[300px] sm:w-[400px] fixed inset-y-0 right-0 z-[100] flex h-full flex-col transition-transform duration-300 glass"
         side="right"
       >
         <VisuallyHidden>
