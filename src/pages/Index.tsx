@@ -14,7 +14,8 @@ const Index = () => {
     <div className="min-h-screen bg-transparent text-white">
       <MotionEffects />
       
-      <div className="relative z-10">
+      {/* Remove z-10 from parent div to prevent stacking context issues */}
+      <div className="relative">
         <Navbar />
         <Hero />
         <section className="py-20 px-4">
