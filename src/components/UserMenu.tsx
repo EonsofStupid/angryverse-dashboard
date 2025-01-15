@@ -16,13 +16,13 @@ import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
 
 const THEME_COLORS = [
-  'rgba(139, 92, 246, 0.5)',  // Vivid Purple
-  'rgba(217, 70, 239, 0.5)',  // Magenta Pink
-  'rgba(249, 115, 22, 0.5)',  // Bright Orange
-  'rgba(14, 165, 233, 0.5)',  // Ocean Blue
-  'rgba(255, 0, 127, 0.5)',   // Cyber Pink
-  'rgba(0, 255, 245, 0.5)',   // Cyber Cyan
-  'rgba(121, 40, 202, 0.5)'   // Cyber Purple
+  'rgba(139, 92, 246, 0.8)',  // Vivid Purple
+  'rgba(217, 70, 239, 0.8)',  // Magenta Pink
+  'rgba(249, 115, 22, 0.8)',  // Bright Orange
+  'rgba(14, 165, 233, 0.8)',  // Ocean Blue
+  'rgba(255, 0, 127, 0.8)',   // Cyber Pink
+  'rgba(0, 255, 245, 0.8)',   // Cyber Cyan
+  'rgba(121, 40, 202, 0.8)'   // Cyber Purple
 ];
 
 const getRandomColors = () => {
@@ -127,9 +127,9 @@ export const UserMenu = () => {
             "focus-visible:ring-1 focus-visible:ring-primary/50",
             "after:absolute after:inset-0 after:rounded-full",
             "after:transition-all after:duration-300",
-            "hover:after:bg-[rgba(155,135,245,0.2)]",
+            "hover:after:bg-[rgba(155,135,245,0.3)]",
             "hover:after:backdrop-blur-md",
-            "hover:after:scale-110",
+            "hover:after:scale-125",
             "before:absolute before:inset-0 before:rounded-full",
             "before:transition-all before:duration-300",
             "before:opacity-50 hover:before:opacity-100",
@@ -142,7 +142,7 @@ export const UserMenu = () => {
         >
           <Avatar className={cn(
             "relative z-10 transition-all duration-300",
-            "w-8 h-8",
+            "w-9 h-9", // Increased size by ~15%
             "before:absolute before:inset-0",
             "before:rounded-full before:p-[2px]",
             "before:bg-[var(--avatar-gradient)]",
@@ -152,10 +152,10 @@ export const UserMenu = () => {
             "after:rounded-full after:bg-background",
             "after:content-['']",
             "group-hover:scale-110",
-            "group-hover:shadow-[0_0_15px_rgba(155,135,245,0.5)]"
+            "group-hover:shadow-[0_0_25px_rgba(155,135,245,0.8)]"
           )}>
             <AvatarFallback className="bg-transparent">
-              <User className="h-4 w-4 text-foreground/80" />
+              <User className="h-5 w-5 text-foreground/80" />
             </AvatarFallback>
           </Avatar>
         </Button>
