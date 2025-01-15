@@ -1,4 +1,5 @@
 import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -7,18 +8,21 @@ interface MobileNavProps {
 
 export const MobileNav = ({ isOpen, onToggle }: MobileNavProps) => {
   return (
-    <button 
+    <motion.button 
       onClick={onToggle}
-      className="md:hidden relative text-foreground hover-lift hover-glow group"
+      className="md:hidden relative text-foreground p-2 hover:bg-white/10 rounded-full transition-colors"
+      whileTap={{ scale: 0.95 }}
     >
-      {isOpen ? (
-        <X className="h-6 w-6 transform transition-transform duration-300 rotate-0 hover:rotate-90" />
-      ) : (
-        <Menu className="h-6 w-6 transform transition-transform duration-300 rotate-0 hover:rotate-180" />
-      )}
-      <span className="absolute inset-0 -z-10 opacity-0 group-hover:opacity-100 
-                     transition-opacity duration-300 blur-lg bg-primary/30 
-                     rounded-full scale-150" />
-    </button>
+      <motion.div
+        animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        {isOpen ? (
+          <X className="h-5 w-5" />
+        ) : (
+          <Menu className="h-5 w-5" />
+        )}
+      </motion.div>
+    </motion.button>
   );
 };
