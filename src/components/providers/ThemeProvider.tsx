@@ -3,7 +3,7 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
-import { createContext, useCallback } from "react";
+import { createContext } from "react";
 import type { Theme } from "@/types/theme";
 
 export const ThemeContext = createContext<{
@@ -17,7 +17,15 @@ export const ThemeContext = createContext<{
 } | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const { theme, setTheme, currentTheme, isLoading, error, setCurrentTheme, fetchPageTheme } = useThemeStore();
+  const { 
+    theme, 
+    setTheme, 
+    currentTheme, 
+    isLoading, 
+    error, 
+    setCurrentTheme, 
+    fetchPageTheme 
+  } = useThemeStore();
   const { isAdmin } = useAuthStore();
   const location = useLocation();
 
