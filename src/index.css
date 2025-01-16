@@ -176,4 +176,31 @@
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
   }
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes scan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s linear infinite;
+}
+
+.animate-scan {
+  animation: scan 10s linear infinite;
+}
+
 }
