@@ -2,13 +2,13 @@ import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
 import type { Theme } from '@/types/theme/core';
 import { defaultTheme } from '@/theme/config/defaultTheme';
-import { adminTheme } from '@/theme/config/adminTheme';
-import { convertDatabaseTheme } from '@/types/theme/utils/database';
 
 interface ThemeState {
   currentTheme: Theme | null;
   isLoading: boolean;
   error: Error | null;
+  theme: 'light' | 'dark' | 'system';
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setCurrentTheme: (theme: Theme) => void;
   fetchPageTheme: (path: string) => Promise<void>;
 }
@@ -17,6 +17,9 @@ export const useThemeStore = create<ThemeState>((set) => ({
   currentTheme: null,
   isLoading: false,
   error: null,
+  theme: 'system',
+  
+  setTheme: (theme) => set({ theme }),
   
   setCurrentTheme: (theme) => set({ currentTheme: theme }),
   
@@ -38,9 +41,8 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // If we found a page-specific theme, use it
       if (pageThemeData?.themes) {
-        const convertedTheme = convertDatabaseTheme(pageThemeData.themes);
         set({ 
-          currentTheme: convertedTheme,
+          currentTheme: pageThemeData.themes as Theme,
           isLoading: false 
         });
         return;
@@ -57,7 +59,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // Use the fetched default theme or fall back to hardcoded default
       set({ 
-        currentTheme: defaultThemeData ? convertDatabaseTheme(defaultThemeData) : defaultTheme,
+        currentTheme: defaultThemeData ? (defaultThemeData as Theme) : defaultTheme,
         isLoading: false 
       });
     } catch (error) {
