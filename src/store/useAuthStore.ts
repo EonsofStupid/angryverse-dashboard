@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('Auth state changed:', event, session);
         
         if (session) {
@@ -111,8 +111,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
 
       set({ initialized: true, isLoading: false });
-
-      // We don't return the cleanup function anymore
     } catch (error) {
       console.error('Error initializing auth:', error);
       set({ 
