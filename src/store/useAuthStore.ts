@@ -109,10 +109,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({ initialized: true, isLoading: false });
       
-      // Cleanup subscription on unmount
-      return () => {
+      // Instead of returning the cleanup function, we store it in a variable
+      const cleanup = () => {
         subscription.unsubscribe();
       };
+      
+      // Add event listener for cleanup when window unloads
+      window.addEventListener('unload', cleanup);
       
     } catch (error) {
       console.error('Error initializing auth:', error);

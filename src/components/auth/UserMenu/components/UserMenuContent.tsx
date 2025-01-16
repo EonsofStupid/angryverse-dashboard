@@ -9,10 +9,11 @@ import { cn } from "@/lib/utils";
 
 interface UserMenuContentProps {
   onClose: () => void;
+  isAdmin: boolean;
 }
 
-export const UserMenuContent = ({ onClose }: UserMenuContentProps) => {
-  const { user, signOut, isAdmin } = useAuthStore();
+export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
+  const { user, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isVisible, setIsVisible] = useState(false);
