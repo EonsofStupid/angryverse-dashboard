@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User, Session, AuthError, AuthApiError } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthState {
@@ -7,15 +7,13 @@ interface AuthState {
   session: Session | null;
   isLoading: boolean;
   error: Error | null;
+  initialized: boolean;
   
   setUser: (user: User | null) => void;
   setSession: (session: Session | null) => void;
   setError: (error: Error | null) => void;
   setIsLoading: (isLoading: boolean) => void;
-  
   signOut: () => Promise<void>;
-  clearState: () => void;
-  refreshSession: () => Promise<void>;
   initialize: () => Promise<void>;
 }
 
@@ -24,29 +22,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
   isLoading: true,
   error: null,
+  initialized: false,
 
   setUser: (user) => set({ user }),
   setSession: (session) => set({ session }),
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
-  clearState: () => {
-    set({
-      user: null,
-      session: null,
-      isLoading: false,
-      error: null
-    });
-  },
-
   signOut: async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
-      localStorage.removeItem('supabase.auth.token');
-      get().clearState();
-      
+      set({ user: null, session: null, error: null });
     } catch (error) {
       console.error('Error signing out:', error);
       set({ error: error as Error });
@@ -54,26 +41,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  refreshSession: async () => {
-    try {
-      const { data: { session }, error } = await supabase.auth.refreshSession();
-      if (error) throw error;
-      
-      set({ 
-        session,
-        user: session?.user ?? null,
-        error: null
-      });
-    } catch (error) {
-      console.error('Error refreshing session:', error);
-      if (error instanceof AuthApiError && error.status === 401) {
-        get().clearState();
-      }
-      set({ error: error as Error });
-    }
-  },
-
   initialize: async () => {
+    const state = get();
+    if (state.initialized) return;
+
     try {
       set({ isLoading: true });
       
@@ -88,41 +59,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
-      // Set up auth state change listener
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          console.log('Auth state changed:', event, session?.user);
-          
-          switch (event) {
-            case 'SIGNED_IN':
-              set({
-                session,
-                user: session?.user ?? null,
-                error: null
-              });
-              break;
-              
-            case 'SIGNED_OUT':
-              get().clearState();
-              break;
-              
-            case 'TOKEN_REFRESHED':
-              set({ session });
-              break;
-              
-            case 'USER_UPDATED':
-              set({ user: session?.user ?? null });
-              break;
-          }
-        }
-      );
-
-      set({ isLoading: false });
+      set({ initialized: true, isLoading: false });
       
     } catch (error) {
       console.error('Error initializing auth:', error);
-      set({ error: error as Error });
-      get().clearState();
+      set({ 
+        error: error as Error,
+        user: null,
+        session: null,
+        isLoading: false,
+        initialized: true
+      });
     }
   }
 }));

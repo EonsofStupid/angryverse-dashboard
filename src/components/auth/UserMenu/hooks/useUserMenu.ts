@@ -7,12 +7,16 @@ import { supabase } from '@/integrations/supabase/client';
 export const useUserMenu = () => {
   const [open, setOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, initialize } = useAuthStore();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
+    initialize();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user);
+      
       switch (event) {
         case 'SIGNED_IN':
           if (session) {
@@ -25,6 +29,7 @@ export const useUserMenu = () => {
             });
           }
           break;
+          
         case 'SIGNED_OUT':
           setUser(null);
           toast({
@@ -38,7 +43,7 @@ export const useUserMenu = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, toast, setUser]);
+  }, [initialize, navigate, toast, setUser]);
 
   const handleOpenChange = (isOpen: boolean) => {
     setIsAnimating(true);

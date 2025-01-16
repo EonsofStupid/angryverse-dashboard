@@ -1,17 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useThemeStore } from "@/store/useThemeStore";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useNavigate } from "react-router-dom";
 import { AuthForm } from "../AuthForm";
 import { UserMenuTrigger } from "./components/UserMenuTrigger";
 import { UserMenuContent } from "./components/UserMenuContent";
+import { useUserMenu } from "./hooks/useUserMenu";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -30,47 +27,9 @@ const getRandomColors = () => {
 };
 
 export const UserMenu = () => {
-  const [open, setOpen] = useState(false);
-  const { user, setUser } = useAuthStore();
   const { theme } = useThemeStore();
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const { open, handleOpenChange, user } = useUserMenu();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      switch (event) {
-        case 'SIGNED_IN':
-          if (session) {
-            setUser(session.user);
-            setOpen(false);
-            navigate('/');
-            toast({
-              title: "Welcome back!",
-              description: "You have successfully signed in.",
-            });
-          }
-          break;
-        case 'SIGNED_OUT':
-          setUser(null);
-          toast({
-            title: "Signed out",
-            description: "You have been successfully signed out.",
-          });
-          break;
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate, toast, setUser]);
-
-  const handleOpenChange = (isOpen: boolean) => {
-    setIsAnimating(true);
-    setOpen(isOpen);
-  };
 
   const colors = useMemo(() => getRandomColors(), []); 
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
