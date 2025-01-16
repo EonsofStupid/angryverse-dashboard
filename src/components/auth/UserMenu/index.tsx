@@ -5,7 +5,6 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { AuthForm } from "../AuthForm";
 import { UserMenuTrigger } from "./components/UserMenuTrigger";
 import { UserMenuContent } from "./components/UserMenuContent";
-import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -30,7 +29,6 @@ export const UserMenu = () => {
   const { theme } = useThemeStore();
   const [open, setOpen] = useState(false);
   const { user } = useAuthStore();
-  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
   const colors = useMemo(() => getRandomColors(), []); 
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
@@ -62,8 +60,7 @@ export const UserMenu = () => {
             <AuthForm theme={theme} />
           ) : (
             <UserMenuContent 
-              onClose={() => setOpen(false)} 
-              isAdmin={isAdmin} 
+              onClose={() => setOpen(false)}
             />
           )}
         </div>
