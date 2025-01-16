@@ -6,18 +6,14 @@ import { useState, useEffect } from "react";
 import { AuthError } from "@supabase/supabase-js";
 
 interface AuthFormProps {
-  theme?: string;
-  onAuthSuccess?: () => void;
+  theme: string;
 }
 
-export const AuthForm = ({ theme = "dark", onAuthSuccess }: AuthFormProps) => {
+export const AuthForm = ({ theme }: AuthFormProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && onAuthSuccess) {
-        onAuthSuccess();
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') {
         setError(null);
       }
@@ -26,7 +22,7 @@ export const AuthForm = ({ theme = "dark", onAuthSuccess }: AuthFormProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [onAuthSuccess]);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -47,14 +43,10 @@ export const AuthForm = ({ theme = "dark", onAuthSuccess }: AuthFormProps) => {
               },
             },
           },
-          className: {
-            container: 'auth-container',
-            button: 'auth-button',
-            input: 'auth-input',
-          }
         }}
-        theme={theme}
+        theme={theme === "dark" ? "dark" : "light"}
         providers={[]}
+        redirectTo={window.location.origin}
       />
     </div>
   );

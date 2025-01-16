@@ -1,4 +1,4 @@
-import { UserMenu } from "@/auth/components/UserMenu";
+import { UserMenu } from "./UserMenu";
 import { DesktopNav } from "./navigation/desktop/DesktopNav";
 import { MobileNav } from "./navigation/mobile/MobileNav";
 import { MobileMenu } from "./navigation/mobile/MobileMenu";
