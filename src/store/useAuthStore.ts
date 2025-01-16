@@ -109,8 +109,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({ initialized: true, isLoading: false });
       
-      // Clean up subscription when component unmounts
-      subscription.unsubscribe();
+      // Cleanup subscription on unmount
+      return () => {
+        subscription.unsubscribe();
+      };
+      
     } catch (error) {
       console.error('Error initializing auth:', error);
       set({ 
