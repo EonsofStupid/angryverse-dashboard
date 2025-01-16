@@ -6,8 +6,6 @@ import { createContext } from "react";
 import type { Theme } from "@/types/theme";
 
 export const ThemeContext = createContext<{
-  theme: Theme | null;
-  setTheme: (theme: Theme) => void;
   currentTheme: Theme | null;
   isLoading: boolean;
   error: Error | null;
@@ -16,12 +14,10 @@ export const ThemeContext = createContext<{
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { 
-    theme, 
-    setTheme, 
     currentTheme, 
+    setCurrentTheme, 
     isLoading, 
     error, 
-    setCurrentTheme, 
     fetchPageTheme 
   } = useThemeStore();
   const { isAdmin } = useAuthStore();
@@ -33,9 +29,38 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [location.pathname, fetchPageTheme]);
 
+  useEffect(() => {
+    if (currentTheme?.configuration) {
+      const root = document.documentElement;
+      const { colors, effects } = currentTheme.configuration;
+      
+      // Apply theme colors
+      if (colors?.cyber) {
+        root.style.setProperty('--theme-colors-cyber-dark', colors.cyber.dark);
+        root.style.setProperty('--theme-colors-cyber-pink', colors.cyber.pink.DEFAULT);
+        root.style.setProperty('--theme-colors-cyber-pink-hover', colors.cyber.pink.hover);
+        root.style.setProperty('--theme-colors-cyber-cyan', colors.cyber.cyan.DEFAULT);
+        root.style.setProperty('--theme-colors-cyber-cyan-hover', colors.cyber.cyan.hover);
+        root.style.setProperty('--theme-colors-cyber-purple', colors.cyber.purple);
+      }
+
+      // Apply effects
+      if (effects?.glass) {
+        root.style.setProperty('--glass-blur', effects.glass.blur);
+        root.style.setProperty('--glass-opacity', '0.1');
+        root.style.setProperty('--glass-border', effects.glass.border);
+      }
+
+      // Apply hover effects
+      if (effects?.hover) {
+        root.style.setProperty('--hover-scale', effects.hover.scale.toString());
+        root.style.setProperty('--hover-lift', effects.hover.lift);
+        root.style.setProperty('--hover-glow-strength', effects.hover.glow_strength);
+      }
+    }
+  }, [currentTheme]);
+
   const value = {
-    theme,
-    setTheme,
     currentTheme,
     isLoading,
     error,
