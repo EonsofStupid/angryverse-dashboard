@@ -48,14 +48,10 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
       }
     };
 
-    // Add a small delay to prevent rapid re-renders
-    const timeoutId = setTimeout(() => {
-      checkRole();
-    }, 100);
+    checkRole();
 
     return () => {
       isMounted = false;
-      clearTimeout(timeoutId);
     };
   }, [user, requiredRole]);
 

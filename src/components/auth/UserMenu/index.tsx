@@ -5,10 +5,10 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { AuthForm } from "../AuthForm";
 import { UserMenuTrigger } from "./components/UserMenuTrigger";
 import { UserMenuContent } from "./components/UserMenuContent";
-import { useUserMenu } from "./hooks/useUserMenu";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -28,18 +28,19 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const { theme } = useThemeStore();
-  const { open, handleOpenChange, user } = useUserMenu();
+  const [open, setOpen] = useState(false);
+  const { user } = useAuthStore();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
   const colors = useMemo(() => getRandomColors(), []); 
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
           gradientBorder={gradientBorder}
-          onClick={() => handleOpenChange(true)}
+          onClick={() => setOpen(true)}
         />
       </SheetTrigger>
       <SheetContent 
@@ -61,7 +62,7 @@ export const UserMenu = () => {
             <AuthForm theme={theme} />
           ) : (
             <UserMenuContent 
-              onClose={() => handleOpenChange(false)} 
+              onClose={() => setOpen(false)} 
               isAdmin={isAdmin} 
             />
           )}
