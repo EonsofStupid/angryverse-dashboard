@@ -39,7 +39,6 @@ export const UserMenu = () => {
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Initialize auth state and set up listeners
   useEffect(() => {
     initialize();
   }, [initialize]);

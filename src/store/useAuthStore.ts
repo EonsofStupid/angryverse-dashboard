@@ -88,8 +88,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
+      // Set up auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
+          console.log('Auth state changed:', event, session?.user);
+          
           switch (event) {
             case 'SIGNED_IN':
               set({
@@ -114,15 +117,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       );
 
-      // Cleanup subscription on unmount
-      subscription.unsubscribe();
+      set({ isLoading: false });
       
     } catch (error) {
       console.error('Error initializing auth:', error);
       set({ error: error as Error });
       get().clearState();
-    } finally {
-      set({ isLoading: false });
     }
   }
 }));
