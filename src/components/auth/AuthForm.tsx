@@ -3,7 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
+import { AuthError } from "@supabase/supabase-js";
 
 interface AuthFormProps {
   theme: string;
@@ -11,13 +11,11 @@ interface AuthFormProps {
 
 export const AuthForm = ({ theme }: AuthFormProps) => {
   const [error, setError] = useState<string | null>(null);
-  const { initialize } = useAuthStore();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        initialize();
-      }
+      console.log("Auth state changed:", event, session);
+      
       if (event === 'SIGNED_OUT') {
         setError(null);
       }
@@ -26,7 +24,12 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [initialize]);
+  }, []);
+
+  const handleError = (error: AuthError) => {
+    console.error("Auth error:", error);
+    setError(error.message);
+  };
 
   return (
     <div className="space-y-4">

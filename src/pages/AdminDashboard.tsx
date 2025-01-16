@@ -16,16 +16,18 @@ import { Documentation } from "@/components/admin/documentation/Documentation";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
+import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 const AdminDashboard = () => {
-  const { user, isAdmin, isLoading } = useAuthStore();
+  const { user } = useAuthStore();
+  const { hasRole: isAdmin, isLoading: roleLoading } = useRoleCheck(user, 'admin');
   const navigate = useNavigate();
   const location = useLocation();
   
   const currentPath = location.pathname.split('/').pop() || 'dashboard';
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!roleLoading) {
       if (!user) {
         toast.error("Please sign in to access this area");
         navigate("/");
@@ -38,9 +40,9 @@ const AdminDashboard = () => {
         return;
       }
     }
-  }, [user, isAdmin, isLoading, navigate]);
+  }, [user, isAdmin, roleLoading, navigate]);
 
-  if (isLoading) {
+  if (roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
