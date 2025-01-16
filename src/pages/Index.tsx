@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { MotionEffects } from "@/components/effects/MotionEffects";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 const Index = () => {
   const { currentTheme, isLoading: themeLoading, error: themeError } = useThemeStore();
