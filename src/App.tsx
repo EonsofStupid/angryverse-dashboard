@@ -7,15 +7,15 @@ import AdminDashboard from "@/pages/AdminDashboard";
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
         </Routes>
         <Toaster />
-      </BrowserRouter>
-    </ThemeProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
