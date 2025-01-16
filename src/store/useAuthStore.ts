@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { User, Session, AuthError, AuthApiError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 interface AuthState {
   user: User | null;
@@ -45,10 +44,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
-      // Clear local storage
       localStorage.removeItem('supabase.auth.token');
-      
-      // Reset store state
       get().clearState();
       
     } catch (error) {
@@ -81,7 +77,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
       
-      // Get initial session
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) throw error;
 
@@ -93,11 +88,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
-      // Set up auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
-          console.log('Auth state changed:', event, session);
-          
           switch (event) {
             case 'SIGNED_IN':
               set({
@@ -122,10 +114,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       );
 
-      // Cleanup function will be called by components using this
-      return () => {
-        subscription.unsubscribe();
-      };
+      // Cleanup subscription on unmount
+      subscription.unsubscribe();
       
     } catch (error) {
       console.error('Error initializing auth:', error);

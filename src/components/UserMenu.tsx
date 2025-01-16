@@ -41,10 +41,7 @@ export const UserMenu = () => {
 
   // Initialize auth state and set up listeners
   useEffect(() => {
-    const cleanup = initialize();
-    return () => {
-      cleanup.then(unsubscribe => unsubscribe());
-    };
+    initialize();
   }, [initialize]);
 
   const handleSignOut = async () => {
