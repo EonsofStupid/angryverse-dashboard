@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { User } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -33,54 +32,39 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, setUser } = useAuthStore();
+  const { user, initialize, signOut } = useAuthStore();
   const { theme } = useThemeStore();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Initialize auth state and set up listeners
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      switch (event) {
-        case 'SIGNED_IN':
-          if (session) {
-            setUser(session.user);
-            setOpen(false);
-            navigate('/');
-            toast({
-              title: "Welcome back!",
-              description: "You have successfully signed in.",
-            });
-          }
-          break;
-        case 'SIGNED_OUT':
-          setUser(null);
-          toast({
-            title: "Signed out",
-            description: "You have been successfully signed out.",
-          });
-          break;
-      }
-    });
-
-    const checkSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Session check error:", error);
-        return;
-      }
-      if (session?.user) {
-        setUser(session.user);
-      }
-    };
-    
-    checkSession();
-
+    const cleanup = initialize();
     return () => {
-      subscription.unsubscribe();
+      cleanup.then(unsubscribe => unsubscribe());
     };
-  }, [navigate, toast, setUser]);
+  }, [initialize]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setOpen(false);
+      navigate('/');
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleOpenChange = (isOpen: boolean) => {
     setIsAnimating(true);
@@ -117,7 +101,11 @@ export const UserMenu = () => {
         </Button>
       </SheetTrigger>
       <SheetContent 
-        className="w-[300px] sm:w-[400px] fixed inset-y-0 right-0 z-[100] flex h-full flex-col transition-transform duration-300 glass"
+        className={cn(
+          "w-[300px] sm:w-[400px] fixed inset-y-0 right-0 z-[100]",
+          "flex h-full flex-col transition-all duration-300",
+          "glass"
+        )}
         side="right"
       >
         <VisuallyHidden>
