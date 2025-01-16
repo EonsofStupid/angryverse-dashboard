@@ -29,7 +29,7 @@ const getRandomColors = () => {
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { theme } = useThemeStore();
-  const { user, initialize } = useAuthStore();
+  const { user, initialize, isAdmin } = useAuthStore();
 
   // Initialize auth state when component mounts
   useEffect(() => {
@@ -67,6 +67,7 @@ export const UserMenu = () => {
           ) : (
             <UserMenuContent 
               onClose={() => setOpen(false)}
+              isAdmin={isAdmin}
             />
           )}
         </div>

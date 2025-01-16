@@ -1,7 +1,7 @@
-import { Bell, Search, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAdminStore } from "@/store/useAdminStore";
+import { UserMenu } from "@/components/UserMenu";
 
 export const AdminHeader = () => {
   const currentSection = useAdminStore((state) => state.currentSection);
@@ -19,12 +19,7 @@ export const AdminHeader = () => {
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Settings className="h-5 w-5" />
-          </Button>
+          <UserMenu />
         </div>
       </div>
     </header>
