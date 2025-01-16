@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { DesktopNavLink } from "./DesktopNavLink";
-import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export const DesktopNav = () => {
-  const { user } = useAuthStore();
-  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const { isAdmin } = useAuthStore();
   const navigate = useNavigate();
 
   const handlePortalClick = (e: React.MouseEvent) => {

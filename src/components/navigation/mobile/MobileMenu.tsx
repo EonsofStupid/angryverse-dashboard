@@ -1,6 +1,5 @@
 import { MobileNavLink } from "./MobileNavLink";
 import { cn } from "@/lib/utils";
-import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
@@ -12,10 +11,8 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  const { user } = useAuthStore();
-  const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
+  const { isAdmin } = useAuthStore();
 
-  // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -36,7 +33,6 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -45,7 +41,6 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           />
           
-          {/* Menu */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}

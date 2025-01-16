@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User, Session, AuthError } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthState {
@@ -16,6 +16,7 @@ interface AuthState {
   setIsLoading: (isLoading: boolean) => void;
   signOut: () => Promise<void>;
   initialize: () => Promise<void>;
+  checkRole: (role: string) => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -30,6 +31,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSession: (session) => set({ session }),
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
+
+  checkRole: (role: string) => {
+    const state = get();
+    if (role === 'admin') return state.isAdmin;
+    return false;
+  },
 
   signOut: async () => {
     try {
@@ -55,12 +62,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
       
-      // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
 
       if (session) {
-        // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
@@ -79,12 +84,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
-      // Set up auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('Auth state changed:', event, session);
         
         if (session) {
-          // Check admin role on auth state change
           const { data: roleData } = await supabase
             .from('user_roles')
             .select('role')
@@ -108,9 +111,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
 
       set({ initialized: true, isLoading: false });
-      
-      // Clean up subscription when component unmounts
-      subscription.unsubscribe();
+
+      // Cleanup subscription on unmount
+      return () => {
+        subscription.unsubscribe();
+      };
     } catch (error) {
       console.error('Error initializing auth:', error);
       set({ 
