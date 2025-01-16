@@ -18,7 +18,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setCurrentTheme, 
     isLoading, 
     error, 
-    fetchPageTheme 
+    fetchPageTheme,
+    theme: colorMode
   } = useThemeStore();
   const { isAdmin } = useAuthStore();
   const location = useLocation();
@@ -33,6 +34,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (currentTheme?.configuration) {
       const root = document.documentElement;
       const { colors, effects } = currentTheme.configuration;
+      
+      // Set color mode
+      root.setAttribute('data-theme', colorMode);
       
       // Apply theme colors
       if (colors?.cyber) {
@@ -58,7 +62,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         root.style.setProperty('--hover-glow-strength', effects.hover.glow_strength);
       }
     }
-  }, [currentTheme]);
+  }, [currentTheme, colorMode]);
 
   const value = {
     currentTheme,

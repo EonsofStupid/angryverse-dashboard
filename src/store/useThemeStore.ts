@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
-import type { Theme } from '@/types/theme/core';
+import type { Theme, ThemeConfiguration } from '@/types/theme/core';
 import { defaultTheme } from '@/theme/config/defaultTheme';
+import { convertDatabaseTheme } from '@/types/theme/utils/database';
 
 interface ThemeState {
   currentTheme: Theme | null;
@@ -41,8 +42,9 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // If we found a page-specific theme, use it
       if (pageThemeData?.themes) {
+        const convertedTheme = convertDatabaseTheme(pageThemeData.themes);
         set({ 
-          currentTheme: pageThemeData.themes as Theme,
+          currentTheme: convertedTheme,
           isLoading: false 
         });
         return;
@@ -59,7 +61,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
       // Use the fetched default theme or fall back to hardcoded default
       set({ 
-        currentTheme: defaultThemeData ? (defaultThemeData as Theme) : defaultTheme,
+        currentTheme: defaultThemeData ? convertDatabaseTheme(defaultThemeData) : defaultTheme,
         isLoading: false 
       });
     } catch (error) {
