@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, LogOut, Database, LayoutDashboard, User } from "lucide-react";
+import { Settings, LogOut, Database, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -9,11 +9,10 @@ import { cn } from "@/lib/utils";
 
 interface UserMenuContentProps {
   onClose: () => void;
-  isAdmin: boolean;
 }
 
-export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
-  const { user, signOut } = useAuthStore();
+export const UserMenuContent = ({ onClose }: UserMenuContentProps) => {
+  const { user, signOut, isAdmin } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isVisible, setIsVisible] = useState(false);
@@ -48,12 +47,6 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
       "rounded-lg shadow-xl",
       "animate-in fade-in-0 slide-in-from-top-5",
       isVisible ? "opacity-100" : "opacity-0",
-      "before:absolute before:inset-0 before:rounded-lg",
-      "before:bg-gradient-to-b before:from-primary/5 before:to-transparent",
-      "before:pointer-events-none",
-      "after:absolute after:inset-0 after:rounded-lg",
-      "after:bg-[url('/scan-lines.png')] after:opacity-5",
-      "after:pointer-events-none after:animate-scan",
     )}>
       <div className="flex items-center gap-2 p-2">
         <Avatar>
