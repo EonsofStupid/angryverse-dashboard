@@ -19,17 +19,24 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    console.log('UserMenuContent mounted:', { isAdmin });
     setIsVisible(true);
     return () => setIsVisible(false);
-  }, []);
+  }, [isAdmin]);
 
   const handleSignOut = async () => {
     try {
+      console.log('Initiating sign out');
       onClose();
       await signOut();
+      console.log('Sign out successful, navigating to home');
       navigate("/");
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error('Error signing out:', error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to sign out",
@@ -38,7 +45,24 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
     }
   };
 
-  if (!user) return null;
+  const handleSettingsClick = () => {
+    console.log('Settings clicked');
+    toast({
+      title: "Settings",
+      description: "Settings page coming soon!",
+    });
+  };
+
+  const handleAdminNavigation = (route: string) => {
+    console.log('Navigating to admin route:', route);
+    navigate(route);
+    onClose();
+  };
+
+  if (!user) {
+    console.log('No user found in UserMenuContent');
+    return null;
+  }
 
   return (
     <div className={cn(
@@ -66,12 +90,7 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
       <Button
         variant="ghost"
         className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-        onClick={() => {
-          toast({
-            title: "Settings",
-            description: "Settings page coming soon!",
-          });
-        }}
+        onClick={handleSettingsClick}
       >
         <Settings className="h-5 w-5" />
         Settings
@@ -82,10 +101,7 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
           <Button
             variant="ghost"
             className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-            onClick={() => {
-              navigate("/portal");
-              onClose();
-            }}
+            onClick={() => handleAdminNavigation("/admin/portal")}
           >
             <LayoutDashboard className="h-5 w-5" />
             Portal
@@ -93,10 +109,7 @@ export const UserMenuContent = ({ onClose, isAdmin }: UserMenuContentProps) => {
           <Button
             variant="ghost"
             className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-            onClick={() => {
-              navigate("/admin");
-              onClose();
-            }}
+            onClick={() => handleAdminNavigation("/admin")}
           >
             <Database className="h-5 w-5" />
             Admin Dashboard

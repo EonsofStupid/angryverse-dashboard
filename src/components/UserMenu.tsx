@@ -28,21 +28,40 @@ const getRandomColors = () => {
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { theme } = useThemeStore();
-  const { user, initialize, isAdmin } = useAuthStore();
+  const { user, initialize, isAdmin, isLoading } = useAuthStore();
   const colors = getRandomColors();
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
-  // Initialize auth state when component mounts
   useEffect(() => {
+    console.log('UserMenu mounted, initializing auth...');
     initialize();
   }, [initialize]);
 
+  useEffect(() => {
+    console.log('UserMenu auth state:', { 
+      isAuthenticated: !!user, 
+      isAdmin, 
+      isLoading 
+    });
+  }, [user, isAdmin, isLoading]);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    console.log('UserMenu open state changing:', { 
+      current: open, 
+      new: newOpen 
+    });
+    setOpen(newOpen);
+  };
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
           gradientBorder={gradientBorder}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            console.log('UserMenu trigger clicked');
+            setOpen(true);
+          }}
         />
       </SheetTrigger>
       <SheetContent 
@@ -64,11 +83,18 @@ export const UserMenu = () => {
         </VisuallyHidden>
         
         <div className="flex flex-col gap-4 mt-8 p-4">
-          {!user ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : !user ? (
             <AuthForm theme={theme} />
           ) : (
             <UserMenuContent 
-              onClose={() => setOpen(false)}
+              onClose={() => {
+                console.log('UserMenu closing');
+                setOpen(false);
+              }}
               isAdmin={isAdmin}
             />
           )}

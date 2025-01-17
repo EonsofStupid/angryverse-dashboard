@@ -33,8 +33,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     try {
+      console.log('Signing out...');
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error('Error signing out:', error);
+        throw error;
+      }
+      console.log('Successfully signed out');
       set({ 
         user: null, 
         session: null, 
@@ -42,7 +47,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAdmin: false 
       });
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('Error in signOut:', error);
       set({ error: error as Error });
       throw error;
     }
@@ -50,16 +55,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   initialize: async () => {
     const state = get();
-    if (state.initialized) return;
+    if (state.initialized) {
+      console.log('Auth already initialized');
+      return;
+    }
 
     try {
+      console.log('Initializing auth...');
       set({ isLoading: true });
       
       // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw sessionError;
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw sessionError;
+      }
 
       if (session) {
+        console.log('Found existing session:', session.user.id);
         // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
@@ -71,33 +84,46 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           console.error('Error checking role:', roleError);
         }
 
+        const isAdmin = roleData?.role === 'admin';
+        console.log('User admin status:', isAdmin);
+
         set({
           session,
           user: session.user,
-          isAdmin: roleData?.role === 'admin',
+          isAdmin,
           error: null
         });
+      } else {
+        console.log('No existing session found');
       }
 
       // Set up auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log('Auth state changed:', event, session);
+        console.log('Auth state changed:', event, session?.user?.id);
         
         if (session) {
           // Check admin role on auth state change
-          const { data: roleData } = await supabase
+          const { data: roleData, error: roleError } = await supabase
             .from('user_roles')
             .select('role')
             .eq('user_id', session.user.id)
             .single();
 
+          if (roleError) {
+            console.error('Error checking role on auth change:', roleError);
+          }
+
+          const isAdmin = roleData?.role === 'admin';
+          console.log('Updated user admin status:', isAdmin);
+
           set({
             session,
             user: session.user,
-            isAdmin: roleData?.role === 'admin',
+            isAdmin,
             error: null
           });
         } else {
+          console.log('Session cleared');
           set({
             session: null,
             user: null,
@@ -108,13 +134,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       });
 
       set({ initialized: true, isLoading: false });
+      console.log('Auth initialization complete');
       
-      // Instead of returning the cleanup function, we store it in a variable
+      // Cleanup function
       const cleanup = () => {
+        console.log('Cleaning up auth subscription');
         subscription.unsubscribe();
       };
       
-      // Add event listener for cleanup when window unloads
       window.addEventListener('unload', cleanup);
       
     } catch (error) {

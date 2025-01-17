@@ -13,18 +13,35 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('AuthForm mounted');
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event, session);
+      console.log('Auth state changed in AuthForm:', event, session?.user?.id);
       
       if (event === 'SIGNED_OUT') {
+        console.log('User signed out, clearing error state');
         setError(null);
+      }
+
+      if (event === 'SIGNED_IN') {
+        console.log('User signed in successfully');
+      }
+
+      if (event === 'USER_UPDATED') {
+        console.log('User profile updated');
       }
     });
 
     return () => {
+      console.log('AuthForm unmounting, cleaning up subscription');
       subscription.unsubscribe();
     };
   }, []);
+
+  const handleError = (error: AuthError) => {
+    console.error('Auth error:', error);
+    const errorMessage = error.message || 'An error occurred during authentication';
+    setError(errorMessage);
+  };
 
   return (
     <div className="space-y-4">
@@ -54,6 +71,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
         theme={theme === "dark" ? "dark" : "light"}
         providers={[]}
         redirectTo={window.location.origin}
+        onError={handleError}
         localization={{
           variables: {
             sign_in: {
