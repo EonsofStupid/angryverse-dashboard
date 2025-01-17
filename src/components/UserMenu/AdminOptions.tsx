@@ -16,7 +16,7 @@ export const AdminOptions = ({ onClose }: AdminOptionsProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <Button
         variant="ghost"
         className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
@@ -33,6 +33,6 @@ export const AdminOptions = ({ onClose }: AdminOptionsProps) => {
         <Database className="h-5 w-5" />
         Admin Dashboard
       </Button>
-    </>
+    </div>
   );
 };

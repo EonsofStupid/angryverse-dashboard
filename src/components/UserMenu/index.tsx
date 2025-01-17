@@ -4,7 +4,7 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AuthForm } from "../auth/AuthForm";
+import { AuthForm } from "../AuthForm";
 import { UserMenuTrigger } from "./UserMenuTrigger";
 import { UserProfile } from "./UserProfile";
 import { AdminOptions } from "./AdminOptions";
