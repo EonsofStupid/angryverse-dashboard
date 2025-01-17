@@ -1,15 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { User } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+const THEME_COLORS = [
+  'rgba(139, 92, 246, 0.8)',   // Vivid Purple
+  'rgba(217, 70, 239, 0.8)',   // Magenta Pink
+  'rgba(249, 115, 22, 0.8)',   // Bright Orange
+  'rgba(14, 165, 233, 0.8)',   // Ocean Blue
+  'rgba(255, 0, 127, 0.8)',    // Cyber Pink
+  'rgba(0, 255, 245, 0.8)',    // Cyber Cyan
+  'rgba(121, 40, 202, 0.8)'    // Cyber Purple
+];
+
+const getRandomColors = () => {
+  const shuffled = [...THEME_COLORS].sort(() => 0.5 - Math.random());
+  const numColors = Math.floor(Math.random() * 2) + 4;
+  return shuffled.slice(0, numColors);
+};
 
 interface UserMenuTriggerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  colors: string[];
+  onClick: () => void;
 }
 
-export const UserMenuTrigger = ({ open, onOpenChange, colors }: UserMenuTriggerProps) => {
+export const UserMenuTrigger = ({ onClick }: UserMenuTriggerProps) => {
+  const colors = getRandomColors();
   const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
   return (
@@ -19,7 +33,7 @@ export const UserMenuTrigger = ({ open, onOpenChange, colors }: UserMenuTriggerP
       className="relative transition-all duration-300 hover:bg-transparent group focus-visible:ring-1 focus-visible:ring-primary/50 overflow-hidden z-50"
       onClick={() => {
         console.log('UserMenu trigger clicked');
-        onOpenChange(true);
+        onClick();
       }}
       style={{
         '--avatar-gradient': gradientBorder
