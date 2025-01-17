@@ -71,9 +71,9 @@ export const UserMenu = () => {
     });
   };
 
-  const handleAdminNavigation = (route: string) => {
+  const handleAdminNavigation = (route: "admin" | "site") => {
     console.log('Navigating to admin route:', route);
-    navigate(route);
+    navigate(`/${route}`);
     setOpen(false);
   };
 
@@ -168,7 +168,7 @@ export const UserMenu = () => {
                   <Button
                     variant="ghost"
                     className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                    onClick={() => handleAdminNavigation("/admin/portal")}
+                    onClick={() => handleAdminNavigation("admin")}
                   >
                     <LayoutDashboard className="h-5 w-5" />
                     Portal
@@ -176,7 +176,7 @@ export const UserMenu = () => {
                   <Button
                     variant="ghost"
                     className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                    onClick={() => handleAdminNavigation("/admin")}
+                    onClick={() => handleAdminNavigation("site")}
                   >
                     <Database className="h-5 w-5" />
                     Admin Dashboard

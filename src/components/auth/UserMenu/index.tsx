@@ -37,6 +37,12 @@ export const UserMenu = () => {
     initialize();
   }, [initialize]);
 
+  const handleAdminNavigation = (route: "admin" | "site") => {
+    console.log('Navigating to admin route:', route);
+    navigate(`/${route}`);
+    setOpen(false);
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
