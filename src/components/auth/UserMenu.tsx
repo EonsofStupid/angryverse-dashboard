@@ -4,9 +4,9 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AuthForm } from "@/components/auth/AuthForm"; // Fixed import path
-import { Button } from "@/components/ui/button"; // Fixed import path
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"; // Fixed import path
+import { AuthForm } from "@/components/auth/AuthForm";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Settings, LogOut, Database, LayoutDashboard, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
