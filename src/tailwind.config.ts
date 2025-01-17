@@ -59,6 +59,11 @@ export default {
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+      keyframes float {
+           0% { transform: translateY(0px); }
+          50% { transform: translateY(-2px); }
+          100% { transform: translateY(0px); }
+          }
         },
         "scale-in": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
