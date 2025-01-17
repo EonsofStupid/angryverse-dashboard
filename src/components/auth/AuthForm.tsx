@@ -3,7 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, AuthChangeEvent } from "@supabase/supabase-js";
 
 interface AuthFormProps {
   theme: string;
@@ -14,7 +14,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
 
   useEffect(() => {
     console.log('AuthForm mounted');
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
       console.log('Auth state changed in AuthForm:', event, session?.user?.id);
       
       if (event === 'SIGNED_OUT') {
@@ -31,7 +31,7 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       }
 
       // Handle any auth errors
-      if (event === 'USER_DELETED' || event === 'TOKEN_REFRESHED') {
+      if (event === 'TOKEN_REFRESH_FAILED') {
         const checkSession = async () => {
           const { error: sessionError } = await supabase.auth.getSession();
           if (sessionError) {
