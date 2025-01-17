@@ -1,5 +1,4 @@
 import { AdminSidebar } from "./AdminSidebar";
-import { AdminHeader } from "./AdminHeader";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
 import { useAdminStore } from "@/store/useAdminStore";
 import { useTheme } from "@/hooks/useTheme";
@@ -15,7 +14,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { isLoading, error, currentTheme } = useTheme();
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Create animated background effect
   useEffect(() => {
     const main = mainRef.current;
     if (!main) return;
@@ -62,7 +60,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      <AdminHeader />
       <div className="flex">
         <AdminSidebar />
         <main 

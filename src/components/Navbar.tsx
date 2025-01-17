@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Search } from "lucide-react";
+import { Input } from "./ui/input";
 
 export const Navbar = () => {
   const { isMenuOpen, toggleMenu, setIsMenuOpen } = useNavAnimation();
@@ -66,7 +68,29 @@ export const Navbar = () => {
           )}>
             <DesktopNav />
             <MobileNav isOpen={isMenuOpen} onToggle={toggleMenu} />
-            <UserMenu />
+            
+            <div className="flex items-center gap-4">
+              {/* Search Input */}
+              <div className="relative hidden md:block">
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className={cn(
+                    "w-[200px] pl-9 h-9",
+                    "bg-background/50 backdrop-blur-sm",
+                    "border border-white/10",
+                    "text-foreground/90",
+                    "placeholder:text-foreground/50",
+                    "focus:ring-primary/50 focus:border-primary/50",
+                    "transition-all duration-300",
+                    "hover:border-primary/30",
+                    "glass"
+                  )}
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/50" />
+              </div>
+              <UserMenu />
+            </div>
           </div>
         </div>
 
