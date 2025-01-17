@@ -29,6 +29,18 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       if (event === 'USER_UPDATED') {
         console.log('User profile updated');
       }
+
+      // Handle any auth errors
+      if (event === 'USER_DELETED' || event === 'TOKEN_REFRESHED') {
+        const checkSession = async () => {
+          const { error: sessionError } = await supabase.auth.getSession();
+          if (sessionError) {
+            console.error('Session error:', sessionError);
+            setError(sessionError.message);
+          }
+        };
+        checkSession();
+      }
     });
 
     return () => {
@@ -36,12 +48,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
       subscription.unsubscribe();
     };
   }, []);
-
-  const handleError = (error: AuthError) => {
-    console.error('Auth error:', error);
-    const errorMessage = error.message || 'An error occurred during authentication';
-    setError(errorMessage);
-  };
 
   return (
     <div className="space-y-4">
@@ -71,7 +77,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
         theme={theme === "dark" ? "dark" : "light"}
         providers={[]}
         redirectTo={window.location.origin}
-        onError={handleError}
         localization={{
           variables: {
             sign_in: {
