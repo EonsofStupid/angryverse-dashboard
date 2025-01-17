@@ -61,7 +61,12 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased min-h-screen w-full;
+    background-color: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+    width: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
