@@ -8,7 +8,6 @@ import { AuthForm } from "./auth/AuthForm";
 import { UserMenuTrigger } from "./auth/UserMenu/components/UserMenuTrigger";
 import { UserMenuContent } from "./auth/UserMenu/components/UserMenuContent";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -30,14 +29,13 @@ export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { theme } = useThemeStore();
   const { user, initialize, isAdmin } = useAuthStore();
+  const colors = getRandomColors();
+  const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
   // Initialize auth state when component mounts
   useEffect(() => {
     initialize();
   }, [initialize]);
-
-  const colors = useMemo(() => getRandomColors(), []); 
-  const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -48,12 +46,15 @@ export const UserMenu = () => {
         />
       </SheetTrigger>
       <SheetContent 
-        className={cn(
-          "w-[300px] sm:w-[400px] fixed inset-y-0 right-0 z-[100]",
-          "flex h-full flex-col transition-all duration-300",
-          "glass"
-        )}
         side="right"
+        className={cn(
+          "fixed inset-y-0 right-0",
+          "w-[300px] sm:w-[400px]",
+          "bg-background/80 backdrop-blur-md",
+          "border-l border-primary/10",
+          "shadow-lg",
+          "z-[100]"
+        )}
       >
         <VisuallyHidden>
           <DialogTitle>User Menu</DialogTitle>
@@ -61,7 +62,8 @@ export const UserMenu = () => {
             Access your account settings and manage your profile
           </DialogDescription>
         </VisuallyHidden>
-        <div className="flex flex-col gap-4 mt-8">
+        
+        <div className="flex flex-col gap-4 mt-8 p-4">
           {!user ? (
             <AuthForm theme={theme} />
           ) : (

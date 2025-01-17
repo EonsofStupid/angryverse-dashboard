@@ -26,11 +26,6 @@ export const AuthForm = ({ theme }: AuthFormProps) => {
     };
   }, []);
 
-  const handleError = (error: AuthError) => {
-    console.error("Auth error:", error);
-    setError(error.message);
-  };
-
   return (
     <div className="space-y-4">
       {error && (
