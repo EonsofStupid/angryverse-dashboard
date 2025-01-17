@@ -4,62 +4,37 @@ import { Settings, LogOut, Database, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
-import { cn } from "@/lib/utils";
 
 interface UserProfileProps {
   onClose: () => void;
+  isAdmin: boolean;
+  isCheckingRole: boolean;
 }
 
-export const UserProfile = ({ onClose }: UserProfileProps) => {
-  const { user, isAdmin, signOut } = useAuthStore();
+export const UserProfile = ({ onClose, isAdmin, isCheckingRole }: UserProfileProps) => {
+  const { user, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSignOut = async () => {
     try {
-      console.log('Initiating sign out');
       onClose();
       await signOut();
-      console.log('Sign out successful, navigating to home');
       navigate("/");
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account",
-      });
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to sign out",
+        description: error instanceof Error ? error.message : "Failed to sign out. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleSettingsClick = () => {
-    console.log('Settings clicked');
-    toast({
-      title: "Settings",
-      description: "Settings page coming soon!",
-    });
-  };
-
-  const handleAdminNavigation = (route: string) => {
-    console.log('Navigating to admin route:', route);
-    navigate(route);
-    onClose();
-  };
-
   if (!user) return null;
 
   return (
-    <div className={cn(
-      "flex flex-col gap-4 p-4",
-      "bg-background/80 backdrop-blur-md",
-      "border border-primary/10",
-      "rounded-lg shadow-xl",
-      "animate-in fade-in-0 slide-in-from-top-5",
-    )}>
+    <>
       <div className="flex items-center gap-2 p-2">
         <Avatar>
           <AvatarFallback>
@@ -67,36 +42,49 @@ export const UserProfile = ({ onClose }: UserProfileProps) => {
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="font-medium text-primary">{user.email}</span>
-          {isAdmin && (
-            <span className="text-sm text-primary/60">Admin</span>
+          <span className="font-medium">{user.email}</span>
+          {isCheckingRole ? (
+            <span className="text-sm text-muted-foreground">Checking permissions...</span>
+          ) : isAdmin && (
+            <span className="text-sm text-muted-foreground">Admin</span>
           )}
         </div>
       </div>
 
       <Button
         variant="ghost"
-        className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-        onClick={handleSettingsClick}
+        className="justify-start gap-2"
+        onClick={() => {
+          toast({
+            title: "Settings",
+            description: "Settings page coming soon!",
+          });
+        }}
       >
         <Settings className="h-5 w-5" />
         Settings
       </Button>
 
-      {isAdmin && (
+      {!isCheckingRole && isAdmin && (
         <>
           <Button
             variant="ghost"
-            className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-            onClick={() => handleAdminNavigation("/admin/portal")}
+            className="justify-start gap-2"
+            onClick={() => {
+              navigate("/portal");
+              onClose();
+            }}
           >
             <LayoutDashboard className="h-5 w-5" />
             Portal
           </Button>
           <Button
             variant="ghost"
-            className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-            onClick={() => handleAdminNavigation("/admin")}
+            className="justify-start gap-2"
+            onClick={() => {
+              navigate("/admin");
+              onClose();
+            }}
           >
             <Database className="h-5 w-5" />
             Admin Dashboard
@@ -106,12 +94,12 @@ export const UserProfile = ({ onClose }: UserProfileProps) => {
 
       <Button
         variant="ghost"
-        className="justify-start gap-2 hover:bg-destructive/10 hover:text-destructive"
+        className="justify-start gap-2"
         onClick={handleSignOut}
       >
         <LogOut className="h-5 w-5" />
         Log Out
       </Button>
-    </div>
+    </>
   );
 };
