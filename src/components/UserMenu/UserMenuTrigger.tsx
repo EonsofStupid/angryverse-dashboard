@@ -4,11 +4,14 @@ import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface UserMenuTriggerProps {
-  onClick: () => void;
-  gradientBorder: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  colors: string[];
 }
 
-export const UserMenuTrigger = ({ onClick, gradientBorder }: UserMenuTriggerProps) => {
+export const UserMenuTrigger = ({ open, onOpenChange, colors }: UserMenuTriggerProps) => {
+  const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
+
   return (
     <Button 
       variant="ghost" 
@@ -16,7 +19,7 @@ export const UserMenuTrigger = ({ onClick, gradientBorder }: UserMenuTriggerProp
       className="relative transition-all duration-300 hover:bg-transparent group focus-visible:ring-1 focus-visible:ring-primary/50 overflow-hidden z-50"
       onClick={() => {
         console.log('UserMenu trigger clicked');
-        onClick();
+        onOpenChange(true);
       }}
       style={{
         '--avatar-gradient': gradientBorder

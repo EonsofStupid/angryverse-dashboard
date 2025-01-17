@@ -4,9 +4,9 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AuthForm } from "@/components/auth/AuthForm";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AuthForm } from "./auth/AuthForm";
+import { Button } from "./ui/button";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Settings, LogOut, Database, LayoutDashboard, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -71,9 +71,9 @@ export const UserMenu = () => {
     });
   };
 
-  const handleAdminNavigation = (route: "admin" | "site") => {
+  const handleAdminNavigation = (route: string) => {
     console.log('Navigating to admin route:', route);
-    navigate(`/${route}`);
+    navigate(route);
     setOpen(false);
   };
 
@@ -168,7 +168,7 @@ export const UserMenu = () => {
                   <Button
                     variant="ghost"
                     className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                    onClick={() => handleAdminNavigation("admin")}
+                    onClick={() => handleAdminNavigation("/admin/portal")}
                   >
                     <LayoutDashboard className="h-5 w-5" />
                     Portal
@@ -176,7 +176,7 @@ export const UserMenu = () => {
                   <Button
                     variant="ghost"
                     className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                    onClick={() => handleAdminNavigation("site")}
+                    onClick={() => handleAdminNavigation("/admin")}
                   >
                     <Database className="h-5 w-5" />
                     Admin Dashboard
@@ -199,3 +199,5 @@ export const UserMenu = () => {
     </Sheet>
   );
 };
+
+export default UserMenu;

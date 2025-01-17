@@ -4,9 +4,10 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AuthForm } from "@/components/auth/AuthForm";
-import { UserProfile } from "./UserProfile";
+import { AuthForm } from "../auth/AuthForm";
 import { UserMenuTrigger } from "./UserMenuTrigger";
+import { UserProfile } from "./UserProfile";
+import { AdminOptions } from "./AdminOptions";
 import { cn } from "@/lib/utils";
 
 const THEME_COLORS = [
@@ -28,27 +29,21 @@ const getRandomColors = () => {
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { theme } = useThemeStore();
-  const { user, initialize, isLoading } = useAuthStore();
+  const { user, initialize, isAdmin, isLoading } = useAuthStore();
   const colors = getRandomColors();
-  const gradientBorder = `linear-gradient(45deg, ${colors.join(', ')})`;
 
   useEffect(() => {
     console.log('UserMenu mounted, initializing auth...');
     initialize();
   }, [initialize]);
 
-  const handleAdminNavigation = (route: "admin" | "site") => {
-    console.log('Navigating to admin route:', route);
-    navigate(`/${route}`);
-    setOpen(false);
-  };
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => setOpen(true)}
-          gradientBorder={gradientBorder}
+          open={open} 
+          onOpenChange={setOpen}
+          colors={colors}
         />
       </SheetTrigger>
       <SheetContent 
@@ -77,10 +72,15 @@ export const UserMenu = () => {
           ) : !user ? (
             <AuthForm theme={theme} />
           ) : (
-            <UserProfile onClose={() => setOpen(false)} />
+            <div className="flex flex-col gap-4">
+              <UserProfile onClose={() => setOpen(false)} />
+              {isAdmin && <AdminOptions onClose={() => setOpen(false)} />}
+            </div>
           )}
         </div>
       </SheetContent>
     </Sheet>
   );
 };
+
+export default UserMenu;
