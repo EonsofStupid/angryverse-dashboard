@@ -1,10 +1,8 @@
-import { MobileNavLink } from "./MobileNavLink";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { MobileNavLink } from "./MobileNavLink";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { useAuthStore } from "@/store/useAuthStore";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
-import { X } from "lucide-react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -15,86 +13,45 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { user } = useAuthStore();
   const { hasRole: isAdmin } = useRoleCheck(user, 'admin');
 
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    
-    if (isOpen) {
-      window.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-    
-    return () => {
-      window.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
-    };
-  }, [isOpen, onClose]);
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-          />
-          
-          {/* Menu */}
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: "spring", damping: 20, stiffness: 100 }}
-            className="fixed right-0 top-0 bottom-0 w-[280px] z-50"
-          >
-            <div className="h-full glass-frost overflow-y-auto">
-              <div className="sticky top-0 flex justify-end p-4">
-                <button 
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              
-              <div className="px-6 py-4 space-y-6">
-                <MobileNavLink 
-                  to="/" 
-                  className="text-lg font-semibold text-foreground"
-                  onClick={onClose}
-                >
-                  Home
-                </MobileNavLink>
-                
-                {isAdmin && (
-                  <>
-                    <MobileNavLink 
-                      to="/admin" 
-                      onClick={onClose}
-                      className="text-lg"
-                    >
-                      Admin
-                    </MobileNavLink>
-                    <MobileNavLink 
-                      to="/admin/portal" 
-                      onClick={onClose}
-                      className="text-lg"
-                    >
-                      Portal
-                    </MobileNavLink>
-                  </>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+      className={cn(
+        "fixed top-14 left-0 right-0",
+        "glass-frost",
+        "border-b border-white/10",
+        "shadow-lg shadow-primary/10",
+        "bg-background/80",
+        "backdrop-blur-md",
+        "z-50"
       )}
-    </AnimatePresence>
+    >
+      <div className="container mx-auto px-4 py-4">
+        <nav className="flex flex-col space-y-2">
+          <MobileNavLink to="/" onClick={onClose}>
+            Home
+          </MobileNavLink>
+          
+          {isAdmin && (
+            <>
+              <MobileNavLink to="/admin" onClick={onClose}>
+                Admin
+              </MobileNavLink>
+              <MobileNavLink to="/admin/portal" onClick={onClose}>
+                Portal
+              </MobileNavLink>
+            </>
+          )}
+        </nav>
+      </div>
+
+      {/* Scanline Effect */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 animate-scan-line bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
+      </div>
+    </motion.div>
   );
 };
