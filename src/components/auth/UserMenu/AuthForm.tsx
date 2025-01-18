@@ -3,11 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
   const { toast } = useToast();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -71,48 +72,37 @@ export const AuthForm = () => {
         'animate-in fade-in-0 slide-in-from-top-2'
       ),
       button: cn(
-        // Base button styles
         'w-full px-6 py-3',
         'bg-primary/90 text-primary-foreground',
         'inline-flex items-center justify-center gap-2',
         'rounded-md text-sm font-medium',
         'ring-offset-background',
-        // Glass effect
         'glass backdrop-blur-md border border-white/10',
-        // Hover animations
         'transition-all duration-300 ease-out',
         'hover:scale-[1.02] hover:-translate-y-0.5',
         'hover:bg-primary/95 hover:shadow-lg',
         'hover:shadow-primary/20 hover:border-primary/30',
-        // Focus styles
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-ring focus-visible:ring-offset-2',
-        // Special effects
         'after:absolute after:inset-0',
         'after:rounded-md after:transition-opacity',
         'after:opacity-0 hover:after:opacity-100',
         'after:bg-gradient-to-r after:from-primary/0',
         'after:via-primary/10 after:to-primary/0',
-        // Disabled state
         'disabled:pointer-events-none disabled:opacity-50'
       ),
       input: cn(
-        // Base input styles
         'flex h-10 w-full',
         'rounded-md border border-input/10',
         'px-3 py-2 text-sm',
-        // Glass effect
         'glass backdrop-blur-md',
         'bg-background/5',
-        // Focus & hover states
         'transition-all duration-300',
         'hover:border-primary/30 hover:bg-background/10',
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-ring focus-visible:ring-offset-2',
-        // Placeholder & text
         'text-foreground/90',
         'placeholder:text-muted-foreground/50',
-        // Disabled state
         'disabled:cursor-not-allowed disabled:opacity-50'
       ),
       label: cn(
@@ -159,47 +149,6 @@ export const AuthForm = () => {
     },
   };
 
-  const localization = {
-    auth: {
-      sign_in: {
-        password_label: 'Password',
-        email_label: 'Email',
-        email_input_placeholder: 'Your email',
-        password_input_placeholder: 'Your password',
-        button_label: 'Sign in',
-        loading_button_label: 'Signing in...',
-        social_provider_text: 'Sign in with {{provider}}',
-        link_text: 'Already have an account? Sign in',
-      },
-      sign_up: {
-        password_label: 'Password',
-        email_label: 'Email',
-        email_input_placeholder: 'Your email',
-        password_input_placeholder: 'Your password',
-        button_label: 'Sign up',
-        loading_button_label: 'Signing up...',
-        social_provider_text: 'Sign up with {{provider}}',
-        link_text: "Don't have an account? Sign up",
-      },
-      magic_link: {
-        email_input_label: 'Email address',
-        email_input_placeholder: 'Your email',
-        button_label: 'Send Magic Link',
-        loading_button_label: 'Sending magic link...',
-        link_text: 'Send a magic link email',
-      },
-      forgotten_password: {
-        email_label: 'Email',
-        password_label: 'Password',
-        email_input_placeholder: 'Your email',
-        button_label: 'Send reset instructions',
-        loading_button_label: 'Sending reset instructions...',
-        link_text: 'Forgot your password?',
-      },
-      captcha_text: 'Please complete the captcha to continue',
-    },
-  };
-
   return (
     <div className={cn(
       'p-4 rounded-lg',
@@ -214,17 +163,18 @@ export const AuthForm = () => {
         providers={['google', 'github']}
         redirectTo={`${window.location.origin}/auth/callback`}
         magicLink={true}
-        localization={localization}
         view="sign_in"
         showLinks={true}
+        captchaToken={captchaToken}
       />
       <div className="mt-4">
         <HCaptcha
-          sitekey="your-site-key"
+          sitekey={process.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001'}
           theme="dark"
           size="normal"
           onVerify={(token) => {
             console.log('hCaptcha Token:', token);
+            setCaptchaToken(token);
           }}
         />
       </div>
