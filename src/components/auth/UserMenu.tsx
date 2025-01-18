@@ -4,7 +4,7 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { AuthForm } from "./auth/AuthForm";
+import { AuthForm } from "./UserMenu/AuthForm"
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Settings, LogOut, Database, LayoutDashboard, User } from "lucide-react";
