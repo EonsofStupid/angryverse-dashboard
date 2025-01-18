@@ -14,15 +14,12 @@ export const AuthForm = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         console.log('Signed in:', session?.user?.id);
-        
-        // Successful sign in
         toast({
           title: "Success",
           description: "Successfully signed in",
         });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
-        // Reset captcha token on sign out
         setCaptchaToken(null);
       } else if (event === 'USER_UPDATED') {
         console.log('User updated:', session?.user?.id);
@@ -180,16 +177,13 @@ export const AuthForm = () => {
             console.log('hCaptcha Token:', token);
             setCaptchaToken(token);
             
-            // Set the captcha token in Supabase context
-            supabase.auth.setSession({
-              access_token: '',
-              refresh_token: '',
-              provider_token: token,
-            });
+            // Store the token in localStorage to use it during auth
+            localStorage.setItem('captcha_token', token);
           }}
           onExpire={() => {
             console.log('hCaptcha expired');
             setCaptchaToken(null);
+            localStorage.removeItem('captcha_token');
             toast({
               title: "Verification Expired",
               description: "Please complete the captcha verification again",
