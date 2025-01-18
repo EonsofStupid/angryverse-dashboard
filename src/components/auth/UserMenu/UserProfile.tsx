@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Settings, LogOut, Database, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { User } from "@supabase/supabase-js";
 
 interface UserProfileProps {
-  user: any;
+  user: User;
   isAdmin: boolean;
   onSignOut: () => Promise<void>;
   onSettingsClick: () => void;

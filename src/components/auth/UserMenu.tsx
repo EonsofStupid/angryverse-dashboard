@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { AuthForm } from "./UserMenu/AuthForm";
 import { UserProfile } from "./UserMenu/UserProfile";
@@ -29,16 +28,10 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { theme } = useThemeStore();
-  const { user, initialize, isAdmin, isLoading, signOut } = useAuthStore();
+  const { user, isAdmin, isLoading, isInitialized, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
-
-  useEffect(() => {
-    console.log('UserMenu mounted, initializing auth...');
-    initialize();
-  }, [initialize]);
 
   const handleSignOut = async () => {
     try {
@@ -99,7 +92,7 @@ export const UserMenu = () => {
         </VisuallyHidden>
         
         <div className="flex flex-col gap-4 mt-8 p-4">
-          {isLoading ? (
+          {!isInitialized || isLoading ? (
             <div className="flex items-center justify-center p-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
