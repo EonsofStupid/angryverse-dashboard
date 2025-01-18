@@ -2,19 +2,8 @@ import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
-import { useToast } from '@/hooks/use-toast';
-import { useEffect } from 'react';
-import { useAuthStore } from '@/store/useAuthStore';
 
 export const AuthForm = () => {
-  const { toast } = useToast();
-  const { initialize } = useAuthStore();
-
-  useEffect(() => {
-    // Initialize auth state when component mounts
-    initialize();
-  }, [initialize]);
-
   const appearance = {
     theme: ThemeMinimal,
     variables: {

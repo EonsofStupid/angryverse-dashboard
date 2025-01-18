@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -28,14 +28,10 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, isLoading, signOut, initialize } = useAuthStore();
+  const { user, isAdmin, isLoading, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
-
-  useEffect(() => {
-    initialize();
-  }, [initialize]);
 
   const handleSignOut = async () => {
     try {

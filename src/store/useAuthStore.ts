@@ -44,13 +44,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
-      // Clear all auth state
       get().clearState();
-      
-      // Clear any persisted session data
       localStorage.removeItem('supabase.auth.token');
-      
     } catch (error) {
       console.error('Error in signOut:', error);
       set({ error: error as Error });
@@ -62,12 +57,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       
-      // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
 
       if (session?.user) {
-        // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
@@ -99,7 +92,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   }
 }));
 
-// Setup auth state change listener
+// Single auth state change listener
 supabase.auth.onAuthStateChange(async (event, session) => {
   const store = useAuthStore.getState();
   
