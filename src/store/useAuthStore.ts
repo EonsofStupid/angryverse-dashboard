@@ -95,54 +95,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       } else {
         console.log('No existing session found');
+        set({
+          session: null,
+          user: null,
+          isAdmin: false,
+          error: null
+        });
       }
-
-      // Set up auth state change listener
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        
-        if (session) {
-          // Check admin role on auth state change
-          const { data: roleData, error: roleError } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id)
-            .single();
-
-          if (roleError) {
-            console.error('Error checking role on auth change:', roleError);
-          }
-
-          const isAdmin = roleData?.role === 'admin';
-          console.log('Updated user admin status:', isAdmin);
-
-          set({
-            session,
-            user: session.user,
-            isAdmin,
-            error: null
-          });
-        } else {
-          console.log('Session cleared');
-          set({
-            session: null,
-            user: null,
-            isAdmin: false,
-            error: null
-          });
-        }
-      });
 
       set({ initialized: true, isLoading: false });
       console.log('Auth initialization complete');
-      
-      // Cleanup function
-      const cleanup = () => {
-        console.log('Cleaning up auth subscription');
-        subscription.unsubscribe();
-      };
-      
-      window.addEventListener('unload', cleanup);
       
     } catch (error) {
       console.error('Error initializing auth:', error);

@@ -25,6 +25,9 @@ export const AuthForm = () => {
         });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
+        // Clear any persisted session data
+        localStorage.removeItem('supabase.auth.token');
+        window.location.reload(); // Force a clean reload
       } else if (event === 'USER_UPDATED') {
         console.log('User updated:', session?.user?.id);
       } else if (event === 'PASSWORD_RECOVERY') {
