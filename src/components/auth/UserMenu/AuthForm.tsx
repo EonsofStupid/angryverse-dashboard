@@ -5,30 +5,10 @@ import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
-import { AuthError, AuthApiError } from '@supabase/supabase-js';
 
 export const AuthForm = () => {
   const { toast } = useToast();
   const { initialize } = useAuthStore();
-
-  const getErrorMessage = (error: AuthError) => {
-    if (error instanceof AuthApiError) {
-      switch (error.status) {
-        case 400:
-          if (error.message.includes('invalid_credentials')) {
-            return 'Invalid email or password. Please check your credentials and try again.';
-          }
-          break;
-        case 422:
-          return 'Invalid email format. Please enter a valid email address.';
-        case 429:
-          return 'Too many login attempts. Please try again later.';
-        default:
-          return error.message;
-      }
-    }
-    return 'An unexpected error occurred. Please try again.';
-  };
 
   useEffect(() => {
     console.log('AuthForm mounted, initializing auth state...');
@@ -54,17 +34,6 @@ export const AuthForm = () => {
         toast({
           title: "Password Recovery",
           description: "Check your email for password reset instructions",
-        });
-      } else if (event === 'USER_DELETED') {
-        console.log('User deleted');
-        localStorage.clear(); // Clear all local storage
-        window.location.href = '/'; // Redirect to home
-      } else if (event === 'AUTH_ERROR') {
-        console.error('Auth error occurred');
-        toast({
-          variant: "destructive",
-          title: "Authentication Error",
-          description: session ? getErrorMessage(session as unknown as AuthError) : "An error occurred during authentication",
         });
       }
     });

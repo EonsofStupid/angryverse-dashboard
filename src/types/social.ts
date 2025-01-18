@@ -13,10 +13,6 @@ export interface SocialConnection {
   account_type: string | null;
   profile_url: string | null;
   avatar_url: string | null;
-  last_sync_at: string | null;
-  error_logs: Array<{ message: string; timestamp?: string }> | null;
-  performance_metrics: Record<string, any> | null;
-  extended_config: Record<string, any> | null;
 }
 
 export interface PlatformPost {
