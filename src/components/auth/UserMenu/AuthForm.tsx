@@ -2,46 +2,8 @@ import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
-import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
-  const { toast } = useToast();
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        console.log('Signed in:', session?.user?.id);
-      } else if (event === 'SIGNED_OUT') {
-        console.log('Signed out');
-      } else if (event === 'USER_UPDATED') {
-        console.log('User updated:', session?.user?.id);
-      } else if (event === 'PASSWORD_RECOVERY') {
-        toast({
-          title: "Password Recovery",
-          description: "Check your email for password reset instructions",
-        });
-      } else if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed');
-      } else if (event === 'INITIAL_SESSION') {
-        console.log('Initial session loaded');
-      } else {
-        console.error('Auth event:', event);
-        toast({
-          title: "Authentication Status",
-          description: "Authentication state changed",
-          variant: "destructive"
-        });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [toast]);
-
   const appearance = {
     theme: ThemeMinimal,
     variables: {
@@ -50,19 +12,6 @@ export const AuthForm = () => {
           brand: 'hsl(var(--primary))',
           brandAccent: 'hsl(var(--primary-light))',
           brandButtonText: 'hsl(var(--primary-foreground))',
-        },
-        space: {
-          buttonPadding: '1.5rem',
-          inputPadding: '1.5rem',
-        },
-        borderWidths: {
-          buttonBorderWidth: '1px',
-          inputBorderWidth: '1px',
-        },
-        radii: {
-          borderRadiusButton: '0.5rem',
-          buttonBorderRadius: '0.5rem',
-          inputBorderRadius: '0.5rem',
         },
       },
     },
@@ -84,11 +33,6 @@ export const AuthForm = () => {
         'hover:shadow-primary/20 hover:border-primary/30',
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-ring focus-visible:ring-offset-2',
-        'after:absolute after:inset-0',
-        'after:rounded-md after:transition-opacity',
-        'after:opacity-0 hover:after:opacity-100',
-        'after:bg-gradient-to-r after:from-primary/0',
-        'after:via-primary/10 after:to-primary/0',
         'disabled:pointer-events-none disabled:opacity-50'
       ),
       input: cn(
@@ -133,19 +77,6 @@ export const AuthForm = () => {
         'text-sm text-muted-foreground',
         'animate-in fade-in-0 slide-in-from-top-1'
       ),
-      providers: {
-        github: cn(
-          'bg-[#24292F]/90 hover:bg-[#24292F]/95',
-          'text-white',
-          'hover:shadow-[#24292F]/20'
-        ),
-        google: cn(
-          'bg-white/90 hover:bg-white/95',
-          'text-[#24292F]',
-          'hover:shadow-white/20',
-          'border-gray-200'
-        ),
-      },
     },
   };
 
@@ -165,21 +96,7 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
-        options={{
-          captchaToken: captchaToken
-        }}
       />
-      <div className="mt-4">
-        <HCaptcha
-          sitekey={process.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001'}
-          theme="dark"
-          size="normal"
-          onVerify={(token) => {
-            console.log('hCaptcha Token:', token);
-            setCaptchaToken(token);
-          }}
-        />
-      </div>
     </div>
   );
 };
