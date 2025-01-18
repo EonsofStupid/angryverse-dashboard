@@ -13,19 +13,6 @@ export const AuthForm = () => {
           brandAccent: 'hsl(var(--primary-light))',
           brandButtonText: 'hsl(var(--primary-foreground))',
         },
-        space: {
-          buttonPadding: '1.5rem',
-          inputPadding: '1.5rem',
-        },
-        borderWidths: {
-          buttonBorderWidth: '1px',
-          inputBorderWidth: '1px',
-        },
-        radii: {
-          borderRadiusButton: '0.5rem',
-          buttonBorderRadius: '0.5rem',
-          inputBorderRadius: '0.5rem',
-        },
       },
     },
     className: {
@@ -46,11 +33,6 @@ export const AuthForm = () => {
         'hover:shadow-primary/20 hover:border-primary/30',
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-ring focus-visible:ring-offset-2',
-        'after:absolute after:inset-0',
-        'after:rounded-md after:transition-opacity',
-        'after:opacity-0 hover:after:opacity-100',
-        'after:bg-gradient-to-r after:from-primary/0',
-        'after:via-primary/10 after:to-primary/0',
         'disabled:pointer-events-none disabled:opacity-50'
       ),
       input: cn(

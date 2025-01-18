@@ -22,8 +22,7 @@ const THEME_COLORS = [
 
 const getRandomColors = () => {
   const shuffled = [...THEME_COLORS].sort(() => 0.5 - Math.random());
-  const numColors = Math.floor(Math.random() * 2) + 4;
-  return shuffled.slice(0, numColors);
+  return shuffled.slice(0, Math.floor(Math.random() * 2) + 4);
 };
 
 export const UserMenu = () => {
@@ -38,10 +37,6 @@ export const UserMenu = () => {
       setOpen(false);
       await signOut();
       navigate("/");
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account",
-      });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
