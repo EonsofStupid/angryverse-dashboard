@@ -176,7 +176,7 @@ export const AuthForm = () => {
       />
       <div className="mt-4">
         <HCaptcha
-          sitekey={process.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001'}
+          sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001'}
           theme="dark"
           size="normal"
           onVerify={(token) => {
