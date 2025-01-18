@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
-import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
   const { toast } = useToast();
@@ -166,28 +165,6 @@ export const AuthForm = () => {
           },
         }}
       />
-      <div className="mt-4">
-        <HCaptcha
-          sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001'}
-          theme="dark"
-          size="normal"
-          onVerify={(token) => {
-            console.log('hCaptcha Token:', token);
-            supabase.auth.setSession({
-              access_token: token,
-              refresh_token: token
-            });
-          }}
-          onExpire={() => {
-            console.log('hCaptcha expired');
-            toast({
-              title: "Verification Expired",
-              description: "Please complete the captcha verification again",
-              variant: "destructive"
-            });
-          }}
-        />
-      </div>
     </div>
   );
 };
