@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -22,21 +23,34 @@ const THEME_COLORS = [
 
 const getRandomColors = () => {
   const shuffled = [...THEME_COLORS].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.floor(Math.random() * 2) + 4);
+  const numColors = Math.floor(Math.random() * 2) + 4;
+  return shuffled.slice(0, numColors);
 };
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, isLoading, signOut } = useAuthStore();
+  const { theme } = useThemeStore();
+  const { user, initialize, isAdmin, isLoading, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
 
+  useEffect(() => {
+    console.log('UserMenu mounted, initializing auth...');
+    initialize();
+  }, [initialize]);
+
   const handleSignOut = async () => {
     try {
+      console.log('Initiating sign out');
       setOpen(false);
       await signOut();
+      console.log('Sign out successful, navigating to home');
       navigate("/");
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -48,6 +62,7 @@ export const UserMenu = () => {
   };
 
   const handleSettingsClick = () => {
+    console.log('Settings clicked');
     toast({
       title: "Settings",
       description: "Settings page coming soon!",
@@ -58,7 +73,10 @@ export const UserMenu = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            console.log('UserMenu trigger clicked');
+            setOpen(true);
+          }}
           colors={colors}
         />
       </SheetTrigger>

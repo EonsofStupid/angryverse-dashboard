@@ -8,8 +8,6 @@ import { SocialConnection } from "@/types/social";
 import { useState } from "react";
 import { ConnectionWizard } from "./ConnectionWizard";
 import { DisconnectConfirmDialog } from "./DisconnectConfirmDialog";
-import { ConnectionMonitoring } from "./monitoring/ConnectionMonitoring";
-import { ConnectionTemplates } from "./templates/ConnectionTemplates";
 
 export const SocialConnections = () => {
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
@@ -126,8 +124,6 @@ export const SocialConnections = () => {
 
   return (
     <>
-      <ConnectionTemplates />
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {platformConfigs.map(({ platform, icon: Icon, color, title }) => {
           const platformConnections = connections?.filter(
@@ -167,19 +163,13 @@ export const SocialConnections = () => {
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <ConnectionMonitoring
-                            connection={connection}
-                            onRefresh={() => queryClient.invalidateQueries({ queryKey: ["social-connections"] })}
-                          />
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDisconnect(connection)}
-                          >
-                            Disconnect
-                          </Button>
-                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDisconnect(connection)}
+                        >
+                          Disconnect
+                        </Button>
                       </div>
                     ))}
                     <Button
