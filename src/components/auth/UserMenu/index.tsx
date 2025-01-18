@@ -104,7 +104,7 @@ export const UserMenu = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           ) : !user ? (
-            <AuthForm theme={theme} />
+            <AuthForm />
           ) : (
             <UserProfile 
               user={user}

@@ -2,13 +2,8 @@ import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
-import type { Theme } from '@/types/theme';
 
-interface AuthFormProps {
-  theme: Theme | null;
-}
-
-export const AuthForm = ({ theme }: AuthFormProps) => {
+export const AuthForm = () => {
   const appearance = {
     theme: ThemeMinimal,
     variables: {
