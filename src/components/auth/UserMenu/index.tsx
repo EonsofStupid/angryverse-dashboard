@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -29,23 +28,19 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { theme } = useThemeStore();
-  const { user, initialize, isAdmin, isLoading, signOut } = useAuthStore();
+  const { user, isAdmin, isLoading, signOut, initialize } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
 
   useEffect(() => {
-    console.log('UserMenu mounted, initializing auth...');
     initialize();
   }, [initialize]);
 
   const handleSignOut = async () => {
     try {
-      console.log('Initiating sign out');
       setOpen(false);
       await signOut();
-      console.log('Sign out successful, navigating to home');
       navigate("/");
       toast({
         title: "Signed out successfully",
@@ -62,7 +57,6 @@ export const UserMenu = () => {
   };
 
   const handleSettingsClick = () => {
-    console.log('Settings clicked');
     toast({
       title: "Settings",
       description: "Settings page coming soon!",
@@ -73,10 +67,7 @@ export const UserMenu = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => {
-            console.log('UserMenu trigger clicked');
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
           colors={colors}
         />
       </SheetTrigger>

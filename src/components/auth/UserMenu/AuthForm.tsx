@@ -11,37 +11,9 @@ export const AuthForm = () => {
   const { initialize } = useAuthStore();
 
   useEffect(() => {
-    console.log('AuthForm mounted, initializing auth state...');
+    // Initialize auth state when component mounts
     initialize();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
-      
-      if (event === 'SIGNED_IN') {
-        console.log('Signed in:', session?.user?.id);
-        toast({
-          title: "Success",
-          description: "Successfully signed in",
-        });
-      } else if (event === 'SIGNED_OUT') {
-        console.log('Signed out');
-        // Clear any persisted session data
-        localStorage.removeItem('supabase.auth.token');
-        window.location.reload(); // Force a clean reload
-      } else if (event === 'USER_UPDATED') {
-        console.log('User updated:', session?.user?.id);
-      } else if (event === 'PASSWORD_RECOVERY') {
-        toast({
-          title: "Password Recovery",
-          description: "Check your email for password reset instructions",
-        });
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [toast, initialize]);
+  }, [initialize]);
 
   const appearance = {
     theme: ThemeMinimal,
@@ -134,19 +106,6 @@ export const AuthForm = () => {
         'text-sm text-muted-foreground',
         'animate-in fade-in-0 slide-in-from-top-1'
       ),
-      providers: {
-        github: cn(
-          'bg-[#24292F]/90 hover:bg-[#24292F]/95',
-          'text-white',
-          'hover:shadow-[#24292F]/20'
-        ),
-        google: cn(
-          'bg-white/90 hover:bg-white/95',
-          'text-[#24292F]',
-          'hover:shadow-white/20',
-          'border-gray-200'
-        ),
-      },
     },
   };
 
@@ -166,14 +125,6 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
-        localization={{
-          variables: {
-            sign_in: {
-              email_label: 'Email',
-              password_label: 'Password',
-            },
-          },
-        }}
       />
     </div>
   );
