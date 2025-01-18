@@ -3,12 +3,49 @@ import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
   const { toast } = useToast();
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  // Custom auth handler that includes captcha token
+  const customAuthHandler = useCallback(async (formData: { email: string; password: string }) => {
+    if (!captchaToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the captcha verification",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          captchaToken: captchaToken
+        }
+      });
+
+      if (error) throw error;
+
+      console.log('Successfully signed in:', data);
+      toast({
+        title: "Success",
+        description: "Successfully signed in",
+      });
+    } catch (error) {
+      console.error('Auth error:', error);
+      toast({
+        title: "Authentication Error",
+        description: error instanceof Error ? error.message : "Failed to authenticate",
+        variant: "destructive"
+      });
+    }
+  }, [captchaToken, toast]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -29,11 +66,6 @@ export const AuthForm = () => {
         console.log('Initial session loaded');
       } else {
         console.error('Auth event:', event);
-        toast({
-          title: "Authentication Status",
-          description: "Authentication state changed",
-          variant: "destructive"
-        });
       }
     });
 
@@ -165,6 +197,7 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
+        onSubmit={customAuthHandler}
         localization={{
           variables: {
             sign_in: {
@@ -182,6 +215,15 @@ export const AuthForm = () => {
           onVerify={(token) => {
             console.log('hCaptcha Token:', token);
             setCaptchaToken(token);
+          }}
+          onExpire={() => {
+            console.log('hCaptcha expired');
+            setCaptchaToken(null);
+            toast({
+              title: "Verification Expired",
+              description: "Please complete the captcha verification again",
+              variant: "destructive"
+            });
           }}
         />
       </div>
