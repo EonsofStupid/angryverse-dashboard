@@ -2,8 +2,11 @@ import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
+import { useToast } from '@/hooks/use-toast';
 
 export const AuthForm = () => {
+  const { toast } = useToast();
+
   const appearance = {
     theme: ThemeMinimal,
     variables: {
@@ -136,6 +139,14 @@ export const AuthForm = () => {
         appearance={appearance}
         providers={['google', 'github']}
         redirectTo={`${window.location.origin}/auth/callback`}
+        onError={(error) => {
+          console.error('Auth error:', error);
+          toast({
+            title: "Authentication Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        }}
         magicLink={true}
       />
     </div>
