@@ -4,12 +4,19 @@ import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const AuthForm = () => {
   const { toast } = useToast();
+  const { initialize } = useAuthStore();
 
   useEffect(() => {
+    console.log('AuthForm mounted, initializing auth state...');
+    initialize();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.id);
+      
       if (event === 'SIGNED_IN') {
         console.log('Signed in:', session?.user?.id);
         toast({
@@ -31,7 +38,7 @@ export const AuthForm = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, [toast, initialize]);
 
   const appearance = {
     theme: ThemeMinimal,
