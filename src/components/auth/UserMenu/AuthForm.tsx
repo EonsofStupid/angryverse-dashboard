@@ -14,24 +14,16 @@ export const AuthForm = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         console.log('Signed in:', session?.user?.id);
-        if (!captchaToken) {
-          // If there's no captcha token, sign out the user
-          await supabase.auth.signOut();
-          toast({
-            title: "Verification Required",
-            description: "Please complete the captcha verification before signing in",
-            variant: "destructive"
-          });
-          return;
-        }
         
-        // Successful sign in with captcha
+        // Successful sign in
         toast({
           title: "Success",
           description: "Successfully signed in",
         });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
+        // Reset captcha token on sign out
+        setCaptchaToken(null);
       } else if (event === 'USER_UPDATED') {
         console.log('User updated:', session?.user?.id);
       } else if (event === 'PASSWORD_RECOVERY') {
@@ -39,19 +31,13 @@ export const AuthForm = () => {
           title: "Password Recovery",
           description: "Check your email for password reset instructions",
         });
-      } else if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed');
-      } else if (event === 'INITIAL_SESSION') {
-        console.log('Initial session loaded');
-      } else {
-        console.error('Auth event:', event);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast, captchaToken]);
+  }, [toast]);
 
   const appearance = {
     theme: ThemeMinimal,
@@ -193,6 +179,13 @@ export const AuthForm = () => {
           onVerify={(token) => {
             console.log('hCaptcha Token:', token);
             setCaptchaToken(token);
+            
+            // Set the captcha token in Supabase context
+            supabase.auth.setSession({
+              access_token: '',
+              refresh_token: '',
+              provider_token: token,
+            });
           }}
           onExpire={() => {
             console.log('hCaptcha expired');
