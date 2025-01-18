@@ -1,15 +1,6 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
-importI understand - you want the hCaptcha added ONLY to the password login while preserving 100% of your existing functionality and styling. Let me implement this exactly.
-
-<lov-code>
-Let's add hCaptcha to the password flow in AuthForm.tsx:
-
-<lov-write file_path="src/components/auth/UserMenu/AuthForm.tsx">
-import { Auth } from '@supabase/auth-ui-react';
-import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
@@ -36,7 +27,6 @@ export const AuthForm = () => {
       } else if (event === 'INITIAL_SESSION') {
         console.log('Initial session loaded');
       } else {
-        // Handle any unexpected errors
         console.error('Auth event:', event);
         toast({
           title: "Authentication Status",
@@ -153,7 +143,6 @@ export const AuthForm = () => {
         'text-sm text-muted-foreground',
         'animate-in fade-in-0 slide-in-from-top-1'
       ),
-      // Provider-specific buttons
       providers: {
         github: cn(
           'bg-[#24292F]/90 hover:bg-[#24292F]/95',
@@ -170,7 +159,6 @@ export const AuthForm = () => {
     },
   };
 
-  // Add localization for hCaptcha
   const localization = {
     auth: {
       sign_in: {
