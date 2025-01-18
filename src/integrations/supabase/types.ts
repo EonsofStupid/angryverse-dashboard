@@ -290,6 +290,163 @@ export type Database = {
           },
         ]
       }
+      content_categories: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          parent_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          parent_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_categories_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_categories_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_categories_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "content_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_mapping_rules: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          mapping_rules: Json
+          name: string
+          source_platform: string
+          target_platform: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          mapping_rules?: Json
+          name: string
+          source_platform: string
+          target_platform: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          mapping_rules?: Json
+          name?: string
+          source_platform?: string
+          target_platform?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_mapping_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_mapping_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_mapping_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_tags: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documentation: {
         Row: {
           category: Database["public"]["Enums"]["doc_category"]
@@ -693,6 +850,64 @@ export type Database = {
         }
         Relationships: []
       }
+      publishing_workflows: {
+        Row: {
+          approval_required: boolean | null
+          approvers: string[] | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          steps: Json
+          updated_at: string | null
+        }
+        Insert: {
+          approval_required?: boolean | null
+          approvers?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          steps?: Json
+          updated_at?: string | null
+        }
+        Update: {
+          approval_required?: boolean | null
+          approvers?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          steps?: Json
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publishing_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publishing_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publishing_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           category: string
@@ -745,6 +960,61 @@ export type Database = {
           },
         ]
       }
+      social_connection_templates: {
+        Row: {
+          config: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          name: string
+          platform: string
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          platform: string
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          platform?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_connection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_connection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_connection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       social_connections: {
         Row: {
           access_token: string | null
@@ -752,7 +1022,11 @@ export type Database = {
           avatar_url: string | null
           connected_at: string | null
           connection_name: string | null
+          error_logs: Json | null
+          extended_config: Json | null
           id: string
+          last_sync_at: string | null
+          performance_metrics: Json | null
           platform: string
           platform_user_id: string | null
           platform_username: string | null
@@ -768,7 +1042,11 @@ export type Database = {
           avatar_url?: string | null
           connected_at?: string | null
           connection_name?: string | null
+          error_logs?: Json | null
+          extended_config?: Json | null
           id?: string
+          last_sync_at?: string | null
+          performance_metrics?: Json | null
           platform: string
           platform_user_id?: string | null
           platform_username?: string | null
@@ -784,7 +1062,11 @@ export type Database = {
           avatar_url?: string | null
           connected_at?: string | null
           connection_name?: string | null
+          error_logs?: Json | null
+          extended_config?: Json | null
           id?: string
+          last_sync_at?: string | null
+          performance_metrics?: Json | null
           platform?: string
           platform_user_id?: string | null
           platform_username?: string | null
@@ -814,6 +1096,77 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_draft_posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          mapping_rule_id: string | null
+          media_urls: string[] | null
+          platforms: string[] | null
+          schedule_for: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          mapping_rule_id?: string | null
+          media_urls?: string[] | null
+          platforms?: string[] | null
+          schedule_for?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          mapping_rule_id?: string | null
+          media_urls?: string[] | null
+          platforms?: string[] | null
+          schedule_for?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_draft_posts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_draft_posts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_draft_posts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_draft_posts_mapping_rule_id_fkey"
+            columns: ["mapping_rule_id"]
+            isOneToOne: false
+            referencedRelation: "content_mapping_rules"
             referencedColumns: ["id"]
           },
         ]
