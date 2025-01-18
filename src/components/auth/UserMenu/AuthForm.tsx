@@ -165,7 +165,9 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
-        captchaToken={captchaToken}
+        options={{
+          captchaToken: captchaToken
+        }}
       />
       <div className="mt-4">
         <HCaptcha
