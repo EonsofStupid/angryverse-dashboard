@@ -3,54 +3,33 @@ import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
   const { toast } = useToast();
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
-  // Custom auth handler that includes captcha token
-  const customAuthHandler = useCallback(async (formData: { email: string; password: string }) => {
-    if (!captchaToken) {
-      toast({
-        title: "Verification Required",
-        description: "Please complete the captcha verification",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          captchaToken: captchaToken
-        }
-      });
-
-      if (error) throw error;
-
-      console.log('Successfully signed in:', data);
-      toast({
-        title: "Success",
-        description: "Successfully signed in",
-      });
-    } catch (error) {
-      console.error('Auth error:', error);
-      toast({
-        title: "Authentication Error",
-        description: error instanceof Error ? error.message : "Failed to authenticate",
-        variant: "destructive"
-      });
-    }
-  }, [captchaToken, toast]);
-
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         console.log('Signed in:', session?.user?.id);
+        if (!captchaToken) {
+          // If there's no captcha token, sign out the user
+          await supabase.auth.signOut();
+          toast({
+            title: "Verification Required",
+            description: "Please complete the captcha verification before signing in",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        // Successful sign in with captcha
+        toast({
+          title: "Success",
+          description: "Successfully signed in",
+        });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
       } else if (event === 'USER_UPDATED') {
@@ -72,7 +51,7 @@ export const AuthForm = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, [toast, captchaToken]);
 
   const appearance = {
     theme: ThemeMinimal,
@@ -197,7 +176,6 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
-        onSubmit={customAuthHandler}
         localization={{
           variables: {
             sign_in: {
