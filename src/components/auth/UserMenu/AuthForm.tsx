@@ -165,8 +165,13 @@ export const AuthForm = () => {
         magicLink={true}
         view="sign_in"
         showLinks={true}
-        options={{
-          captchaToken: captchaToken
+        localization={{
+          variables: {
+            sign_in: {
+              email_label: 'Email',
+              password_label: 'Password',
+            },
+          },
         }}
       />
       <div className="mt-4">
