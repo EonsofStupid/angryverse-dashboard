@@ -16,13 +16,6 @@ export const AuthForm = () => {
         console.log('Signed out');
       } else if (event === 'USER_UPDATED') {
         console.log('User updated:', session?.user?.id);
-      } else if (event === 'USER_DELETED') {
-        console.log('User deleted');
-        toast({
-          title: "Account Deleted",
-          description: "Your account has been deleted",
-          variant: "destructive"
-        });
       } else if (event === 'PASSWORD_RECOVERY') {
         toast({
           title: "Password Recovery",
@@ -30,11 +23,14 @@ export const AuthForm = () => {
         });
       } else if (event === 'TOKEN_REFRESHED') {
         console.log('Token refreshed');
-      } else if (event === 'ERROR') {
-        console.error('Auth error occurred');
+      } else if (event === 'INITIAL_SESSION') {
+        console.log('Initial session loaded');
+      } else {
+        // Handle any unexpected errors
+        console.error('Auth event:', event);
         toast({
-          title: "Authentication Error",
-          description: "An error occurred during authentication",
+          title: "Authentication Status",
+          description: "Authentication state changed",
           variant: "destructive"
         });
       }
