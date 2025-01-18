@@ -3,9 +3,47 @@ import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 export const AuthForm = () => {
   const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        console.log('Signed in:', session?.user?.id);
+      } else if (event === 'SIGNED_OUT') {
+        console.log('Signed out');
+      } else if (event === 'USER_UPDATED') {
+        console.log('User updated:', session?.user?.id);
+      } else if (event === 'USER_DELETED') {
+        console.log('User deleted');
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been deleted",
+          variant: "destructive"
+        });
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast({
+          title: "Password Recovery",
+          description: "Check your email for password reset instructions",
+        });
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed');
+      } else if (event === 'ERROR') {
+        console.error('Auth error occurred');
+        toast({
+          title: "Authentication Error",
+          description: "An error occurred during authentication",
+          variant: "destructive"
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [toast]);
 
   const appearance = {
     theme: ThemeMinimal,
@@ -139,14 +177,6 @@ export const AuthForm = () => {
         appearance={appearance}
         providers={['google', 'github']}
         redirectTo={`${window.location.origin}/auth/callback`}
-        onError={(error) => {
-          console.error('Auth error:', error);
-          toast({
-            title: "Authentication Error",
-            description: error.message,
-            variant: "destructive"
-          });
-        }}
         magicLink={true}
       />
     </div>
