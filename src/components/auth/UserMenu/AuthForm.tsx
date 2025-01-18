@@ -3,12 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 export const AuthForm = () => {
   const { toast } = useToast();
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -20,7 +19,6 @@ export const AuthForm = () => {
         });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
-        setCaptchaToken(null);
       } else if (event === 'USER_UPDATED') {
         console.log('User updated:', session?.user?.id);
       } else if (event === 'PASSWORD_RECOVERY') {
@@ -175,15 +173,13 @@ export const AuthForm = () => {
           size="normal"
           onVerify={(token) => {
             console.log('hCaptcha Token:', token);
-            setCaptchaToken(token);
-            
-            // Store the token in localStorage to use it during auth
-            localStorage.setItem('captcha_token', token);
+            supabase.auth.setSession({
+              access_token: token,
+              refresh_token: token
+            });
           }}
           onExpire={() => {
             console.log('hCaptcha expired');
-            setCaptchaToken(null);
-            localStorage.removeItem('captcha_token');
             toast({
               title: "Verification Expired",
               description: "Please complete the captcha verification again",

@@ -9,28 +9,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    flowType: 'pkce',
-    storage: {
-      getItem: (key) => {
-        const value = localStorage.getItem(key);
-        // Intercept auth requests to add captcha token
-        if (key.includes('auth-token')) {
-          const captchaToken = localStorage.getItem('captcha_token');
-          if (captchaToken) {
-            // Remove the token after using it
-            localStorage.removeItem('captcha_token');
-            // Add the token to the auth headers
-            return JSON.stringify({
-              ...JSON.parse(value || '{}'),
-              captcha_token: captchaToken
-            });
-          }
-        }
-        return value;
-      },
-      setItem: (key, value) => localStorage.setItem(key, value),
-      removeItem: (key) => localStorage.removeItem(key)
-    }
+    flowType: 'pkce'
   },
   global: {
     headers: {
