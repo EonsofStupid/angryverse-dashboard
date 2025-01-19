@@ -2,28 +2,23 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { AuthError } from '@supabase/supabase-js';
+import { useAuthStore } from '@/store/useAuthStore'; // <-- import your store
+import { useToast } from "@/hooks/use-toast";
 
 export const EmailPasswordForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signInWithPassword } = useAuthStore(); // <-- destructure store action
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
+      await signInWithPassword(email, password);
       toast({
         title: "Success",
         description: "Successfully signed in",
@@ -31,14 +26,13 @@ export const EmailPasswordForm = () => {
     } catch (error) {
       const authError = error as AuthError;
       console.error('Sign in error:', authError);
-      
       toast({
         title: "Error signing in",
         description: authError.message,
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -68,12 +62,12 @@ export const EmailPasswordForm = () => {
         />
       </div>
 
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         className="w-full"
-        disabled={isLoading}
+        disabled={isSubmitting}
       >
-        {isLoading ? "Signing in..." : "Sign in with Email"}
+        {isSubmitting ? "Signing in..." : "Sign in with Email"}
       </Button>
 
       <Button
