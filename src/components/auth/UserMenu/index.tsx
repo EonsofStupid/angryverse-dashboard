@@ -87,9 +87,9 @@ export const UserMenu = () => {
         
         <div className="flex flex-col gap-4 mt-8 p-4">
           {!isInitialized || isLoading ? (
-            <div className="flex items-center justify-center p-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
+           <div className="flex items-center justify-center p-8">
+           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
           ) : !user ? (
             <AuthForm />
           ) : (
