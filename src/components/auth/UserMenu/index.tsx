@@ -26,14 +26,23 @@ const getRandomColors = () => {
 };
 
 export const UserMenu = () => {
+  console.log("UserMenu component rendering"); // Debug log
+
   const [open, setOpen] = useState(false);
   const { user, isAdmin, isLoading, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
 
+  console.log("Auth store state:", { // Debug log
+    user,
+    isAdmin,
+    isLoading
+  });
+
   const handleSignOut = async () => {
     try {
+      console.log("Attempting sign out"); // Debug log
       setOpen(false);
       await signOut();
       navigate("/");
@@ -54,11 +63,16 @@ export const UserMenu = () => {
     });
   };
 
+  console.log("Rendering UserMenu with state:", { open, isLoading }); // Debug log
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            console.log("UserMenuTrigger clicked"); // Debug log
+            setOpen(true);
+          }}
           colors={colors}
         />
       </SheetTrigger>
