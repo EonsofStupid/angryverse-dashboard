@@ -13,12 +13,12 @@ interface UserProfileProps {
   onClose: () => void;
 }
 
-export const UserProfile = ({ 
-  user, 
-  isAdmin, 
-  onSignOut, 
+export const UserProfile = ({
+  user,
+  isAdmin,
+  onSignOut,
   onSettingsClick,
-  onClose 
+  onClose,
 }: UserProfileProps) => {
   const navigate = useNavigate();
 
@@ -28,13 +28,15 @@ export const UserProfile = ({
   };
 
   return (
-    <div className={cn(
-      "flex flex-col gap-4 p-4",
-      "bg-background/80 backdrop-blur-md",
-      "border border-primary/10",
-      "rounded-lg shadow-xl",
-      "animate-in fade-in-0 slide-in-from-top-5",
-    )}>
+    <div
+      className={cn(
+        "flex flex-col gap-4 p-4",
+        "bg-background/80 backdrop-blur-md",
+        "border border-primary/10",
+        "rounded-lg shadow-xl",
+        "animate-in fade-in-0 slide-in-from-top-5"
+      )}
+    >
       <div className="flex items-center gap-2 p-2">
         <Avatar>
           <AvatarFallback>
