@@ -1,22 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Github, Mail } from "lucide-react";
 import { Provider } from "@supabase/supabase-js";
+import { useAuthStore } from "@/store/useAuthStore"; // <-- import your store
 
 export const OAuthProviders = () => {
   const { toast } = useToast();
+  const { signInWithOAuth } = useAuthStore(); // <-- destructure store action
 
   const handleOAuthSignIn = async (provider: Provider) => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) throw error;
+      await signInWithOAuth(provider);
+      // success → onAuthStateChange will handle session
     } catch (error) {
       console.error('OAuth sign in error:', error);
       toast({
