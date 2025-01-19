@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { UserMenuTrigger } from "./UserMenuTrigger";
 import { UserProfile } from "./UserProfile";
 import { AuthForm } from "./AuthForm";
+import { Loader2 } from "lucide-react";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -26,26 +27,21 @@ const getRandomColors = () => {
 };
 
 export const UserMenu = () => {
-  console.log("UserMenu component rendering"); // Debug log
-
   const [open, setOpen] = useState(false);
-  const { user, isAdmin, isLoading, signOut } = useAuthStore();
+  const { user, isAdmin, isLoading, isInitialized, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
 
-  console.log("Auth store state:", { // Debug log
-    user,
-    isAdmin,
-    isLoading
-  });
-
   const handleSignOut = async () => {
     try {
-      console.log("Attempting sign out"); // Debug log
       setOpen(false);
       await signOut();
       navigate("/");
+      toast({
+        title: "Signed out successfully",
+        description: "Come back soon!",
+      });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
@@ -63,16 +59,11 @@ export const UserMenu = () => {
     });
   };
 
-  console.log("Rendering UserMenu with state:", { open, isLoading }); // Debug log
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => {
-            console.log("UserMenuTrigger clicked"); // Debug log
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
           colors={colors}
         />
       </SheetTrigger>
@@ -95,9 +86,9 @@ export const UserMenu = () => {
         </VisuallyHidden>
         
         <div className="flex flex-col gap-4 mt-8 p-4">
-          {isLoading ? (
-            <div className="flex items-center justify-center p-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          {!isInitialized || isLoading ? (
+            <div className="flex items-center justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : !user ? (
             <AuthForm />
