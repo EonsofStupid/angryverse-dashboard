@@ -35,11 +35,13 @@ const initialState: AuthState = {
 export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
   ...initialState,
 
+  // Basic setters
   setUser: (user) => set({ user }),
   setSession: (session) => set({ session }),
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
 
+  // Clears all auth state but marks isInitialized so UI knows the store is loaded
   clearState: () => {
     set({
       ...initialState,
@@ -48,6 +50,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     });
   },
 
+  // Initial load: Check for existing session and fetch user role
   initialize: async () => {
     try {
       console.log('Initializing auth store...');
@@ -57,7 +60,6 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         data: { session },
         error: sessionError,
       } = await supabase.auth.getSession();
-
       if (sessionError) throw sessionError;
 
       console.log('Session retrieved:', session ? 'exists' : 'none');
@@ -98,18 +100,13 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     }
   },
 
-  // -------------------------------
-  // NEW SIGN-IN METHODS
-  // -------------------------------
+  // Sign in with password (called from EmailPasswordForm)
   signInWithPassword: async (email: string, password: string) => {
     try {
       set({ isLoading: true, error: null });
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      // The `onAuthStateChange` listener will trigger `initialize()`
+      // onAuthStateChange will trigger store.initialize() if SIGNED_IN
     } catch (error) {
       console.error('Error signing in with password:', error);
       set({ error: error as Error });
@@ -119,15 +116,18 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     }
   },
 
+  // Sign in with OAuth (called from OAuthProviders)
   signInWithOAuth: async (provider: Provider, redirectTo?: string) => {
     try {
       set({ isLoading: true, error: null });
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: redirectTo || `${window.location.origin}/auth/callback` },
+        options: {
+          redirectTo: redirectTo || `${window.location.origin}/auth/callback`,
+        },
       });
       if (error) throw error;
-      // The `onAuthStateChange` listener will trigger `initialize()`
+      // onAuthStateChange will trigger store.initialize() if SIGNED_IN
     } catch (error) {
       console.error('Error signing in with OAuth:', error);
       set({ error: error as Error });
@@ -136,8 +136,8 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
       set({ isLoading: false });
     }
   },
-  // -------------------------------
 
+  // Sign out the user
   signOut: async () => {
     try {
       console.log('Signing out...');
@@ -148,20 +148,16 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
       get().clearState();
     } catch (error) {
       console.error('Error signing out:', error);
-      set({
-        error: error as Error,
-        isLoading: false,
-      });
-      throw error; // Re-throw to handle in UI
+      set({ error: error as Error, isLoading: false });
+      throw error;
     }
   },
 }));
 
-// Supabase's auth state listener
+// Listen for changes to Supabase auth, update store accordingly
 supabase.auth.onAuthStateChange(async (event, session) => {
   console.log('Auth state changed:', event);
   const store = useAuthStore.getState();
-
   try {
     switch (event) {
       case 'SIGNED_IN':
@@ -191,18 +187,3 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     store.setError(error as Error);
   }
 });
-
-// Optional convenience hooks
-export const useIsAuthenticated = () => {
-  const { user, isInitialized, isLoading } = useAuthStore();
-  return {
-    isAuthenticated: !!user,
-    isInitialized,
-    isLoading,
-  };
-};
-
-export const useHasRole = (role: string) => {
-  const { isAdmin } = useAuthStore();
-  return role === 'admin' ? isAdmin : false;
-};
