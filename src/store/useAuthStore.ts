@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User, Session, AuthError } from '@supabase/supabase-js';
+import { User, Session, AuthError, Provider } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthState {
@@ -17,6 +17,8 @@ interface AuthActions {
   setSession: (session: Session | null) => void;
   setError: (error: Error | null) => void;
   setIsLoading: (isLoading: boolean) => void;
+  signInWithPassword: (email: string, password: string) => Promise<void>;
+  signInWithOAuth: (provider: Provider, redirectTo?: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearState: () => void;
 }
@@ -37,7 +39,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
   setSession: (session) => set({ session }),
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
-  
+
   clearState: () => {
     set({
       ...initialState,
@@ -50,8 +52,12 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     try {
       console.log('Initializing auth store...');
       set({ isLoading: true, error: null });
-      
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
       if (sessionError) throw sessionError;
 
       console.log('Session retrieved:', session ? 'exists' : 'none');
@@ -70,7 +76,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
         }
 
         console.log('User role retrieved:', roleData?.role);
-        
+
         set({
           session,
           user: session.user,
@@ -83,7 +89,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
       }
     } catch (error) {
       console.error('Error initializing auth:', error);
-      set({ 
+      set({
         error: error as Error,
         isInitialized: true,
       });
@@ -92,44 +98,80 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
     }
   },
 
+  // -------------------------------
+  // NEW SIGN-IN METHODS
+  // -------------------------------
+  signInWithPassword: async (email: string, password: string) => {
+    try {
+      set({ isLoading: true, error: null });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      // The `onAuthStateChange` listener will trigger `initialize()`
+    } catch (error) {
+      console.error('Error signing in with password:', error);
+      set({ error: error as Error });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  signInWithOAuth: async (provider: Provider, redirectTo?: string) => {
+    try {
+      set({ isLoading: true, error: null });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: redirectTo || `${window.location.origin}/auth/callback` },
+      });
+      if (error) throw error;
+      // The `onAuthStateChange` listener will trigger `initialize()`
+    } catch (error) {
+      console.error('Error signing in with OAuth:', error);
+      set({ error: error as Error });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  // -------------------------------
+
   signOut: async () => {
     try {
       console.log('Signing out...');
       set({ isLoading: true });
-      
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
       console.log('Sign out successful');
       get().clearState();
     } catch (error) {
       console.error('Error signing out:', error);
-      set({ 
+      set({
         error: error as Error,
-        isLoading: false 
+        isLoading: false,
       });
       throw error; // Re-throw to handle in UI
     }
   },
 }));
 
-// Auth state change listener
+// Supabase's auth state listener
 supabase.auth.onAuthStateChange(async (event, session) => {
   console.log('Auth state changed:', event);
   const store = useAuthStore.getState();
-  
+
   try {
     switch (event) {
       case 'SIGNED_IN':
         console.log('User signed in, initializing...');
         await store.initialize();
         break;
-        
       case 'SIGNED_OUT':
         console.log('User signed out, clearing state...');
         store.clearState();
         break;
-        
       case 'USER_UPDATED':
         if (session) {
           console.log('User updated, updating session...');
@@ -137,7 +179,6 @@ supabase.auth.onAuthStateChange(async (event, session) => {
           store.setSession(session);
         }
         break;
-        
       case 'TOKEN_REFRESHED':
         if (session) {
           console.log('Token refreshed, updating session...');
@@ -151,18 +192,17 @@ supabase.auth.onAuthStateChange(async (event, session) => {
   }
 });
 
-// Helper to check if user is authenticated
+// Optional convenience hooks
 export const useIsAuthenticated = () => {
   const { user, isInitialized, isLoading } = useAuthStore();
   return {
     isAuthenticated: !!user,
     isInitialized,
-    isLoading
+    isLoading,
   };
 };
 
-// Helper to check if user has specific role
 export const useHasRole = (role: string) => {
-  const { user, isAdmin } = useAuthStore();
+  const { isAdmin } = useAuthStore();
   return role === 'admin' ? isAdmin : false;
 };
