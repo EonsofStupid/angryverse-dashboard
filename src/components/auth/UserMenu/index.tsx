@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { UserMenuTrigger } from "./UserMenuTrigger";
 import { UserProfile } from "./UserProfile";
 import { AuthForm } from "./AuthForm";
-import { Loader2 } from "lucide-react";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -35,8 +34,8 @@ export const UserMenu = () => {
 
   const handleSignOut = async () => {
     try {
-      setOpen(false);
       await signOut();
+      setOpen(false);
       navigate("/");
       toast({
         title: "Signed out successfully",
@@ -67,42 +66,44 @@ export const UserMenu = () => {
           colors={colors}
         />
       </SheetTrigger>
-      <SheetContent 
-        side="right"
-        className={cn(
-          "fixed inset-y-0 right-0",
-          "w-[300px] sm:w-[400px]",
-          "bg-background/80 backdrop-blur-md",
-          "border-l border-primary/10",
-          "shadow-lg",
-          "z-[100]"
-        )}
-      >
-        <VisuallyHidden>
-          <DialogTitle>User Menu</DialogTitle>
-          <DialogDescription>
-            Access your account settings and manage your profile
-          </DialogDescription>
-        </VisuallyHidden>
-        
-        <div className="flex flex-col gap-4 mt-8 p-4">
-          {!isInitialized || isLoading ? (
-           <div className="flex items-center justify-center p-8">
-           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-          ) : !user ? (
-            <AuthForm />
-          ) : (
-            <UserProfile 
-              user={user}
-              isAdmin={isAdmin}
-              onSignOut={handleSignOut}
-              onSettingsClick={handleSettingsClick}
-              onClose={() => setOpen(false)}
-            />
+      {open && (
+        <SheetContent 
+          side="right"
+          className={cn(
+            "fixed inset-y-0 right-0",
+            "w-[300px] sm:w-[400px]",
+            "bg-background/80 backdrop-blur-md",
+            "border-l border-primary/10",
+            "shadow-lg",
+            "z-[100]"
           )}
-        </div>
-      </SheetContent>
+        >
+          <VisuallyHidden>
+            <DialogTitle>User Menu</DialogTitle>
+            <DialogDescription>
+              Access your account settings and manage your profile
+            </DialogDescription>
+          </VisuallyHidden>
+          
+          <div className="flex flex-col gap-4 mt-8 p-4">
+            {!isInitialized || isLoading ? (
+              <div className="flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : !user ? (
+              <AuthForm />
+            ) : (
+              <UserProfile 
+                user={user}
+                isAdmin={isAdmin}
+                onSignOut={handleSignOut}
+                onSettingsClick={handleSettingsClick}
+                onClose={() => setOpen(false)}
+              />
+            )}
+          </div>
+        </SheetContent>
+      )}
     </Sheet>
   );
 };
