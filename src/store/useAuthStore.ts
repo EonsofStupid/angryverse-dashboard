@@ -26,20 +26,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialized: false,
   isAdmin: false,
 
-  setUser: (user) => set({ user }),
-  setSession: (session) => set({ session }),
-  setError: (error) => set({ error }),
-  setIsLoading: (isLoading) => set({ isLoading }),
+  setUser: (user) => {
+    console.log('Auth Store: Setting user', { userId: user?.id });
+    set({ user });
+  },
+  setSession: (session) => {
+    console.log('Auth Store: Setting session', { sessionId: session?.access_token });
+    set({ session });
+  },
+  setError: (error) => {
+    console.error('Auth Store: Error occurred', error);
+    set({ error });
+  },
+  setIsLoading: (isLoading) => {
+    console.log('Auth Store: Loading state changed', { isLoading });
+    set({ isLoading });
+  },
 
   signOut: async () => {
     try {
-      console.log('Signing out...');
+      console.log('Auth Store: Signing out...');
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Error signing out:', error);
+        console.error('Auth Store: Error signing out:', error);
         throw error;
       }
-      console.log('Successfully signed out');
+      console.log('Auth Store: Successfully signed out');
       set({ 
         user: null, 
         session: null, 
@@ -47,7 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAdmin: false 
       });
     } catch (error) {
-      console.error('Error in signOut:', error);
+      console.error('Auth Store: Error in signOut:', error);
       set({ error: error as Error });
       throw error;
     }
@@ -56,23 +68,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialize: async () => {
     const state = get();
     if (state.initialized) {
-      console.log('Auth already initialized');
+      console.log('Auth Store: Already initialized');
       return;
     }
 
     try {
-      console.log('Initializing auth...');
+      console.log('Auth Store: Initializing...');
       set({ isLoading: true });
       
       // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) {
-        console.error('Session error:', sessionError);
+        console.error('Auth Store: Session error:', sessionError);
         throw sessionError;
       }
 
       if (session) {
-        console.log('Found existing session:', session.user.id);
+        console.log('Auth Store: Found existing session:', { 
+          userId: session.user.id,
+          email: session.user.email 
+        });
+
         // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
@@ -81,11 +97,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           .single();
 
         if (roleError) {
-          console.error('Error checking role:', roleError);
+          console.error('Auth Store: Error checking role:', roleError);
         }
 
         const isAdmin = roleData?.role === 'admin';
-        console.log('User admin status:', isAdmin);
+        console.log('Auth Store: User admin status:', { isAdmin, roleData });
 
         set({
           session,
@@ -94,7 +110,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           error: null
         });
       } else {
-        console.log('No existing session found');
+        console.log('Auth Store: No existing session found');
         set({
           session: null,
           user: null,
@@ -104,10 +120,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
 
       set({ initialized: true, isLoading: false });
-      console.log('Auth initialization complete');
+      console.log('Auth Store: Initialization complete');
       
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      console.error('Auth Store: Error initializing auth:', error);
       set({ 
         error: error as Error,
         user: null,

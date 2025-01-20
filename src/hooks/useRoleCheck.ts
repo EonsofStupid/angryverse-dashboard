@@ -10,7 +10,13 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
     let isMounted = true;
 
     const checkRole = async () => {
+      console.log('Role Check: Starting role check for user', { 
+        userId: user?.id, 
+        requiredRole 
+      });
+
       if (!user) {
+        console.log('Role Check: No user provided, setting hasRole to false');
         if (isMounted) {
           setHasRole(false);
           setIsLoading(false);
@@ -26,18 +32,25 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
           .maybeSingle();
 
         if (error) {
-          console.error('Error checking role:', error);
+          console.error('Role Check: Error checking role:', error);
           if (isMounted) {
             setHasRole(false);
           }
           return;
         }
 
+        const roleMatches = data?.role === requiredRole;
+        console.log('Role Check: Role verification result', { 
+          userRole: data?.role,
+          requiredRole,
+          hasRole: roleMatches
+        });
+
         if (isMounted) {
-          setHasRole(data?.role === requiredRole);
+          setHasRole(roleMatches);
         }
       } catch (err) {
-        console.error('Error in role check:', err);
+        console.error('Role Check: Error in role check:', err);
         if (isMounted) {
           setHasRole(false);
         }
