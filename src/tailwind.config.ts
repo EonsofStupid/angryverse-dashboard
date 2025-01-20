@@ -1,6 +1,5 @@
-// Unified Tailwind configuration with options to capture all differences
 import type { Config } from "tailwindcss";
-import { glassPlugin } from "./src/theme/plugins/glass";
+import { glassPlugin } from "./theme/plugins/glass";
 
 export default {
   darkMode: ["class"], // Adds dark mode support

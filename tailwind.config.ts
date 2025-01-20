@@ -1,4 +1,3 @@
-// Unified Tailwind configuration with options to capture all differences
 import type { Config } from "tailwindcss";
 import { glassPlugin } from "./src/theme/plugins/glass";
 
