@@ -4,12 +4,12 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { AuthForm } from "./UserMenu/AuthForm";
+import { UserProfile } from "./UserMenu/UserProfile";
+import { UserMenuTrigger } from "./UserMenu/UserMenuTrigger";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { UserMenuTrigger } from "./UserMenuTrigger";
-import { UserProfile } from "./UserProfile";
-import { AuthForm } from "./AuthForm";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple

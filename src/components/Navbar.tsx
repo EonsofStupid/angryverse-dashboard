@@ -1,4 +1,4 @@
-import { UserMenu } from "./auth/UserMenu/";
+import { UserMenu } from "./auth/UserMenu";
 import { DesktopNav } from "./navigation/desktop/DesktopNav";
 import { MobileNav } from "./navigation/mobile/MobileNav";
 import { MobileMenu } from "./navigation/mobile/MobileMenu";
@@ -12,7 +12,6 @@ import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 
 export const Navbar = () => {
-  console.log("Navbar rendering"); // Debug log
   const { isMenuOpen, toggleMenu, setIsMenuOpen } = useNavAnimation();
   const theme = useNavTheme();
   const isMobile = useIsMobile();
