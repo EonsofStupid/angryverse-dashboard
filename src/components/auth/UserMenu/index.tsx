@@ -3,22 +3,22 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useThemeStore } from "@/store/useThemeStore";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore } from "@/store/useAuthStore"; // Make sure paths are correct
+import { AuthForm } from "./UserMenu/AuthForm";
+import { UserProfile } from "./UserMenu/UserProfile";
+import { UserMenuTrigger } from "./UserMenu/UserMenuTrigger";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { UserMenuTrigger } from "./UserMenuTrigger";
-import { UserProfile } from "./UserProfile";
-import { AuthForm } from "./AuthForm";
 
 const THEME_COLORS = [
-  'rgba(139, 92, 246, 0.8)',   // Vivid Purple
-  'rgba(217, 70, 239, 0.8)',   // Magenta Pink
-  'rgba(249, 115, 22, 0.8)',   // Bright Orange
-  'rgba(14, 165, 233, 0.8)',   // Ocean Blue
-  'rgba(255, 0, 127, 0.8)',    // Cyber Pink
-  'rgba(0, 255, 245, 0.8)',    // Cyber Cyan
-  'rgba(121, 40, 202, 0.8)'    // Cyber Purple
+  'rgba(139, 92, 246, 0.8)',   
+  'rgba(217, 70, 239, 0.8)',   
+  'rgba(249, 115, 22, 0.8)',   
+  'rgba(14, 165, 233, 0.8)',   
+  'rgba(255, 0, 127, 0.8)',    
+  'rgba(0, 255, 245, 0.8)',    
+  'rgba(121, 40, 202, 0.8)'    
 ];
 
 const getRandomColors = () => {
@@ -30,22 +30,21 @@ const getRandomColors = () => {
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { theme } = useThemeStore();
-  const { user, initialize, isAdmin, isLoading, signOut } = useAuthStore();
+  const { user, role, isLoading, error, initialize, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
   const colors = getRandomColors();
 
+  // Initialize the auth store (fetch session, etc.) once
   useEffect(() => {
-    console.log('UserMenu mounted, initializing auth...');
+    console.log('UserMenu mounted, calling initialize()...');
     initialize();
   }, [initialize]);
 
   const handleSignOut = async () => {
     try {
-      console.log('Initiating sign out');
       setOpen(false);
       await signOut();
-      console.log('Sign out successful, navigating to home');
       navigate("/");
       toast({
         title: "Signed out successfully",
@@ -68,6 +67,9 @@ export const UserMenu = () => {
       description: "Settings page coming soon!",
     });
   };
+
+  // Derive 'isAdmin' from role in the store
+  const isAdmin = role === 'admin';
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
