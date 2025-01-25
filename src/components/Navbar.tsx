@@ -42,6 +42,7 @@ export const Navbar = () => {
             'bg-background/30',
             'backdrop-blur-xl',
             'border-t-0 border-x-0 border-b border-white/20',
+            // Enhanced glass depth effect
             'after:absolute after:inset-0',
             'after:bg-gradient-to-b after:from-white/10 after:to-transparent',
             'after:opacity-50 after:pointer-events-none',
