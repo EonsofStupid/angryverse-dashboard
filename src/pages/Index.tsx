@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { VisualDatabase } from "@/components/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
+import { Footer } from "@/components/Footer";
 import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
 import { MotionEffects } from "@/components/effects/MotionEffects";
@@ -27,6 +28,7 @@ const Index = () => {
         </section>
         <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
+        <Footer />
       </div>
       
       {isLoading && (
