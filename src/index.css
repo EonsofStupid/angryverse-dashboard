@@ -1,24 +1,3 @@
-/* Base Tokens */
-@import './theme/tokens/colors.css';
-@import './theme/tokens/typography.css';
-@import './theme/tokens/spacing.css';
-@import './theme/tokens/effects.css';
-@import './theme/tokens/layout.css';
-
-/* Site Theme */
-@import './theme/site/base/colors.css';
-@import './theme/site/base/typography.css';
-@import './theme/site/effects/glass.css';
-@import './theme/site/effects/animations.css';
-@import './theme/site/effects/interactions.css';
-
-/* Admin Theme */
-@import './theme/admin/base/colors.css';
-@import './theme/admin/base/typography.css';
-@import './theme/admin/effects/glass.css';
-@import './theme/admin/effects/animations.css';
-@import './theme/admin/effects/interactions.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,73 +34,57 @@
 
   * {
     @apply border-border;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
   }
 
   body {
     @apply bg-background text-foreground antialiased min-h-screen w-full;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
 
-  /* Hover Effects */
+@layer components {
   .hover-lift {
-    transition: transform var(--hover-transition) var(--animation-curve-ease-out);
+    @apply transition-transform duration-300 ease-out;
   }
 
   .hover-lift:hover {
-    transform: translateY(var(--hover-lift));
+    @apply -translate-y-1;
   }
 
   .hover-scale {
-    transition: transform var(--hover-transition) var(--animation-curve-ease-out);
+    @apply transition-transform duration-300 ease-out;
   }
 
   .hover-scale:hover {
-    transform: scale(var(--hover-scale));
+    @apply scale-105;
   }
 
   .hover-glow {
-    transition: filter var(--hover-transition) var(--animation-curve-ease-out);
+    @apply transition-all duration-300 ease-out;
   }
 
   .hover-glow:hover {
-    filter: drop-shadow(0 0 var(--hover-glow-strength) var(--hover-glow-color));
+    @apply drop-shadow-[0_0_10px_var(--hover-glow-color)];
   }
 
-  /* Glass Effect */
   .glass {
-    background: rgba(0, 0, 0, var(--glass-opacity));
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply bg-black/10 backdrop-blur border border-white/10;
   }
+}
 
-  /* Animation Classes */
+@layer utilities {
   .animate-fade-in {
-    animation: fade-in var(--animation-timing-normal) var(--animation-curve-ease-out);
+    animation: fade-in 0.3s ease-out;
   }
 
   .animate-scale-in {
-    animation: scale-in var(--animation-timing-normal) var(--animation-curve-ease-out);
+    animation: scale-in 0.2s ease-out;
   }
 
   .animate-float {
-    animation: float var(--animation-timing-very-slow) var(--animation-curve-ease-in-out) infinite;
+    animation: float 3s ease-in-out infinite;
   }
 
-  /* Special Effects */
-  .neon-text {
-    text-shadow: 0 0 var(--neon-glow-size) var(--hover-glow-color);
-    animation: neon-flicker var(--neon-flicker-speed) infinite;
-  }
-
-  .glitch-text {
-    position: relative;
-    animation: glitch calc(1s / var(--glitch-frequency)) infinite;
-  }
-
-  /* Keyframes */
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -134,79 +97,6 @@
 
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(var(--hover-lift)); }
-  }
-
-  @keyframes neon-flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: var(--hover-glow-opacity); }
-  }
-
-  @keyframes glitch {
-    0% {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      transform: translate(0);
-    }
-    20% {
-      clip-path: polygon(15% 0, 85% 0, 85% 100%, 15% 100%);
-      transform: translate(-2px);
-    }
-    40% {
-      clip-path: polygon(10% 0, 90% 0, 90% 100%, 10% 100%);
-      transform: translate(2px);
-    }
-    60% {
-      clip-path: polygon(5% 0, 95% 0, 95% 100%, 5% 100%);
-      transform: translate(0);
-    }
-    100% {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      transform: translate(0);
-    }
-  }
-
-  .animate-glitch {
-    animation: glitch 3s infinite;
-    animation-timing-function: steps(2, jump-none);
-  }
-
-  @keyframes scan-line {
-    0% {
-      transform: translateY(-100%);
-    }
-    100% {
-      transform: translateY(200%);
-    }
-  }
-
-  @keyframes scan {
-    0% {
-      background-position: 0 0;
-    }
-    100% {
-      background-position: 0 100%;
-    }
-  }
-
-  .animate-scan-line {
-    animation: scan-line 2s linear infinite;
-  }
-
-  .animate-scan {
-    animation: scan 10s linear infinite;
-  }
-
-  @keyframes gradient-x {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .animate-gradient-x {
-    animation: gradient-x 15s ease infinite;
-    background-size: 400% 400%;
+    50% { transform: translateY(-4px); }
   }
 }
