@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Github, Twitter } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeInfoPopup } from "@/components/theme/ThemeInfoPopup";
 
 export const Footer = () => {
   return (
@@ -12,8 +13,8 @@ export const Footer = () => {
         "relative mt-16 w-[95vw] mx-auto min-h-[300px]",
         "before:absolute before:top-0 before:left-0 before:w-full before:h-full",
         "before:bg-gradient-to-br before:from-[#1a2e35] before:via-[#192841] before:to-[#1a2e35]",
-        "before:transform before:skew-y-[-5deg]", // Increased skew angle for more pronounced trapezoid
-        "before:origin-top", // Added origin-top to maintain shape
+        "before:transform before:skew-y-[-5deg]",
+        "before:origin-top",
         "before:glass before:z-[-1]",
         "after:absolute after:inset-0 after:bg-grid-white/[0.02]",
         "flex flex-col items-center justify-center gap-12"
@@ -74,9 +75,7 @@ export const Footer = () => {
             <a href="#" className="text-white/60 hover:text-cyan-400 transition-colors">
               <Twitter className="w-4 h-4" />
             </a>
-            <button className="ml-4 px-3 py-1 rounded border border-cyan-400/30 text-cyan-400 text-sm hover:bg-cyan-400/10 transition-colors">
-              Theme Info
-            </button>
+            <ThemeInfoPopup />
           </div>
         </div>
       </div>
