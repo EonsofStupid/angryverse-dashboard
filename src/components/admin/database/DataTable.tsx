@@ -4,10 +4,16 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Edit, Save, X } from "lucide-react";
 import { useTableData } from "@/hooks/useTableData";
-import { TableNames, TableData } from "@/types/database-management";
+import { TableNames } from "@/types/database-management";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+
+// Define a simpler type for table data that won't cause infinite recursion
+type SimpleTableData = {
+  id: string;
+  [key: string]: string | number | boolean | null;
+};
 
 interface DataTableProps {
   selectedTable: TableNames | null;
@@ -17,9 +23,9 @@ interface DataTableProps {
 export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
   const { toast } = useToast();
   const { data: tableData, isLoading } = useTableData(selectedTable, searchQuery);
-  const [editingRow, setEditingRow] = useState<TableData | null>(null);
+  const [editingRow, setEditingRow] = useState<SimpleTableData | null>(null);
 
-  const handleSaveRow = async (row: TableData) => {
+  const handleSaveRow = async (row: SimpleTableData) => {
     if (!selectedTable) return;
 
     const { error } = await supabase
@@ -71,7 +77,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
               </TableCell>
             </TableRow>
           ) : (
-            tableData?.map((row: TableData) => (
+            tableData?.map((row: SimpleTableData) => (
               <TableRow key={row.id}>
                 <TableCell>
                   {editingRow?.id === row.id ? (
@@ -105,7 +111,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                   <TableCell key={key}>
                     {editingRow?.id === row.id ? (
                       <Input
-                        value={editingRow[key] || ""}
+                        value={editingRow[key]?.toString() || ""}
                         onChange={(e) =>
                           setEditingRow({
                             ...editingRow,
