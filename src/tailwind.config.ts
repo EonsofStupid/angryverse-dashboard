@@ -20,30 +20,30 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "var(--accent)",
+          foreground: "var(--accent-foreground)",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
         },
       },
       borderRadius: {
@@ -56,6 +56,14 @@ export default {
         mono: ["var(--font-mono)"],
       },
       keyframes: {
+        "cyber-lines": {
+          "0%": {
+            "background-position": "0% 100%",
+          },
+          "100%": {
+            "background-position": "0% 0%",
+          },
+        },
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
@@ -83,6 +91,7 @@ export default {
         },
       },
       animation: {
+        "cyber-lines": "cyber-lines 12s linear infinite",
         "fade-in": "fade-in 0.3s ease-out forwards",
         "scale-in": "scale-in 0.2s ease-out forwards",
         "glitch": "glitch 3s infinite steps(2, jump-none)",
@@ -93,5 +102,22 @@ export default {
   plugins: [
     require("tailwindcss-animate"),
     glassPlugin,
+    function ({ addUtilities }) {
+      addUtilities({
+        ".clip-trapezoid": {
+          clipPath: "polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%)",
+        },
+        ".bg-cyber-lines": {
+          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            rgba(0, 255, 255, 0.05) 0px,
+            transparent 1px,
+            transparent 20px
+          )`,
+          backgroundSize: "cover",
+          backgroundRepeat: "repeat",
+        },
+      });
+    },
   ],
 } satisfies Config;
