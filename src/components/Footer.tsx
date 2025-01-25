@@ -9,17 +9,17 @@ export const Footer = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "relative mt-16 w-full min-h-[250px]", // Reduced from 300px
+        "relative mt-16 w-[95vw] mx-auto min-h-[300px]",
         "before:absolute before:top-0 before:left-0 before:w-full before:h-full",
         "before:bg-gradient-to-br before:from-[#1a2e35] before:via-[#192841] before:to-[#1a2e35]",
         "before:transform before:skew-y-[-2deg]",
         "before:glass before:z-[-1]",
         "after:absolute after:inset-0 after:bg-grid-white/[0.02]",
-        "flex flex-col items-center justify-center gap-8 text-white/80" // Reduced gap from 12
+        "flex flex-col items-center justify-center gap-12"
       )}
     >
       {/* Footer Content */}
-      <div className="w-full max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-6"> {/* Reduced gap and padding */}
+      <div className="w-full max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Resources */}
         <div className="space-y-3"> {/* Reduced spacing */}
           <h3 className="text-base font-semibold text-white">Resources</h3>
@@ -62,7 +62,7 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="w-full border-t border-white/10 mt-6"> {/* Reduced margin */}
+      <div className="w-full border-t border-white/10 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3"> {/* Reduced padding */}
           <p className="text-sm text-white/60">© 2024 Your Company. All rights reserved.</p>
           
