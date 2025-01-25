@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -90,14 +92,4 @@
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
   }
-}
-
-{
-
-  "scripts": {
-  
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
-    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\""
-  }
-
 }
