@@ -1,118 +1,137 @@
 import { create } from 'zustand';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthState {
   user: User | null;
   session: Session | null;
-  role: string | null; // Storing the user's role (e.g. 'admin', 'user', etc.)
   isLoading: boolean;
   error: Error | null;
-  initialized: boolean; // So we only run init once
-
-  initialize: () => Promise<void>;
+  initialized: boolean;
+  isAdmin: boolean;
+  
+  setUser: (user: User | null) => void;
+  setSession: (session: Session | null) => void;
+  setError: (error: Error | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
   signOut: () => Promise<void>;
+  initialize: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
-  role: null,
   isLoading: true,
   error: null,
   initialized: false,
+  isAdmin: false,
 
-  /**
-   * Attempt to get the current session and set up the onAuthStateChange listener.
-   * Only runs once due to the `initialized` guard.
-   */
+  setUser: (user) => {
+    console.log('Auth Store: Setting user', { userId: user?.id });
+    set({ user });
+  },
+  setSession: (session) => {
+    console.log('Auth Store: Setting session', { sessionId: session?.access_token });
+    set({ session });
+  },
+  setError: (error) => {
+    console.error('Auth Store: Error occurred', error);
+    set({ error });
+  },
+  setIsLoading: (isLoading) => {
+    console.log('Auth Store: Loading state changed', { isLoading });
+    set({ isLoading });
+  },
+
+  signOut: async () => {
+    try {
+      console.log('Auth Store: Signing out...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Auth Store: Error signing out:', error);
+        throw error;
+      }
+      console.log('Auth Store: Successfully signed out');
+      set({ 
+        user: null, 
+        session: null, 
+        error: null,
+        isAdmin: false 
+      });
+    } catch (error) {
+      console.error('Auth Store: Error in signOut:', error);
+      set({ error: error as Error });
+      throw error;
+    }
+  },
+
   initialize: async () => {
-    if (get().initialized) {
-      return; // Already initialized
+    const state = get();
+    if (state.initialized) {
+      console.log('Auth Store: Already initialized');
+      return;
     }
 
     try {
+      console.log('Auth Store: Initializing...');
       set({ isLoading: true });
+      
+      // Get initial session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error('Auth Store: Session error:', sessionError);
+        throw sessionError;
+      }
 
-      // 1. Get existing session from Supabase
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-      if (sessionError) throw sessionError;
+      if (session) {
+        console.log('Auth Store: Found existing session:', { 
+          userId: session.user.id,
+          email: session.user.email 
+        });
 
-      // 2. Update store with session & user
-      set({
-        session,
-        user: session?.user ?? null,
-      });
-
-      // 3. Fetch role if user exists
-      if (session?.user) {
+        // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
           .single();
-        if (roleError) {
-          console.error('Error fetching role:', roleError);
-        }
-        set({ role: roleData?.role ?? null });
-      }
 
-      // 4. Listen for future auth state changes
-      supabase.auth.onAuthStateChange(async (_event, newSession) => {
-        // Any auth change => set isLoading while we refetch role or clear data
-        set({ isLoading: true });
+        if (roleError) {
+          console.error('Auth Store: Error checking role:', roleError);
+        }
+
+        const isAdmin = roleData?.role === 'admin';
+        console.log('Auth Store: User admin status:', { isAdmin, roleData });
 
         set({
-          session: newSession,
-          user: newSession?.user ?? null,
+          session,
+          user: session.user,
+          isAdmin,
+          error: null
         });
+      } else {
+        console.log('Auth Store: No existing session found');
+        set({
+          session: null,
+          user: null,
+          isAdmin: false,
+          error: null
+        });
+      }
 
-        // If we have a new user, refetch role
-        if (newSession?.user) {
-          const { data: roleData, error: roleError } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', newSession.user.id)
-            .single();
-          if (roleError) {
-            console.error('Error fetching role:', roleError);
-          }
-          set({ role: roleData?.role ?? null });
-        } else {
-          // No user => no role
-          set({ role: null });
-        }
-
-        // Done re-fetching or clearing user/role
-        set({ isLoading: false });
-      });
-    } catch (error) {
-      console.error('AuthStore Error:', error);
-      set({ error: error as Error });
-    } finally {
-      // Mark as initialized and remove loading state
       set({ initialized: true, isLoading: false });
-    }
-  },
-
-  /**
-   * Signs out the user via Supabase, then clears local store state.
-   */
-  signOut: async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      set({
+      console.log('Auth Store: Initialization complete');
+      
+    } catch (error) {
+      console.error('Auth Store: Error initializing auth:', error);
+      set({ 
+        error: error as Error,
         user: null,
         session: null,
-        role: null,
+        isAdmin: false,
+        isLoading: false,
+        initialized: true
       });
-    } catch (error) {
-      console.error('Error signing out:', error);
-      set({ error: error as Error });
     }
-  },
+  }
 }));

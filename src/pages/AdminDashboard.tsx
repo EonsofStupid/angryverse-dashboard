@@ -20,7 +20,7 @@ import { useRoleCheck } from "@/hooks/useRoleCheck";
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
-  const isAdmin = role === 'admin';
+  const { hasRole: isAdmin, isLoading: roleLoading } = useRoleCheck(user, 'admin');
   const navigate = useNavigate();
   const location = useLocation();
   
