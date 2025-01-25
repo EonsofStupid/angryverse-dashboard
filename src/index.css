@@ -51,32 +51,6 @@
     --border: hsl(217.2 32.6% 17.5%);
     --input: hsl(217.2 32.6% 17.5%);
     --ring: var(--theme-colors-cyber-pink);
-
-    /* Animation Tokens */
-    --animation-timing-fast: 100ms;
-    --animation-timing-normal: 200ms;
-    --animation-timing-slow: 300ms;
-    --animation-timing-very-slow: 1000ms;
-
-    /* Effect Tokens */
-    --glass-opacity: 0.1;
-    --glass-blur: 8px;
-    --hover-lift: -4px;
-    --hover-scale: 1.05;
-    --hover-transition: 300ms;
-    --hover-glow-strength: 10px;
-    --hover-glow-color: var(--theme-primary);
-    --hover-glow-opacity: 0.5;
-    --hover-glow-spread: 4px;
-    --hover-glow-blur: 8px;
-
-    /* Special Effects */
-    --neon-glow-size: 4px;
-    --neon-flicker-speed: 2s;
-    --glitch-intensity: 0.2;
-    --glitch-frequency: 0.3;
-    --matrix-speed: 2;
-    --matrix-density: 0.2;
   }
 
   * {
