@@ -9,11 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
-// Define a simpler type for table data that won't cause infinite recursion
-type SimpleTableData = {
-  id: string;
-  [key: string]: string | number | boolean | null;
-};
+// Define a base record type that won't cause infinite recursion
+type BaseRecord = Record<string, string | number | boolean | null>;
 
 interface DataTableProps {
   selectedTable: TableNames | null;
@@ -23,9 +20,9 @@ interface DataTableProps {
 export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
   const { toast } = useToast();
   const { data: tableData, isLoading } = useTableData(selectedTable, searchQuery);
-  const [editingRow, setEditingRow] = useState<SimpleTableData | null>(null);
+  const [editingRow, setEditingRow] = useState<BaseRecord | null>(null);
 
-  const handleSaveRow = async (row: SimpleTableData) => {
+  const handleSaveRow = async (row: BaseRecord) => {
     if (!selectedTable) return;
 
     const { error } = await supabase
@@ -77,8 +74,8 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
               </TableCell>
             </TableRow>
           ) : (
-            tableData?.map((row: SimpleTableData) => (
-              <TableRow key={row.id}>
+            tableData?.map((row: BaseRecord) => (
+              <TableRow key={row.id as string}>
                 <TableCell>
                   {editingRow?.id === row.id ? (
                     <div className="flex items-center gap-2">
@@ -111,7 +108,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                   <TableCell key={key}>
                     {editingRow?.id === row.id ? (
                       <Input
-                        value={editingRow[key]?.toString() || ""}
+                        value={value?.toString() || ""}
                         onChange={(e) =>
                           setEditingRow({
                             ...editingRow,
