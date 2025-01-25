@@ -4,13 +4,13 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Edit, Save, X } from "lucide-react";
 import { useTableData } from "@/hooks/useTableData";
-import { TableNames, TableRowData } from "@/types/database-management";
+import { TableNames, TableRowData, isJsonValue } from "@/types/database-management";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
 interface DataTableProps {
-  selectedTable: TableNames | null;
+  selectedTable: TableNames;
   searchQuery: string;
 }
 
@@ -19,26 +19,34 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
   const { data: tableData, isLoading } = useTableData(selectedTable, searchQuery);
   const [editingRow, setEditingRow] = useState<TableRowData | null>(null);
 
+  const formatCellValue = (value: unknown): string => {
+    if (value === null) return '';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  };
+
   const handleSaveRow = async (row: TableRowData) => {
     if (!selectedTable) return;
 
-    const { error } = await supabase
-      .from(selectedTable)
-      .update(row)
-      .eq('id', row.id);
+    try {
+      const { error } = await supabase
+        .from(selectedTable)
+        .update(row)
+        .eq('id', row.id);
 
-    if (error) {
-      toast({
-        title: "Error saving changes",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
+      if (error) throw error;
+
       toast({
         title: "Changes saved",
         description: "Row updated successfully",
       });
       setEditingRow(null);
+    } catch (error) {
+      toast({
+        title: "Error saving changes",
+        description: error instanceof Error ? error.message : "An error occurred",
+        variant: "destructive",
+      });
     }
   };
 
@@ -105,7 +113,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                   <TableCell key={key}>
                     {editingRow?.id === row.id ? (
                       <Input
-                        value={String(value ?? '')}
+                        value={formatCellValue(value)}
                         onChange={(e) =>
                           setEditingRow({
                             ...editingRow,
@@ -114,7 +122,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                         }
                       />
                     ) : (
-                      typeof value === 'object' ? JSON.stringify(value) : String(value ?? '')
+                      formatCellValue(value)
                     )}
                   </TableCell>
                 ))}

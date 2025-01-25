@@ -1,38 +1,33 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { TableNames, TableRowData } from "@/types/database-management";
-import { useToast } from "@/hooks/use-toast";
+import type { TableNames, TableRowData } from "@/types/database-management";
 
-export function useTableData(tableName: TableNames | null, searchQuery: string) {
-  const { toast } = useToast();
-
+export const useTableData = (tableName: TableNames, searchQuery: string = "") => {
   return useQuery({
-    queryKey: ['table-data', tableName, searchQuery],
-    enabled: !!tableName,
-    queryFn: async () => {
+    queryKey: ["table-data", tableName, searchQuery],
+    queryFn: async (): Promise<TableRowData[]> => {
       if (!tableName) return [];
 
-      let query = supabase
+      const query = supabase
         .from(tableName)
-        .select('*');
+        .select("*");
 
       if (searchQuery) {
-        // Basic search across all text columns
-        query = query.or(`id.ilike.%${searchQuery}%,name.ilike.%${searchQuery}%`);
+        // Add text search if needed
+        query.textSearch('content', searchQuery, {
+          type: 'websearch',
+          config: 'english'
+        });
       }
 
       const { data, error } = await query;
 
       if (error) {
-        toast({
-          title: "Error fetching data",
-          description: error.message,
-          variant: "destructive",
-        });
-        return [];
+        throw error;
       }
 
       return data as TableRowData[];
     },
+    enabled: !!tableName,
   });
-}
+};
