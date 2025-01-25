@@ -7,7 +7,7 @@ import { useNavTheme } from "./navigation/hooks/useNavTheme";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useTransform, useScroll } from "framer-motion";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 
@@ -16,6 +16,17 @@ export const Navbar = () => {
   const theme = useNavTheme();
   const isMobile = useIsMobile();
   const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  // Transform scroll value to clip-path value
+  const clipPath = useTransform(
+    scrollY,
+    [0, 100],
+    [
+      'polygon(0 0, 100% 0, 100% 100%, 0 100%)', // Rectangle
+      'polygon(5% 0, 95% 0, 100% 100%, 0 100%)'  // Trapezoid
+    ]
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,14 +43,15 @@ export const Navbar = () => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
+        style={{ clipPath }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         className={cn(
           "fixed top-0 w-full z-50",
           "transition-all duration-500 ease-in-out",
+          "bg-[#1A1F2C]", // Dark purple background
           scrolled ? [
             'glass-frost',
             'shadow-lg shadow-primary/20',
-            'bg-background/30',
             'backdrop-blur-xl',
             'border-t-0 border-x-0 border-b border-white/20',
             // Enhanced glass depth effect
@@ -50,18 +62,9 @@ export const Navbar = () => {
             'before:absolute before:inset-0',
             'before:bg-gradient-to-b before:from-white/20 before:to-transparent',
             'before:opacity-30 before:pointer-events-none',
-            // Curved bottom effect when scrolled
-            'after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1',
-            'after:bg-gradient-to-r after:from-transparent after:via-primary/50 after:to-transparent',
-            'after:transform after:scale-y-[2] after:origin-bottom',
-            'after:rounded-b-full',
           ] : [
-            'bg-transparent',
             'backdrop-blur-none',
             'border-transparent',
-            // Straight line effect when at top
-            'after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px]',
-            'after:bg-gradient-to-r after:from-transparent after:via-primary/30 after:to-transparent',
           ],
           isMobile ? 'h-14' : 'h-16',
           // Enhanced glass depth effect
@@ -75,9 +78,6 @@ export const Navbar = () => {
           // Enhanced shadow system
           "shadow-[0_4px_32px_rgba(0,0,0,0.2)]",
           "shadow-primary/10",
-          // Light refraction simulation
-          "before:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]",
-          "before:from-white/20 before:via-transparent before:to-transparent",
         )}>
         <div className={cn(
           "container mx-auto px-4 h-full relative",
