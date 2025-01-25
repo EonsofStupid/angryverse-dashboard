@@ -15,7 +15,7 @@ export const AdminFooter = () => {
       <div 
         className="absolute inset-0 bg-[#1A1F2C] glass"
         style={{
-          clipPath: 'polygon(0 30%, 100% 0, 100% 100%, 0 100%)',
+          clipPath: 'polygon(20% 0, 80% 0, 100% 100%, 0 100%)',
           backgroundImage: `
             linear-gradient(135deg, 
               rgba(26, 31, 44, 0.9),
