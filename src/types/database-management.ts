@@ -8,6 +8,10 @@ export interface TableInfo {
   is_updatable: boolean;
 }
 
-export interface TableData {
-  [key: string]: any;
-}
+// Define a base type for table data that handles JSON fields explicitly
+export type TableRowData = {
+  id: string;
+  [key: string]: string | number | boolean | null | object;
+};
+
+export type TableData = TableRowData[];

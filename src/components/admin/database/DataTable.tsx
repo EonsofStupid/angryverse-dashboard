@@ -4,13 +4,10 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Edit, Save, X } from "lucide-react";
 import { useTableData } from "@/hooks/useTableData";
-import { TableNames } from "@/types/database-management";
+import { TableNames, TableRowData } from "@/types/database-management";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-
-// Define a base record type that won't cause infinite recursion
-type BaseRecord = Record<string, string | number | boolean | null>;
 
 interface DataTableProps {
   selectedTable: TableNames | null;
@@ -20,9 +17,9 @@ interface DataTableProps {
 export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
   const { toast } = useToast();
   const { data: tableData, isLoading } = useTableData(selectedTable, searchQuery);
-  const [editingRow, setEditingRow] = useState<BaseRecord | null>(null);
+  const [editingRow, setEditingRow] = useState<TableRowData | null>(null);
 
-  const handleSaveRow = async (row: BaseRecord) => {
+  const handleSaveRow = async (row: TableRowData) => {
     if (!selectedTable) return;
 
     const { error } = await supabase
@@ -74,8 +71,8 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
               </TableCell>
             </TableRow>
           ) : (
-            tableData?.map((row: BaseRecord) => (
-              <TableRow key={row.id as string}>
+            tableData?.map((row: TableRowData) => (
+              <TableRow key={row.id}>
                 <TableCell>
                   {editingRow?.id === row.id ? (
                     <div className="flex items-center gap-2">
@@ -108,7 +105,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                   <TableCell key={key}>
                     {editingRow?.id === row.id ? (
                       <Input
-                        value={value?.toString() || ""}
+                        value={String(value ?? '')}
                         onChange={(e) =>
                           setEditingRow({
                             ...editingRow,
@@ -117,7 +114,7 @@ export function DataTable({ selectedTable, searchQuery }: DataTableProps) {
                         }
                       />
                     ) : (
-                      String(value)
+                      typeof value === 'object' ? JSON.stringify(value) : String(value ?? '')
                     )}
                   </TableCell>
                 ))}
