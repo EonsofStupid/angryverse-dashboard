@@ -71,11 +71,22 @@ export default {
           "60%": { transform: "translate(2px, 2px)" },
           "80%": { transform: "translate(2px, -2px)" },
         },
+        "gradient-x": {
+          "0%, 100%": {
+            "background-size": "400% 400%",
+            "background-position": "left center"
+          },
+          "50%": {
+            "background-size": "400% 400%",
+            "background-position": "right center"
+          }
+        },
       },
       animation: {
         "fade-in": "fade-in 0.3s ease-out forwards",
         "scale-in": "scale-in 0.2s ease-out forwards",
         "glitch": "glitch 3s infinite steps(2, jump-none)",
+        "gradient-x": "gradient-x 15s ease infinite",
       },
     },
   },
