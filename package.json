@@ -93,11 +93,11 @@
 }
 
 {
-  // ... keep existing code
+
   "scripts": {
-    // ... keep existing code
+  
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\""
   }
-  // ... keep existing code
+
 }
