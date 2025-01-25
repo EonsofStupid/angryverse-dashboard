@@ -7,7 +7,7 @@ export const AdminFooter = () => {
   
   return (
     <motion.footer 
-      className="relative w-full h-32 mt-auto"
+      className="relative w-full h-32"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

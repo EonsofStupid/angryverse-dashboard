@@ -59,7 +59,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex flex-1">
         <AdminSidebar />
         <main 
@@ -69,14 +69,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             ${sidebarOpen ? 'ml-64' : 'ml-16'}
           `}
         >
-          <div 
-            className={`
-              container mx-auto px-6 py-8 relative z-10 flex-1
-              before:absolute before:inset-0 before:rounded-lg
-              before:bg-gradient-to-b before:from-primary/5 before:to-transparent
-              before:pointer-events-none
-            `}
-          >
+          <div className="container mx-auto px-6 py-8 flex-1">
             <div className="neo-blur rounded-lg p-6 animate-fade-in">
               <AdminBreadcrumb />
               <div className="mt-4">{children}</div>
