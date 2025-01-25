@@ -39,6 +39,19 @@ export const Footer = () => {
       <div className="text-sm">
         <p>© 2024 Your Company. All rights reserved.</p>
       </div>
+
+      {/* Scanline Effect */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 animate-scan-line bg-gradient-to-b from-transparent via-primary/10 to-transparent" />
+      </div>
+
+      {/* Enhanced Depth Layers */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top light leak */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        {/* Bottom shadow */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/30 to-transparent" />
+      </div>
     </motion.footer>
   );
 };
