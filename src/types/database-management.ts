@@ -5,6 +5,13 @@ export type JsonValue = string | number | boolean | null | JsonObject | JsonArra
 export type JsonObject = { [key: string]: JsonValue };
 export type JsonArray = JsonValue[];
 
+// Table information type based on get_tables() function
+export interface TableInfo {
+  name: string;
+  schema: string;
+  is_updatable: boolean;
+}
+
 // Specific table names type
 export type TableNames = 
   | 'posts'

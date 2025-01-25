@@ -30,7 +30,7 @@ export function TableList({ selectedTable, onSelectTable }: TableListProps) {
                 key={table.name}
                 variant={selectedTable === table.name ? "secondary" : "ghost"}
                 className="w-full justify-start"
-                onClick={() => onSelectTable(table.name)}
+                onClick={() => onSelectTable(table.name as TableNames)}
               >
                 {table.name}
               </Button>
