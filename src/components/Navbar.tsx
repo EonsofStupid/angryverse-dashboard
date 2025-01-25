@@ -54,36 +54,30 @@ export const Navbar = () => {
             'shadow-lg shadow-primary/20',
             'backdrop-blur-xl',
             'border-t-0 border-x-0 border-b border-white/20',
-            // Enhanced glass depth effect
-            'after:absolute after:inset-0',
-            'after:bg-gradient-to-b after:from-white/10 after:to-transparent',
-            'after:opacity-50 after:pointer-events-none',
-            // Heavy glass beveling
-            'before:absolute before:inset-0',
-            'before:bg-gradient-to-b before:from-white/20 before:to-transparent',
-            'before:opacity-30 before:pointer-events-none',
           ] : [
             'backdrop-blur-none',
             'border-transparent',
           ],
           isMobile ? 'h-14' : 'h-16',
-          // Enhanced glass depth effect
-          "before:absolute before:inset-0",
-          "before:bg-gradient-to-b before:from-white/10 before:to-transparent/5",
-          "before:pointer-events-none before:backdrop-blur-xl",
-          // Multiple glass layers
-          "after:absolute after:inset-0",
-          "after:bg-gradient-to-t after:from-black/10 after:to-transparent",
-          "after:pointer-events-none after:backdrop-blur-lg",
+          // Base layer
+          "before:absolute before:inset-0 before:z-0",
+          "before:bg-gradient-to-b before:from-white/5 before:to-transparent/5",
+          // Glitch effect layer
+          "after:absolute after:inset-0 after:z-10",
+          "after:bg-[linear-gradient(90deg,transparent_0%,rgba(255,0,127,0.2)_45%,rgba(0,255,245,0.2)_55%,transparent_100%)]",
+          "after:animate-glitch",
           // Enhanced shadow system
           "shadow-[0_4px_32px_rgba(0,0,0,0.2)]",
           "shadow-primary/10",
         )}>
-        <div className={cn(
-          "container mx-auto px-4 h-full relative",
-          "transition-all duration-500",
-          scrolled ? 'py-0' : 'py-2'
-        )}>
+        {/* Content wrapper with higher z-index */}
+        <div 
+          className={cn(
+            "container mx-auto px-4 h-full relative z-20",
+            "transition-all duration-500",
+            scrolled ? 'py-0' : 'py-2'
+          )}
+        >
           <div className={cn(
             "flex items-center justify-between h-full",
             "transition-all duration-500"
@@ -128,13 +122,13 @@ export const Navbar = () => {
           )}
         </AnimatePresence>
 
-        {/* Enhanced Scanline Effect */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Scanline Effect */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
           <div className="absolute inset-0 animate-scan-line bg-gradient-to-b from-transparent via-primary/10 to-transparent" />
         </div>
 
         {/* Enhanced Depth Layers */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none z-40">
           {/* Top light leak */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           {/* Bottom shadow */}
