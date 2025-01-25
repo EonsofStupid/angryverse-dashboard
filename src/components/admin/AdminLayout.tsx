@@ -1,5 +1,6 @@
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
+import { AdminFooter } from "./AdminFooter";
 import { useAdminStore } from "@/store/useAdminStore";
 import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
@@ -33,7 +34,6 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Update link colors based on theme
   useEffect(() => {
     const primaryColor = currentTheme?.configuration?.colors?.cyber?.pink?.DEFAULT || 'hsl(var(--primary))';
     document.documentElement.style.setProperty('--link-hover-color', primaryColor);
@@ -59,19 +59,19 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      <div className="flex">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden flex flex-col">
+      <div className="flex flex-1">
         <AdminSidebar />
         <main 
           ref={mainRef}
           className={`
-            relative flex-1 transition-all duration-300 
+            relative flex-1 transition-all duration-300 flex flex-col
             ${sidebarOpen ? 'ml-64' : 'ml-16'}
           `}
         >
           <div 
             className={`
-              container mx-auto px-6 py-8 relative z-10
+              container mx-auto px-6 py-8 relative z-10 flex-1
               before:absolute before:inset-0 before:rounded-lg
               before:bg-gradient-to-b before:from-primary/5 before:to-transparent
               before:pointer-events-none
@@ -82,6 +82,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
               <div className="mt-4">{children}</div>
             </div>
           </div>
+          <AdminFooter />
         </main>
       </div>
     </div>
