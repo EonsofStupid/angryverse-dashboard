@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { Github, Twitter } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ThemeInfoPopup } from "@/components/theme/ThemeInfoPopup"
 
 export const Footer = () => {
   return (
@@ -73,9 +74,7 @@ export const Footer = () => {
             <a href="#" className="text-white/60 hover:text-cyan-400 transition-colors">
               <Twitter className="w-5 h-5" />
             </a>
-            <button className="ml-4 px-4 py-1 rounded border border-cyan-400/30 text-cyan-400 text-sm hover:bg-cyan-400/10 transition-colors">
-              Theme Info
-            </button>
+            <ThemeInfoPopup />
           </div>
         </div>
       </div>
