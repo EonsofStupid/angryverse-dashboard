@@ -32,13 +32,16 @@ export class ThemeValidator {
         .from('theme_usage_logs')
         .insert({
           component_name: log.componentName,
-          theme_id: log.themeName,
+          theme_id: log.themeName, // This is now expecting a UUID
           effects_used: effectsToJson(log.effectsUsed),
           validation_results: validationResultToJson(log.validationResults),
           page_path: log.pagePath
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error logging theme usage:', error);
+        throw error;
+      }
     } catch (error) {
       console.error('Error logging theme usage:', error);
     }

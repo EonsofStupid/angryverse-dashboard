@@ -18,10 +18,9 @@ export const useThemeValidation = (componentName: string) => {
 
       await ThemeValidator.logThemeUsage({
         componentName,
-        themeName: currentTheme.name,
+        themeName: currentTheme.id, // Now using the theme ID instead of name
         effectsUsed: Object.keys(currentTheme.configuration.effects),
         validationResults: validationResult,
-        timestamp: new Date().toISOString(),
         pagePath: location.pathname
       });
 
