@@ -52,9 +52,18 @@ export default {
             "background-position": "0% 0%",
           },
         },
+        "scan-line": {
+          "0%": {
+            transform: "translateY(-100%)",
+          },
+          "100%": {
+            transform: "translateY(100%)",
+          },
+        },
       },
       animation: {
         "cyber-lines": "cyber-lines 12s linear infinite",
+        "scan-line": "scan-line 4s linear infinite",
       },
     },
   },
@@ -68,11 +77,11 @@ export default {
         ".bg-cyber-lines": {
           backgroundImage: `repeating-linear-gradient(
             0deg,
-            rgba(0, 255, 255, 0.05) 0px,
+            rgba(155, 135, 245, 0.15) 0px,
             transparent 1px,
             transparent 20px
           )`,
-          backgroundSize: "cover",
+          backgroundSize: "100% 20px",
           backgroundRepeat: "repeat",
         },
       });

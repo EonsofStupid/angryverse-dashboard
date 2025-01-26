@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
 import { MotionEffects } from "@/components/effects/MotionEffects";
+import { ScrollProgress } from "@/components/ScrollProgress";
 
 const Index = () => {
   const { currentTheme, isLoading, error } = useTheme();
@@ -17,6 +18,7 @@ const Index = () => {
       
       <div className="relative z-10">
         <Navbar />
+        <ScrollProgress />
         <Hero />
         <section className="py-20 px-4">
           <div className="container mx-auto">
