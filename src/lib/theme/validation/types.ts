@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Theme, ThemeEffects } from "@/types/theme";
+import type { Json } from "@/integrations/supabase/types";
 
 export type ValidationSeverity = "error" | "warning" | "info";
 
@@ -12,13 +13,16 @@ export interface ValidationRule {
   message: string;
 }
 
+export interface ValidationViolation {
+  ruleId: string;
+  ruleName: string;
+  message: string;
+  severity: ValidationSeverity;
+}
+
 export interface ValidationResult {
   valid: boolean;
-  violations: Array<{
-    rule: ValidationRule;
-    message: string;
-    severity: ValidationSeverity;
-  }>;
+  violations: ValidationViolation[];
 }
 
 export interface ThemeUsageLog {
@@ -26,6 +30,23 @@ export interface ThemeUsageLog {
   themeName: string;
   effectsUsed: string[];
   validationResults: ValidationResult;
-  timestamp: string;
   pagePath: string;
+}
+
+// Helper function to convert ValidationResult to Json type
+export function validationResultToJson(result: ValidationResult): Json {
+  return {
+    valid: result.valid,
+    violations: result.violations.map(v => ({
+      ruleId: v.ruleId,
+      ruleName: v.ruleName,
+      message: v.message,
+      severity: v.severity
+    }))
+  };
+}
+
+// Helper function to convert effects used to Json type
+export function effectsToJson(effects: string[]): Json {
+  return effects;
 }

@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Theme, ThemeEffects } from "@/types/theme";
 import type { ValidationResult, ThemeUsageLog } from "./types";
 import { themeValidationRules } from "./rules";
+import { validationResultToJson, effectsToJson } from "./types";
 
 export class ThemeValidator {
   static async validateTheme(theme: Theme, effects: ThemeEffects): Promise<ValidationResult> {
@@ -11,7 +12,8 @@ export class ThemeValidator {
       const isValid = rule.validate(theme, effects);
       if (!isValid) {
         violations.push({
-          rule,
+          ruleId: rule.id,
+          ruleName: rule.name,
           message: rule.message,
           severity: rule.severity
         });
@@ -31,8 +33,8 @@ export class ThemeValidator {
         .insert({
           component_name: log.componentName,
           theme_id: log.themeName,
-          effects_used: log.effectsUsed,
-          validation_results: log.validationResults,
+          effects_used: effectsToJson(log.effectsUsed),
+          validation_results: validationResultToJson(log.validationResults),
           page_path: log.pagePath
         });
 
