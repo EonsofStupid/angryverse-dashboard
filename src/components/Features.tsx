@@ -3,6 +3,10 @@ import { useTheme } from "@/hooks/useTheme";
 import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
 import { useState, useRef, useEffect } from "react";
 import type { CSSColor } from "@/types/theme/utils/css";
+import { BackgroundContainer } from "./backgrounds/BackgroundContainer";
+import { CyberBackground } from "./backgrounds/CyberBackground";
+import { AnimatedLines } from "./backgrounds/AnimatedLines";
+import { GlitchOverlay } from "./backgrounds/GlitchOverlay";
 
 const features = [
   {
@@ -75,7 +79,11 @@ export const Features = () => {
   }, []);
 
   return (
-    <section className="py-20 relative overflow-hidden">
+    <BackgroundContainer className="py-20">
+      <CyberBackground color="var(--theme-colors-cyber-purple)" opacity={0.05} />
+      <AnimatedLines direction="horizontal" color="var(--theme-colors-cyber-cyan)" speed={0.5} spacing={30} opacity={0.1} />
+      <GlitchOverlay intensity={0.2} frequency={1.5} color="var(--theme-colors-cyber-pink)" />
+      
       <div ref={containerRef} className="container mx-auto px-4 relative">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Latest <span className="text-gradient animate-glow">Content</span>
@@ -125,6 +133,6 @@ export const Features = () => {
           ))}
         </div>
       </div>
-    </section>
+    </BackgroundContainer>
   );
 };

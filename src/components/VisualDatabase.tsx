@@ -4,10 +4,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from './ui/button';
 import { motion } from 'framer-motion';
 import { useThemeEffects } from '@/hooks/theme/useThemeEffects';
-
-export const VisualDatabase = () => {
-  const { user } = useAuthStore();
-  const { effects } = useThemeEffects();
+import { BackgroundContainer } from './backgrounds/BackgroundContainer';
+import { CyberBackground } from './backgrounds/CyberBackground';
+import { AnimatedLines } from './backgrounds/AnimatedLines';
+import { GlitchOverlay } from './backgrounds/GlitchOverlay';
 
   const nodes = [
     { id: 1, label: 'Users', icon: UserPlus },
@@ -22,6 +22,10 @@ export const VisualDatabase = () => {
     { from: 2, to: 4 },
   ];
 
+export const VisualDatabase = () => {
+  const { user } = useAuthStore();
+  const { effects } = useThemeEffects();
+
   const glassStyle = {
     background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
     backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
@@ -30,9 +34,22 @@ export const VisualDatabase = () => {
   };
 
   return (
-    <div className="relative w-full h-[600px] overflow-hidden rounded-xl bg-background/50 p-8">
+    <BackgroundContainer className="w-full h-[600px] overflow-hidden rounded-xl bg-background/50 p-8">
+      <CyberBackground color="var(--theme-colors-cyber-cyan)" opacity={0.03} />
+      <AnimatedLines 
+        direction="vertical" 
+        color="var(--theme-colors-cyber-purple)" 
+        speed={0.8} 
+        spacing={40} 
+        opacity={0.08} 
+      />
+      <GlitchOverlay 
+        intensity={0.15} 
+        frequency={1} 
+        color="var(--theme-colors-cyber-pink)" 
+      />
+      
       <div className={`relative ${!user ? 'filter blur-sm' : ''}`}>
-        {/* Nodes */}
         {nodes.map((node) => (
           <motion.div
             key={node.id}
@@ -89,7 +106,6 @@ export const VisualDatabase = () => {
         </svg>
       </div>
 
-      {/* CTA Overlay for unauthenticated users */}
       {!user && (
         <div className="absolute inset-0 flex items-center justify-center" style={glassStyle}>
           <motion.div
@@ -117,6 +133,6 @@ export const VisualDatabase = () => {
           </motion.div>
         </div>
       )}
-    </div>
+    </BackgroundContainer>
   );
 };
