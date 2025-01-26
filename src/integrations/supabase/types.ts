@@ -1318,6 +1318,113 @@ export type Database = {
         }
         Relationships: []
       }
+      theme_usage_logs: {
+        Row: {
+          component_name: string
+          created_at: string | null
+          effects_used: Json
+          id: string
+          page_path: string
+          theme_id: string | null
+          validation_results: Json
+        }
+        Insert: {
+          component_name: string
+          created_at?: string | null
+          effects_used: Json
+          id?: string
+          page_path: string
+          theme_id?: string | null
+          validation_results: Json
+        }
+        Update: {
+          component_name?: string
+          created_at?: string | null
+          effects_used?: Json
+          id?: string
+          page_path?: string
+          theme_id?: string | null
+          validation_results?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_usage_logs_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_validation_reports: {
+        Row: {
+          created_by: string | null
+          id: string
+          report_date: string | null
+          severity_counts: Json
+          total_components: number
+          total_violations: number
+          validation_results: Json
+        }
+        Insert: {
+          created_by?: string | null
+          id?: string
+          report_date?: string | null
+          severity_counts: Json
+          total_components: number
+          total_violations: number
+          validation_results: Json
+        }
+        Update: {
+          created_by?: string | null
+          id?: string
+          report_date?: string | null
+          severity_counts?: Json
+          total_components?: number
+          total_violations?: number
+          validation_results?: Json
+        }
+        Relationships: []
+      }
+      theme_validation_rules: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          error_message: string
+          id: string
+          is_active: boolean | null
+          rule_name: string
+          rule_type: string
+          severity: Database["public"]["Enums"]["theme_validation_severity"]
+          updated_at: string | null
+          validation_logic: Json
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          error_message: string
+          id?: string
+          is_active?: boolean | null
+          rule_name: string
+          rule_type: string
+          severity?: Database["public"]["Enums"]["theme_validation_severity"]
+          updated_at?: string | null
+          validation_logic: Json
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          error_message?: string
+          id?: string
+          is_active?: boolean | null
+          rule_name?: string
+          rule_type?: string
+          severity?: Database["public"]["Enums"]["theme_validation_severity"]
+          updated_at?: string | null
+          validation_logic?: Json
+        }
+        Relationships: []
+      }
       themes: {
         Row: {
           advanced_effects: Json | null
@@ -1525,6 +1632,7 @@ export type Database = {
     Enums: {
       doc_category: "themes" | "rls" | "authorization"
       theme_status: "active" | "inactive" | "draft"
+      theme_validation_severity: "error" | "warning" | "info"
       user_role: "user" | "admin"
     }
     CompositeTypes: {
