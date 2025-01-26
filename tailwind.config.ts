@@ -84,6 +84,11 @@ export default {
           backgroundSize: "100% 20px",
           backgroundRepeat: "repeat",
         },
+        ".hover-glow": {
+          "&:hover": {
+            filter: "drop-shadow(0 0 5px #9b87f5)",
+          },
+        },
       });
     },
   ],
