@@ -14,7 +14,7 @@ const features = [
     description: "Detailed guides on pop culture topics",
     icon: BookOpen,
     color: "text-[var(--theme-colors-cyber-pink)]",
-    gradient: "from-[var(--theme-gray-neutral)] to-[var(--theme-gray-soft)]",
+    gradient: "from-[#1A1F2C] to-[#221F26]",
     glowColor: "var(--theme-colors-cyber-pink)" as CSSColor,
   },
   {
@@ -22,7 +22,7 @@ const features = [
     description: "Latest news and personal updates",
     icon: Rss,
     color: "text-[var(--theme-colors-cyber-cyan)]",
-    gradient: "from-[var(--theme-gray-medium)] to-[var(--theme-gray-light)]",
+    gradient: "from-[#403E43] to-[#7E69AB]",
     glowColor: "var(--theme-colors-cyber-cyan)" as CSSColor,
   },
   {
@@ -30,7 +30,7 @@ const features = [
     description: "In-depth articles and opinions",
     icon: Newspaper,
     color: "text-[var(--theme-colors-cyber-purple)]",
-    gradient: "from-[var(--theme-gray-dark)] to-[var(--theme-gray-medium)]",
+    gradient: "from-[#221F26] to-[#403E43]",
     glowColor: "var(--theme-colors-cyber-purple)" as CSSColor,
   },
   {
@@ -38,7 +38,7 @@ const features = [
     description: "Video content and highlights",
     icon: Video,
     color: "text-[var(--theme-colors-cyber-cyan)]",
-    gradient: "from-[var(--theme-gray-mid)] to-[var(--theme-gray-dark)]",
+    gradient: "from-[#6E59A5] to-[#221F26]",
     glowColor: "var(--theme-colors-cyber-cyan)" as CSSColor,
   },
 ];
@@ -47,13 +47,13 @@ export const Features = () => {
   const { currentTheme } = useTheme();
   const { effects } = useThemeEffects();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [activeGlowColor, setActiveGlowColor] = useState<CSSColor>("var(--theme-gray-neutral)");
+  const [activeGlowColor, setActiveGlowColor] = useState<CSSColor>("#1A1F2C");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const glassStyle = {
-    background: effects?.glass?.background || 'rgba(255, 255, 255, 0.1)',
+    background: effects?.glass?.background || 'rgba(26, 31, 44, 0.1)', // Dark Purple background
     backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
-    border: effects?.glass?.border || '1px solid rgba(255, 255, 255, 0.1)',
+    border: effects?.glass?.border || '1px solid rgba(126, 105, 171, 0.1)', // Secondary Purple border
     transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
   };
 
@@ -80,9 +80,9 @@ export const Features = () => {
 
   return (
     <BackgroundContainer className="py-20">
-      <CyberBackground color="var(--theme-colors-cyber-purple)" opacity={0.05} />
-      <AnimatedLines direction="horizontal" color="var(--theme-colors-cyber-cyan)" speed={0.5} spacing={30} opacity={0.1} />
-      <GlitchOverlay intensity={0.2} frequency={1.5} color="var(--theme-colors-cyber-pink)" />
+      <CyberBackground color="#1A1F2C" opacity={0.05} />
+      <AnimatedLines direction="horizontal" color="#7E69AB" speed={0.5} spacing={30} opacity={0.1} />
+      <GlitchOverlay intensity={0.2} frequency={1.5} color="#6E59A5" />
       
       <div ref={containerRef} className="container mx-auto px-4 relative">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
@@ -115,7 +115,7 @@ export const Features = () => {
                 '--hover-glow-strength': glowStrength,
               } as React.CSSProperties}
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
-              onMouseLeave={() => setActiveGlowColor("var(--theme-gray-neutral)")}
+              onMouseLeave={() => setActiveGlowColor("#1A1F2C")}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity rounded-lg`} />
               <div className="relative z-10">
