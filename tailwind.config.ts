@@ -60,10 +60,42 @@ export default {
             transform: "translateY(100%)",
           },
         },
+        "pulse": {
+          "0%, 100%": {
+            opacity: "1",
+            transform: "scale(1)",
+          },
+          "50%": {
+            opacity: "0.85",
+            transform: "scale(1.05)",
+          },
+        },
+        "glitch": {
+          "0%": {
+            transform: "translate(0)",
+          },
+          "20%": {
+            transform: "translate(-2px, 2px)",
+          },
+          "40%": {
+            transform: "translate(-2px, -2px)",
+          },
+          "60%": {
+            transform: "translate(2px, 2px)",
+          },
+          "80%": {
+            transform: "translate(2px, -2px)",
+          },
+          "100%": {
+            transform: "translate(0)",
+          },
+        },
       },
       animation: {
         "cyber-lines": "cyber-lines 12s linear infinite",
         "scan-line": "scan-line 4s linear infinite",
+        "pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "glitch": "glitch 0.3s ease infinite",
       },
     },
   },
