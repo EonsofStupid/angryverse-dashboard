@@ -3,9 +3,13 @@ import { DataStream } from "./hero/DataStream";
 import { GlowingLines } from "./hero/GlowingLines";
 import { HeroContent } from "./hero/HeroContent";
 import { useTheme } from "@/hooks/useTheme";
+import { useThemeValidation } from "@/hooks/theme/useThemeValidation";
 
 export const Hero = () => {
   const { currentTheme } = useTheme();
+  
+  // Add theme validation
+  useThemeValidation("Hero");
   
   const glassEffect = currentTheme?.configuration?.effects?.glass;
   const animations = currentTheme?.configuration?.effects?.animations;
