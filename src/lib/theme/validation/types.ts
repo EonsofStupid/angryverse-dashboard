@@ -27,7 +27,7 @@ export interface ValidationResult {
 
 export interface ThemeUsageLog {
   componentName: string;
-  themeName: string;
+  themeId: string; // Changed from themeName to themeId to match UUID requirement
   effectsUsed: string[];
   validationResults: ValidationResult;
   pagePath: string;

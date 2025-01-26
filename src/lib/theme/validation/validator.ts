@@ -32,7 +32,7 @@ export class ThemeValidator {
         .from('theme_usage_logs')
         .insert({
           component_name: log.componentName,
-          theme_id: log.themeName, // This is now expecting a UUID
+          theme_id: log.themeId, // Using themeId instead of themeName
           effects_used: effectsToJson(log.effectsUsed),
           validation_results: validationResultToJson(log.validationResults),
           page_path: log.pagePath
