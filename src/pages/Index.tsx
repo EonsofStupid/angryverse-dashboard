@@ -8,6 +8,10 @@ import { useTheme } from "@/hooks/useTheme";
 import { Loader2 } from "lucide-react";
 import { MotionEffects } from "@/components/effects/MotionEffects";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { BackgroundContainer } from "@/components/backgrounds/BackgroundContainer";
+import { CyberBackground } from "@/components/backgrounds/CyberBackground";
+import { AnimatedLines } from "@/components/backgrounds/AnimatedLines";
+import { GlitchOverlay } from "@/components/backgrounds/GlitchOverlay";
 
 const Index = () => {
   const { currentTheme, isLoading, error } = useTheme();
@@ -20,14 +24,20 @@ const Index = () => {
         <Navbar />
         <ScrollProgress />
         <Hero />
-        <section className="py-20 px-4">
-          <div className="container mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Visual <span className="text-gradient animate-glow">Database</span>
-            </h2>
-            <VisualDatabase />
-          </div>
-        </section>
+        <BackgroundContainer className="relative">
+          <CyberBackground color="#1A1F2C" opacity={0.95} />
+          <AnimatedLines color="var(--theme-colors-cyber-purple)" opacity={0.1} />
+          <GlitchOverlay color="var(--theme-colors-cyber-purple)" />
+          
+          <section className="py-20 px-4">
+            <div className="container mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                Visual <span className="text-gradient animate-glow">Database</span>
+              </h2>
+              <VisualDatabase />
+            </div>
+          </section>
+        </BackgroundContainer>
         <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
         <Footer />
