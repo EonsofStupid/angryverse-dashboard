@@ -25,7 +25,7 @@ const Index = () => {
         <ScrollProgress />
         <Hero />
         <BackgroundContainer className="relative">
-          <CyberBackground color="#1A1F2C" opacity={0.95} />
+          <CyberBackground color="var(--theme-colors-cyber-purple)" opacity={0.95} />
           <AnimatedLines color="var(--theme-colors-cyber-purple)" opacity={0.1} />
           <GlitchOverlay color="var(--theme-colors-cyber-purple)" />
           
