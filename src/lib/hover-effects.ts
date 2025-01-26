@@ -31,58 +31,24 @@ const pulseEffect: HoverEffect = {
 };
 
 const neonTraceEffect: HoverEffect = {
-  className: "transition-all duration-500 overflow-hidden",
+  className: "transition-all duration-500 overflow-hidden neon-trace-effect",
   style: {
     position: 'relative',
     transition: 'all 0.5s ease',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '0',
-      left: '-100%',
-      width: '100%',
-      height: '2px',
-      background: 'linear-gradient(90deg, transparent, var(--theme-colors-cyber-cyan))',
-      transition: 'left 0.5s ease',
-    },
   },
   hoverStyle: {
-    '&::before': {
-      left: '100%',
-    },
+    transform: 'translateY(-2px)',
   },
 };
 
 const glitchEffect: HoverEffect = {
-  className: "transition-all duration-300",
+  className: "transition-all duration-300 glitch-effect",
   style: {
     position: 'relative',
     transition: 'all 0.3s ease',
   },
   hoverStyle: {
     transform: 'translate(2px, -2px)',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '0',
-      left: '-2px',
-      width: 'calc(100% + 4px)',
-      height: '100%',
-      background: 'var(--theme-colors-cyber-purple)',
-      opacity: '0.5',
-      clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 45%)',
-    },
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: '0',
-      left: '2px',
-      width: 'calc(100% - 4px)',
-      height: '100%',
-      background: 'var(--theme-colors-cyber-cyan)',
-      opacity: '0.5',
-      clipPath: 'polygon(0 55%, 100% 55%, 100% 100%, 0 100%)',
-    },
   },
 };
 
