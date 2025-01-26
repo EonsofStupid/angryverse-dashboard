@@ -1,0 +1,79 @@
+@keyframes hover-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 2px var(--glow-color));
+  }
+  50% { 
+    filter: drop-shadow(0 0 8px var(--glow-color));
+  }
+}
+
+@keyframes hover-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes hover-neon-trace {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes hover-glitch {
+  0% {
+    clip-path: inset(50% 0 50% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.hover-effect {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hover-glow {
+  --glow-color: var(--theme-colors-cyber-pink);
+}
+
+.hover-glow:hover {
+  animation: hover-glow 2s infinite;
+}
+
+.hover-pulse:hover {
+  animation: hover-pulse 2s infinite;
+}
+
+.hover-neon-trace::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--theme-colors-cyber-cyan);
+  transform-origin: right;
+  animation: hover-neon-trace 1s forwards;
+}
+
+.hover-glitch:hover::before,
+.hover-glitch:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: hover-glitch 0.3s infinite;
+}
