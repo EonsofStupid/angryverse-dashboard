@@ -53,6 +53,9 @@ export const Features = () => {
     transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
   };
 
+  const glowStrength = effects?.hover?.glow_strength || 'var(--glow-strength-md)';
+  const glowOpacity = effects?.hover?.glow_opacity || 'var(--glow-opacity-medium)';
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
@@ -72,29 +75,7 @@ export const Features = () => {
   }, []);
 
   return (
-    <section className="py-20 relative overflow-hidden bg-[#1A1F2C]">
-      {/* Texture overlay */}
-      <div className="absolute inset-0 opacity-20 mix-blend-overlay texture-noise" />
-      
-      {/* Animated horizontal lines */}
-      <div className="absolute inset-0 bg-cyber-lines animate-cyber-lines opacity-20" />
-      
-      {/* Random vertical glitch lines */}
-      <div className="absolute inset-0">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-[1px] bg-[#9b87f5] opacity-40 animate-glitch-vertical"
-            style={{
-              left: `${Math.random() * 100}%`,
-              height: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
-      </div>
-
+    <section className="py-20 relative overflow-hidden">
       <div ref={containerRef} className="container mx-auto px-4 relative">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Latest <span className="text-gradient animate-glow">Content</span>
@@ -109,7 +90,7 @@ export const Features = () => {
             width: '150px',
             height: '150px',
             transform: 'translate(-50%, -50%)',
-            background: `radial-gradient(circle, ${activeGlowColor}${Math.round(Number(0.5) * 255).toString(16)} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${activeGlowColor}${Math.round(Number(glowOpacity) * 255).toString(16)} 0%, transparent 70%)`,
             mixBlendMode: 'screen',
             zIndex: 10,
           }}
@@ -119,10 +100,11 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative cursor-pointer p-6 rounded-lg hover-glow animate-float"
+              className="group relative cursor-pointer p-6 rounded-lg hover-glow"
               style={{
                 ...glassStyle,
                 '--hover-glow-color': feature.glowColor,
+                '--hover-glow-strength': glowStrength,
               } as React.CSSProperties}
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
               onMouseLeave={() => setActiveGlowColor("var(--theme-gray-neutral)")}
