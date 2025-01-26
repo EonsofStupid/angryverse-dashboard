@@ -4,10 +4,6 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from './ui/button';
 import { motion } from 'framer-motion';
 import { useThemeEffects } from '@/hooks/theme/useThemeEffects';
-import { BackgroundContainer } from './backgrounds/BackgroundContainer';
-import { CyberBackground } from './backgrounds/CyberBackground';
-import { AnimatedLines } from './backgrounds/AnimatedLines';
-import { GlitchOverlay } from './backgrounds/GlitchOverlay';
 
   const nodes = [
     { id: 1, label: 'Users', icon: UserPlus },
@@ -34,21 +30,7 @@ export const VisualDatabase = () => {
   };
 
   return (
-    <BackgroundContainer className="w-full h-[600px] overflow-hidden rounded-xl bg-background/50 p-8">
-      <CyberBackground color="var(--theme-colors-cyber-cyan)" opacity={0.03} />
-      <AnimatedLines 
-        direction="vertical" 
-        color="var(--theme-colors-cyber-purple)" 
-        speed={0.8} 
-        spacing={40} 
-        opacity={0.08} 
-      />
-      <GlitchOverlay 
-        intensity={0.15} 
-        frequency={1} 
-        color="var(--theme-colors-cyber-pink)" 
-      />
-      
+    <div className="w-full h-[600px] overflow-hidden rounded-xl bg-background/50 p-8">
       <div className={`relative ${!user ? 'filter blur-sm' : ''}`}>
         {nodes.map((node) => (
           <motion.div
@@ -68,7 +50,7 @@ export const VisualDatabase = () => {
             transition={{
               duration: 0.8,
               delay: node.id * 0.2,
-              ease: [0.43, 0.13, 0.23, 0.96] // Using array format for cubic-bezier
+              ease: [0.43, 0.13, 0.23, 0.96]
             }}
             whileHover={{
               scale: effects?.hover?.scale || 1.05,
@@ -133,6 +115,6 @@ export const VisualDatabase = () => {
           </motion.div>
         </div>
       )}
-    </BackgroundContainer>
+    </div>
   );
 };
