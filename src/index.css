@@ -4,13 +4,6 @@
 
 @layer base {
   :root {
-    --radius: 0.5rem;
-    font-family: var(--font-sans);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Theme Semantic Colors */
     --background: var(--theme-colors-cyber-dark);
     --foreground: hsl(220 28% 95%);
     --card: var(--theme-colors-cyber-dark);
@@ -30,6 +23,7 @@
     --border: hsl(217.2 32.6% 17.5%);
     --input: hsl(217.2 32.6% 17.5%);
     --ring: var(--theme-colors-cyber-pink);
+    --radius: 0.5rem;
   }
 
   * {

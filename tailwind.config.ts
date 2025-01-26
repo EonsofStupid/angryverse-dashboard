@@ -8,6 +8,13 @@ export default {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
         border: "var(--border)",
@@ -52,6 +59,7 @@ export default {
     },
   },
   plugins: [
+    require("tailwindcss-animate"),
     function ({ addUtilities }) {
       addUtilities({
         ".clip-trapezoid": {
