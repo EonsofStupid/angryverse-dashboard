@@ -119,3 +119,7 @@ export const UserMenu = () => {
     </Sheet>
   );
 };
+
+export { UserMenuTrigger } from './UserMenuTrigger';
+export { UserProfile } from './UserProfile';
+export { AuthForm } from './AuthForm';
