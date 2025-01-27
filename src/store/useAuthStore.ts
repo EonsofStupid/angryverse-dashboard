@@ -30,14 +30,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     console.log('Auth Store: Setting user', { userId: user?.id });
     set({ user });
   },
+
   setSession: (session) => {
     console.log('Auth Store: Setting session', { sessionId: session?.access_token });
     set({ session });
   },
+
   setError: (error) => {
     console.error('Auth Store: Error occurred', error);
     set({ error });
   },
+
   setIsLoading: (isLoading) => {
     console.log('Auth Store: Loading state changed', { isLoading });
     set({ isLoading });
@@ -47,17 +50,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       console.log('Auth Store: Signing out...');
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Auth Store: Error signing out:', error);
-        throw error;
-      }
-      console.log('Auth Store: Successfully signed out');
+      if (error) throw error;
+      
       set({ 
         user: null, 
         session: null, 
         error: null,
         isAdmin: false 
       });
+      console.log('Auth Store: Successfully signed out');
     } catch (error) {
       console.error('Auth Store: Error in signOut:', error);
       set({ error: error as Error });
@@ -78,10 +79,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       
       // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) {
-        console.error('Auth Store: Session error:', sessionError);
-        throw sessionError;
-      }
+      if (sessionError) throw sessionError;
 
       if (session) {
         console.log('Auth Store: Found existing session:', { 
@@ -118,6 +116,42 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           error: null
         });
       }
+
+      // Setup auth state change listener
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          console.log('Auth Store: Auth state changed:', event, session?.user?.id);
+          
+          if (event === 'SIGNED_IN' && session) {
+            const { data: roleData } = await supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', session.user.id)
+              .single();
+
+            set({
+              user: session.user,
+              session,
+              isAdmin: roleData?.role === 'admin',
+              error: null,
+              isLoading: false
+            });
+          } else if (event === 'SIGNED_OUT') {
+            set({
+              user: null,
+              session: null,
+              isAdmin: false,
+              error: null,
+              isLoading: false
+            });
+          }
+        }
+      );
+
+      // Cleanup subscription on unmount
+      window.addEventListener('beforeunload', () => {
+        subscription.unsubscribe();
+      });
 
       set({ initialized: true, isLoading: false });
       console.log('Auth Store: Initialization complete');
