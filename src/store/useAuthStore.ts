@@ -74,65 +74,53 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     try {
       console.log('Auth Store: Initializing...');
-      set({ isLoading: true, initialized: true });
+      set({ isLoading: true });
       
-      // Setup auth state listener first
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          if (session) {
-            // Check admin role
-            const { data: roleData } = await supabase
-              .from('user_roles')
-              .select('role')
-              .eq('user_id', session.user.id)
-              .single();
-
-            set({
-              session,
-              user: session.user,
-              isAdmin: roleData?.role === 'admin' ?? false,
-              isLoading: false,
-              error: null
-            });
-          } else {
-            set({
-              session: null,
-              user: null,
-              isAdmin: false,
-              isLoading: false,
-              error: null
-            });
-          }
-        }
-      );
-
       // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw sessionError;
+      if (sessionError) {
+        console.error('Auth Store: Session error:', sessionError);
+        throw sessionError;
+      }
 
       if (session) {
-        const { data: roleData } = await supabase
+        console.log('Auth Store: Found existing session:', { 
+          userId: session.user.id,
+          email: session.user.email 
+        });
+
+        // Check admin role
+        const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
           .single();
 
+        if (roleError) {
+          console.error('Auth Store: Error checking role:', roleError);
+        }
+
+        const isAdmin = roleData?.role === 'admin';
+        console.log('Auth Store: User admin status:', { isAdmin, roleData });
+
         set({
           session,
           user: session.user,
-          isAdmin: roleData?.role === 'admin' ?? false,
-          isLoading: false,
+          isAdmin,
           error: null
         });
       } else {
+        console.log('Auth Store: No existing session found');
         set({
           session: null,
           user: null,
           isAdmin: false,
-          isLoading: false,
           error: null
         });
       }
+
+      set({ initialized: true, isLoading: false });
+      console.log('Auth Store: Initialization complete');
       
     } catch (error) {
       console.error('Auth Store: Error initializing auth:', error);
@@ -141,7 +129,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null,
         session: null,
         isAdmin: false,
-        isLoading: false
+        isLoading: false,
+        initialized: true
       });
     }
   }

@@ -36,8 +36,9 @@ export const UserMenu = () => {
   const colors = getRandomColors();
 
   useEffect(() => {
+    console.log('UserMenu mounted, initializing auth...');
     initialize();
-  }, []);
+  }, [initialize]);
 
   const handleSignOut = async () => {
     try {
@@ -72,9 +73,11 @@ export const UserMenu = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <UserMenuTrigger 
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            console.log('UserMenu trigger clicked');
+            setOpen(true);
+          }}
           colors={colors}
-          isLoading={isLoading}
         />
       </SheetTrigger>
       <SheetContent 
@@ -85,8 +88,7 @@ export const UserMenu = () => {
           "bg-background/80 backdrop-blur-md",
           "border-l border-primary/10",
           "shadow-lg",
-          "z-[100]",
-          "transition-all duration-300 ease-out"
+          "z-[100]"
         )}
       >
         <VisuallyHidden>
@@ -98,10 +100,8 @@ export const UserMenu = () => {
         
         <div className="flex flex-col gap-4 mt-8 p-4">
           {isLoading ? (
-            <div className="flex items-center justify-center p-4 animate-in fade-in-0 slide-in-from-top-2">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary relative">
-                <div className="absolute inset-0 rounded-full border-t-2 border-primary/20"></div>
-              </div>
+            <div className="flex items-center justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           ) : !user ? (
             <AuthForm />
