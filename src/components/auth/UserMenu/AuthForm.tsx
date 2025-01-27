@@ -4,26 +4,44 @@ import { cn } from '@/lib/utils';
 import { ThemeMinimal } from '@supabase/auth-ui-shared';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const AuthForm = () => {
   const { toast } = useToast();
+  const { initialize } = useAuthStore();
 
   useEffect(() => {
+    console.log('AuthForm mounted, initializing auth state...');
+    initialize();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.id);
       
       if (event === 'SIGNED_IN') {
         console.log('Signed in:', session?.user?.id);
+        toast({
+          title: "Success",
+          description: "Successfully signed in",
+        });
       } else if (event === 'SIGNED_OUT') {
         console.log('Signed out');
+        // Clear any persisted session data
         localStorage.removeItem('supabase.auth.token');
+        window.location.reload(); // Force a clean reload
+      } else if (event === 'USER_UPDATED') {
+        console.log('User updated:', session?.user?.id);
+      } else if (event === 'PASSWORD_RECOVERY') {
+        toast({
+          title: "Password Recovery",
+          description: "Check your email for password reset instructions",
+        });
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [toast, initialize]);
 
   const appearance = {
     theme: ThemeMinimal,

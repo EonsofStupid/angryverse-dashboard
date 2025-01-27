@@ -1,9 +1,3 @@
-This import statement brings in several icons from the "lucide-react" library, including:
-- BookOpen: An icon representing a book or guide
-- Newspaper: An icon representing a newspaper or blog
-- Rss: An icon representing an RSS feed or updates
-- Video: An icon representing a video or video content
-These icons are likely used throughout the application to visually represent different types of content or features.
 import { BookOpen, Newspaper, Rss, Video } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useThemeEffects } from "@/hooks/theme/useThemeEffects";
