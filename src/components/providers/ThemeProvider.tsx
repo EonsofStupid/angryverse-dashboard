@@ -129,35 +129,40 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
 
-        // Interaction tokens
-        if (effects.interaction_tokens) {
-          const { hover, magnetic, tilt } = effects.interaction_tokens;
+        // Apply neural network tokens
+        if (currentTheme.neural_tokens) {
+          const { synaptic_animations, data_flow } = currentTheme.neural_tokens;
           
-          if (hover) {
-            root.style.setProperty('--hover-lift-distances', hover.lift_distances.join(','));
-            root.style.setProperty('--hover-scale-values', hover.scale_values.join(','));
-            root.style.setProperty('--hover-transition-curves', hover.transition_curves.join(','));
-            root.style.setProperty('--hover-shadow-levels', hover.shadow_levels.join(','));
-          }
+          Object.entries(synaptic_animations).forEach(([key, value]) => {
+            root.style.setProperty(`--neural-${key}`, Array.isArray(value) ? value[0] : value);
+          });
 
-          if (magnetic) {
-            root.style.setProperty('--magnetic-strength', magnetic.strength_levels.join(','));
-            root.style.setProperty('--magnetic-radius', magnetic.radius_values.join(','));
-            root.style.setProperty('--magnetic-smoothing', magnetic.smoothing_values.join(','));
-          }
+          Object.entries(data_flow).forEach(([key, value]) => {
+            root.style.setProperty(`--data-flow-${key}`, Array.isArray(value) ? value[0] : value);
+          });
+        }
 
-          if (tilt) {
-            root.style.setProperty('--tilt-max', tilt.max_tilt_values.join(','));
-            root.style.setProperty('--tilt-perspective', tilt.perspective_values.join(','));
-            root.style.setProperty('--tilt-scale', tilt.scale_values.join(','));
-          }
+        // Apply cybernetic tokens
+        if (currentTheme.cybernetic_tokens) {
+          const { circuit_traces, energy_flow, scan_effects } = currentTheme.cybernetic_tokens;
+          
+          Object.entries(circuit_traces).forEach(([key, value]) => {
+            root.style.setProperty(`--circuit-${key}`, Array.isArray(value) ? value[0] : value);
+          });
+
+          Object.entries(energy_flow).forEach(([key, value]) => {
+            if (key === 'color_schemes') {
+              root.style.setProperty('--energy-colors', (value as string[][])[0].join(','));
+            } else {
+              root.style.setProperty(`--energy-${key}`, Array.isArray(value) ? value[0] : value);
+            }
+          });
+
+          Object.entries(scan_effects).forEach(([key, value]) => {
+            root.style.setProperty(`--scan-${key}`, Array.isArray(value) ? value[0] : value);
+          });
         }
       }
-
-      // Set semantic color mappings
-      root.style.setProperty('--theme-primary', 'var(--theme-colors-cyber-pink)');
-      root.style.setProperty('--theme-secondary', 'var(--theme-colors-cyber-cyan)');
-      root.style.setProperty('--theme-accent', 'var(--theme-colors-cyber-purple)');
     }
   }, [currentTheme]);
 

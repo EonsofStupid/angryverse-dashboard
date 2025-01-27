@@ -1431,6 +1431,7 @@ export type Database = {
           configuration: Json
           created_at: string | null
           created_by: string | null
+          cybernetic_tokens: Json | null
           description: string | null
           effects_config: Json | null
           effects_details: Json | null
@@ -1439,6 +1440,7 @@ export type Database = {
           interaction_tokens: Json | null
           is_default: boolean | null
           name: string
+          neural_tokens: Json | null
           status: Database["public"]["Enums"]["theme_status"] | null
           updated_at: string | null
         }
@@ -1447,6 +1449,7 @@ export type Database = {
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
+          cybernetic_tokens?: Json | null
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
@@ -1455,6 +1458,7 @@ export type Database = {
           interaction_tokens?: Json | null
           is_default?: boolean | null
           name: string
+          neural_tokens?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
@@ -1463,6 +1467,7 @@ export type Database = {
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
+          cybernetic_tokens?: Json | null
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
@@ -1471,6 +1476,7 @@ export type Database = {
           interaction_tokens?: Json | null
           is_default?: boolean | null
           name?: string
+          neural_tokens?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
