@@ -4,6 +4,7 @@ import { Settings, LogOut, Database, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserProfileProps {
   user: any;
@@ -21,10 +22,38 @@ export const UserProfile = ({
   onClose 
 }: UserProfileProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleAdminNavigation = (route: string) => {
-    navigate(route);
-    onClose();
+  const handleAdminNavigation = async (route: string) => {
+    console.log('Admin Navigation: Attempting to navigate to', route);
+    
+    try {
+      // Log the admin access attempt
+      await supabase.from('auth_security_logs').insert({
+        user_id: user.id,
+        event_type: 'admin_navigation_attempt',
+        metadata: {
+          route,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      navigate(route);
+      onClose();
+      
+      toast({
+        title: "Accessing Admin Area",
+        description: "Please wait while we verify your permissions...",
+      });
+      
+    } catch (error) {
+      console.error('Admin Navigation: Error logging navigation attempt:', error);
+      toast({
+        title: "Navigation Error",
+        description: "There was an error accessing the admin area. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
