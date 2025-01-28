@@ -4,26 +4,35 @@
 
 @layer base {
   :root {
-    --background: var(--theme-colors-cyber-dark);
+    --background: var(--theme-colors-cyber-void, #0A0A0F);
     --foreground: hsl(220 28% 95%);
-    --card: var(--theme-colors-cyber-dark);
+    --card: var(--theme-colors-cyber-midnight, #1F1147);
     --card-foreground: hsl(220 28% 95%);
-    --popover: var(--theme-colors-cyber-dark);
+    --popover: var(--theme-colors-cyber-void, #0A0A0F);
     --popover-foreground: hsl(220 28% 95%);
-    --primary: var(--theme-colors-cyber-pink);
+    --primary: var(--theme-colors-cyber-plasma, #FF10F0);
     --primary-foreground: hsl(220 28% 95%);
-    --secondary: var(--theme-colors-cyber-cyan);
+    --secondary: var(--theme-colors-cyber-tesla, #00FFFF);
     --secondary-foreground: hsl(220 28% 95%);
-    --muted: hsl(217.2 32.6% 17.5%);
-    --muted-foreground: hsl(215 20.2% 65.1%);
-    --accent: var(--theme-colors-cyber-purple);
+    --muted: var(--theme-colors-cyber-midnight, #1F1147);
+    --muted-foreground: var(--theme-colors-cyber-tesla, #00FFFF);
+    --accent: var(--theme-colors-cyber-electric, #9B30FF);
     --accent-foreground: hsl(220 28% 95%);
-    --destructive: hsl(0 62.8% 30.6%);
+    --destructive: var(--theme-colors-cyber-warning, #FFD300);
     --destructive-foreground: hsl(210 40% 98%);
-    --border: hsl(217.2 32.6% 17.5%);
-    --input: hsl(217.2 32.6% 17.5%);
-    --ring: var(--theme-colors-cyber-pink);
+    --border: var(--theme-colors-cyber-tesla, #00FFFF);
+    --input: var(--theme-colors-cyber-midnight, #1F1147);
+    --ring: var(--theme-colors-cyber-plasma, #FF10F0);
     --radius: 0.5rem;
+
+    /* Theme-specific colors */
+    --theme-colors-cyber-dark: #0A0A0F;
+    --theme-colors-cyber-pink: #FF10F0;
+    --theme-colors-cyber-cyan: #00FFFF;
+    --theme-colors-cyber-purple: #9B30FF;
+    --theme-colors-cyber-green: #39FF14;
+    --theme-colors-cyber-yellow: #FFD300;
+    --theme-colors-cyber-matrix: #39FF14;
   }
 
   * {
