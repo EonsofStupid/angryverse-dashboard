@@ -1431,6 +1431,7 @@ export type Database = {
       themes: {
         Row: {
           advanced_effects: Json | null
+          animation_effects: Json | null
           configuration: Json
           created_at: string | null
           created_by: string | null
@@ -1441,15 +1442,19 @@ export type Database = {
           glass_effects_config: Json | null
           gray_palette: Json | null
           id: string
+          interaction_effects: Json | null
           interaction_tokens: Json | null
           is_default: boolean | null
+          motion_effects: Json | null
           name: string
           neural_tokens: Json | null
+          special_effects: Json | null
           status: Database["public"]["Enums"]["theme_status"] | null
           updated_at: string | null
         }
         Insert: {
           advanced_effects?: Json | null
+          animation_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
@@ -1460,15 +1465,19 @@ export type Database = {
           glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
+          motion_effects?: Json | null
           name: string
           neural_tokens?: Json | null
+          special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
         Update: {
           advanced_effects?: Json | null
+          animation_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
@@ -1479,10 +1488,13 @@ export type Database = {
           glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
+          interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
+          motion_effects?: Json | null
           name?: string
           neural_tokens?: Json | null
+          special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
