@@ -782,6 +782,27 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          permission: Database["public"]["Enums"]["permission"]
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          permission: Database["public"]["Enums"]["permission"]
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          permission?: Database["public"]["Enums"]["permission"]
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           category: string
@@ -1391,6 +1412,12 @@ export type Database = {
           is_updatable: boolean
         }[]
       }
+      has_permission: {
+        Args: {
+          required_permission: Database["public"]["Enums"]["permission"]
+        }
+        Returns: boolean
+      }
       log_auth_event: {
         Args: {
           p_user_id: string
@@ -1404,6 +1431,17 @@ export type Database = {
     }
     Enums: {
       doc_category: "themes" | "rls" | "authorization"
+      permission:
+        | "create_post"
+        | "edit_post"
+        | "delete_post"
+        | "manage_users"
+        | "manage_roles"
+        | "manage_settings"
+        | "view_analytics"
+        | "manage_media"
+        | "manage_comments"
+        | "manage_categories"
       theme_status: "active" | "inactive" | "draft"
       theme_validation_severity: "error" | "warning" | "info"
       user_role: "user" | "admin" | "gamer" | "super_admin"
