@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface UserProfileProps {
   user: any;
   isAdmin: boolean;
+  userRole: string | null;
   onSignOut: () => Promise<void>;
   onSettingsClick: () => void;
   onClose: () => void;
@@ -16,7 +17,8 @@ interface UserProfileProps {
 
 export const UserProfile = ({ 
   user, 
-  isAdmin, 
+  isAdmin,
+  userRole, 
   onSignOut, 
   onSettingsClick,
   onClose 
@@ -72,9 +74,9 @@ export const UserProfile = ({
         </Avatar>
         <div className="flex flex-col">
           <span className="font-medium text-primary">{user.email}</span>
-          {isAdmin && (
-            <span className="text-sm text-primary/60">Admin</span>
-          )}
+          <span className="text-sm text-primary/60">
+            {userRole ? userRole.charAt(0).toUpperCase() + userRole.slice(1) : 'Loading...'}
+          </span>
         </div>
       </div>
 

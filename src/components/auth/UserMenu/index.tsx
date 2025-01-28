@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { UserMenuTrigger } from "./UserMenuTrigger";
 import { UserProfile } from "./UserProfile";
 import { AuthForm } from "./AuthForm";
+import { supabase } from "@/integrations/supabase/client";
 
 const THEME_COLORS = [
   'rgba(139, 92, 246, 0.8)',   // Vivid Purple
@@ -29,6 +30,7 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const { theme } = useThemeStore();
   const { user, initialize, isAdmin, isLoading, signOut } = useAuthStore();
   const navigate = useNavigate();
@@ -39,6 +41,28 @@ export const UserMenu = () => {
     console.log('UserMenu mounted, initializing auth...');
     initialize();
   }, [initialize]);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .single();
+
+          if (error) throw error;
+          setUserRole(data?.role || null);
+          console.log('User role fetched:', data?.role);
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+        }
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -109,6 +133,7 @@ export const UserMenu = () => {
             <UserProfile 
               user={user}
               isAdmin={isAdmin}
+              userRole={userRole}
               onSignOut={handleSignOut}
               onSettingsClick={handleSettingsClick}
               onClose={() => setOpen(false)}
