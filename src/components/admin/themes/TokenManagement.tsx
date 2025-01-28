@@ -7,25 +7,45 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Paintbrush, Save, Undo } from "lucide-react";
+import type { CSSColor } from "@/types/theme/utils/css";
 
-const defaultCyberColors = {
-  dark: "#1a1b26",
+const defaultCyberColors: {
+  dark: CSSColor;
   pink: {
-    DEFAULT: "#ff007f",
-    hover: "#ff1a8c"
+    DEFAULT: CSSColor;
+    hover: CSSColor;
+  };
+  cyan: {
+    DEFAULT: CSSColor;
+    hover: CSSColor;
+  };
+  purple: CSSColor;
+  green: {
+    DEFAULT: CSSColor;
+    hover: CSSColor;
+  };
+  yellow: {
+    DEFAULT: CSSColor;
+    hover: CSSColor;
+  };
+} = {
+  dark: "#1a1b26" as CSSColor,
+  pink: {
+    DEFAULT: "#ff007f" as CSSColor,
+    hover: "#ff1a8c" as CSSColor
   },
   cyan: {
-    DEFAULT: "#00fff5",
-    hover: "#1affff"
+    DEFAULT: "#00fff5" as CSSColor,
+    hover: "#1affff" as CSSColor
   },
-  purple: "#7928ca",
+  purple: "#7928ca" as CSSColor,
   green: {
-    DEFAULT: "#4ade80",
-    hover: "#22c55e"
+    DEFAULT: "#4ade80" as CSSColor,
+    hover: "#22c55e" as CSSColor
   },
   yellow: {
-    DEFAULT: "#fde047",
-    hover: "#facc15"
+    DEFAULT: "#fde047" as CSSColor,
+    hover: "#facc15" as CSSColor
   }
 };
 
@@ -45,13 +65,13 @@ export const TokenManagement = () => {
           ...prev,
           [key]: {
             ...(prev[key] as object),
-            [subKey]: value
+            [subKey]: value as CSSColor
           }
         };
       }
       return {
         ...prev,
-        [key]: value
+        [key]: value as CSSColor
       };
     });
   };
