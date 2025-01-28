@@ -79,10 +79,37 @@ export const Features = () => {
   }, []);
 
   return (
-    <BackgroundContainer className="py-20">
-      <CyberBackground color="#1A1F2C" opacity={0.05} />
-      <AnimatedLines direction="horizontal" color="#7E69AB" speed={0.5} spacing={30} opacity={0.1} />
-      <GlitchOverlay intensity={0.2} frequency={1.5} color="#6E59A5" />
+    <BackgroundContainer className="py-20 relative overflow-hidden">
+      {/* Matrix Rain Effect - Primary */}
+      <AnimatedLines 
+        direction="vertical"
+        color="var(--theme-colors-cyber-matrix, #00ff00)"
+        speed={2.5}
+        spacing={25}
+        opacity={0.1}
+      />
+      
+      {/* Crossing Lines - Secondary */}
+      <AnimatedLines 
+        direction="horizontal"
+        color="var(--theme-colors-cyber-cyan)"
+        speed={1.5}
+        spacing={35}
+        opacity={0.08}
+      />
+      
+      {/* Base Cyber Background */}
+      <CyberBackground 
+        color="var(--theme-colors-cyber-purple)"
+        opacity={0.15}
+      />
+      
+      {/* Dynamic Glitch Effect */}
+      <GlitchOverlay 
+        intensity={0.2}
+        frequency={1.2}
+        color="var(--theme-colors-cyber-pink)"
+      />
       
       <div ref={containerRef} className="container mx-auto px-4 relative">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
@@ -91,15 +118,15 @@ export const Features = () => {
         
         {/* Cursor glow effect */}
         <div
-          className="pointer-events-none fixed transition-transform duration-100 ease-out"
+          className="pointer-events-none fixed transition-transform duration-100 ease-out mix-blend-screen"
           style={{
             left: `${mousePosition.x}px`,
             top: `${mousePosition.y}px`,
-            width: '150px',
-            height: '150px',
+            width: '200px',
+            height: '200px',
             transform: 'translate(-50%, -50%)',
             background: `radial-gradient(circle, ${activeGlowColor}${Math.round(Number(glowOpacity) * 255).toString(16)} 0%, transparent 70%)`,
-            mixBlendMode: 'screen',
+            filter: 'blur(8px)',
             zIndex: 10,
           }}
         />
@@ -108,7 +135,7 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative cursor-pointer p-6 rounded-lg hover-glow"
+              className="group relative cursor-pointer p-6 rounded-lg hover-glow transition-all duration-500"
               style={{
                 ...glassStyle,
                 '--hover-glow-color': feature.glowColor,
@@ -117,10 +144,10 @@ export const Features = () => {
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
               onMouseLeave={() => setActiveGlowColor("#1A1F2C")}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity rounded-lg`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-lg`} />
               <div className="relative z-10">
                 <feature.icon
-                  className={`h-12 w-12 ${feature.color} mb-4 transform transition-transform duration-300 group-hover:scale-110`}
+                  className={`h-12 w-12 ${feature.color} mb-4 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
                 />
                 <h3 className={`text-xl font-semibold mb-2 ${feature.color} transition-colors duration-300`}>
                   {feature.title}

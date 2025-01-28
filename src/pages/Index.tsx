@@ -24,10 +24,38 @@ const Index = () => {
         <Navbar />
         <ScrollProgress />
         <Hero />
+        
         <BackgroundContainer className="relative">
-          <CyberBackground color="var(--theme-colors-cyber-purple)" opacity={0.95} />
-          <AnimatedLines color="var(--theme-colors-cyber-purple)" opacity={0.1} />
-          <GlitchOverlay color="var(--theme-colors-cyber-purple)" />
+          {/* Matrix Rain Effect - Primary */}
+          <AnimatedLines 
+            direction="vertical"
+            color="var(--theme-colors-cyber-matrix, #00ff00)"
+            speed={3}
+            spacing={20}
+            opacity={0.12}
+          />
+          
+          {/* Crossing Lines - Accent */}
+          <AnimatedLines 
+            direction="horizontal"
+            color="var(--theme-colors-cyber-cyan)"
+            speed={2}
+            spacing={30}
+            opacity={0.08}
+          />
+          
+          {/* Base Cyber Background */}
+          <CyberBackground 
+            color="var(--theme-colors-cyber-purple)"
+            opacity={0.2}
+          />
+          
+          {/* Dynamic Glitch Effect */}
+          <GlitchOverlay 
+            intensity={0.25}
+            frequency={1.8}
+            color="var(--theme-colors-cyber-pink)"
+          />
           
           <section className="py-20 px-4">
             <div className="container mx-auto">
@@ -38,6 +66,7 @@ const Index = () => {
             </div>
           </section>
         </BackgroundContainer>
+        
         <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
         <Footer />
