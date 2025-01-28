@@ -50,16 +50,18 @@ export const GlitchEffect = ({
         }}
       />
 
-      <style jsx global>{`
-        @keyframes glitch-1 {
-          0%, 100% { transform: translate(0); }
-          50% { transform: translate(${intensity * -10}px, ${intensity * 2}px); }
-        }
-        @keyframes glitch-2 {
-          0%, 100% { transform: translate(0); }
-          50% { transform: translate(${intensity * 10}px, ${intensity * -2}px); }
-        }
-      `}</style>
+      <style>
+        {`
+          @keyframes glitch-1 {
+            0%, 100% { transform: translate(0); }
+            50% { transform: translate(${intensity * -10}px, ${intensity * 2}px); }
+          }
+          @keyframes glitch-2 {
+            0%, 100% { transform: translate(0); }
+            50% { transform: translate(${intensity * 10}px, ${intensity * -2}px); }
+          }
+        `}
+      </style>
     </div>
   );
 };

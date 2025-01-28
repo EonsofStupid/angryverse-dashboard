@@ -35,16 +35,18 @@ export const NeonEffect = ({
     >
       {children}
 
-      <style jsx global>{`
-        @keyframes neon-pulse {
-          0%, 100% {
-            opacity: ${0.8 + intensity * 0.2};
+      <style>
+        {`
+          @keyframes neon-pulse {
+            0%, 100% {
+              opacity: ${0.8 + intensity * 0.2};
+            }
+            50% {
+              opacity: ${0.6 + intensity * 0.2};
+            }
           }
-          50% {
-            opacity: ${0.6 + intensity * 0.2};
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
