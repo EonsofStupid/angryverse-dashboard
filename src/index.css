@@ -93,4 +93,21 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
   }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+  }
+
+  .hover-scale-112 {
+    @apply transition-transform duration-300;
+  }
+
+  .hover-scale-112:hover {
+    transform: scale(1.12);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-pink)] to-[var(--theme-colors-cyber-cyan)];
+  }
 }

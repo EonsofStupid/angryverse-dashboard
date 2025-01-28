@@ -51,14 +51,11 @@ export const Features = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const glassStyle = {
-    background: effects?.glass?.background || 'rgba(26, 31, 44, 0.1)', // Dark Purple background
-    backdropFilter: `blur(${effects?.glass?.blur || '8px'})`,
-    border: effects?.glass?.border || '1px solid rgba(126, 105, 171, 0.1)', // Secondary Purple border
-    transition: `all ${effects?.animations?.timing?.normal || '300ms'} ${effects?.animations?.curves?.ease_out || 'cubic-bezier(0.4, 0, 0.2, 1)'}`,
+    background: 'rgba(26, 31, 44, 0.1)',
+    backdropFilter: 'blur(8px)',
+    border: '1px solid rgba(126, 105, 171, 0.1)',
+    transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
-
-  const glowStrength = effects?.hover?.glow_strength || 'var(--glow-strength-md)';
-  const glowOpacity = effects?.hover?.glow_opacity || 'var(--glow-opacity-medium)';
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -79,21 +76,30 @@ export const Features = () => {
   }, []);
 
   return (
-    <BackgroundContainer className="py-20 relative overflow-hidden">
+    <BackgroundContainer className="py-20 relative overflow-hidden bg-[radial-gradient(circle_at_center,#1f1f2e,#14141c)]">
       {/* Matrix Rain Effect - Primary */}
       <AnimatedLines 
         direction="vertical"
-        color="var(--theme-colors-cyber-matrix, #00ff00)"
-        speed={2.5}
+        color="#00ff00"
+        speed={40}
+        spacing={20}
+        opacity={0.15}
+      />
+      
+      {/* Matrix Rain Effect - Secondary */}
+      <AnimatedLines 
+        direction="vertical"
+        color="#1affff"
+        speed={20}
         spacing={25}
         opacity={0.1}
       />
       
-      {/* Crossing Lines - Secondary */}
+      {/* Crossing Lines - Horizontal */}
       <AnimatedLines 
         direction="horizontal"
         color="var(--theme-colors-cyber-cyan)"
-        speed={1.5}
+        speed={10}
         spacing={35}
         opacity={0.08}
       />
@@ -106,14 +112,14 @@ export const Features = () => {
       
       {/* Dynamic Glitch Effect */}
       <GlitchOverlay 
-        intensity={0.2}
-        frequency={1.2}
+        intensity={0.3}
+        frequency={1.8}
         color="var(--theme-colors-cyber-pink)"
       />
       
-      <div ref={containerRef} className="container mx-auto px-4 relative">
+      <div ref={containerRef} className="container mx-auto px-4 relative z-10">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-          Latest <span className="text-gradient animate-glow">Content</span>
+          Latest <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-pink)] to-[var(--theme-colors-cyber-cyan)] animate-pulse">Content</span>
         </h2>
         
         {/* Cursor glow effect */}
@@ -125,9 +131,9 @@ export const Features = () => {
             width: '200px',
             height: '200px',
             transform: 'translate(-50%, -50%)',
-            background: `radial-gradient(circle, ${activeGlowColor}${Math.round(Number(glowOpacity) * 255).toString(16)} 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${activeGlowColor}80 0%, transparent 70%)`,
             filter: 'blur(8px)',
-            zIndex: 10,
+            zIndex: 20,
           }}
         />
         
@@ -135,19 +141,33 @@ export const Features = () => {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative cursor-pointer p-6 rounded-lg hover-glow transition-all duration-500"
+              className="group relative cursor-pointer p-6 rounded-lg transition-all duration-500 hover:scale-112 hover:-translate-y-1"
               style={{
                 ...glassStyle,
                 '--hover-glow-color': feature.glowColor,
-                '--hover-glow-strength': glowStrength,
+                boxShadow: `0 0 20px ${feature.glowColor}40`,
+                transform: 'perspective(1000px)',
               } as React.CSSProperties}
               onMouseEnter={() => setActiveGlowColor(feature.glowColor)}
               onMouseLeave={() => setActiveGlowColor("#1A1F2C")}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-lg`} />
+              <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-lg"
+                   style={{
+                     background: `linear-gradient(135deg, ${feature.glowColor}40, transparent)`,
+                   }} />
+              
+              {/* Holographic effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 rounded-lg overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent animate-[shine_3s_ease-in-out_infinite]"
+                     style={{
+                       transform: 'translateX(-100%)',
+                       animation: 'shine 3s ease-in-out infinite',
+                     }} />
+              </div>
+              
               <div className="relative z-10">
                 <feature.icon
-                  className={`h-12 w-12 ${feature.color} mb-4 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                  className={`h-12 w-12 ${feature.color} mb-4 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:drop-shadow-[0_0_8px_${feature.glowColor}]`}
                 />
                 <h3 className={`text-xl font-semibold mb-2 ${feature.color} transition-colors duration-300`}>
                   {feature.title}
