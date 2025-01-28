@@ -49,11 +49,21 @@ const defaultCyberColors: {
   }
 };
 
+const defaultTypography = {
+  fonts: {
+    sans: ['Inter', 'sans-serif'],
+    cyber: ['Inter', 'sans-serif']
+  }
+};
+
 export const TokenManagement = () => {
   const { currentTheme, setCurrentTheme } = useTheme();
   const [activeCategory, setActiveCategory] = useState("colors");
   const [colorTokens, setColorTokens] = useState(
     currentTheme?.configuration?.colors?.cyber || defaultCyberColors
+  );
+  const [typographyTokens, setTypographyTokens] = useState(
+    currentTheme?.configuration?.typography || defaultTypography
   );
   const [isDirty, setIsDirty] = useState(false);
 
@@ -76,6 +86,17 @@ export const TokenManagement = () => {
     });
   };
 
+  const handleTypographyChange = (fontType: string, value: string) => {
+    setIsDirty(true);
+    setTypographyTokens(prev => ({
+      ...prev,
+      fonts: {
+        ...prev.fonts,
+        [fontType]: value.split(',').map(font => font.trim())
+      }
+    }));
+  };
+
   const handleSave = () => {
     if (!currentTheme) return;
     
@@ -86,7 +107,8 @@ export const TokenManagement = () => {
         colors: {
           ...currentTheme.configuration.colors,
           cyber: colorTokens
-        }
+        },
+        typography: typographyTokens
       }
     };
     
@@ -96,6 +118,7 @@ export const TokenManagement = () => {
 
   const handleReset = () => {
     setColorTokens(currentTheme?.configuration?.colors?.cyber || defaultCyberColors);
+    setTypographyTokens(currentTheme?.configuration?.typography || defaultTypography);
     setIsDirty(false);
   };
 
@@ -137,6 +160,22 @@ export const TokenManagement = () => {
       </div>
     );
   };
+
+  const renderTypographyInput = (fontType: string, value: string[]) => (
+    <div key={fontType} className="grid gap-2">
+      <Label className="capitalize">{fontType} Font Family</Label>
+      <Input
+        type="text"
+        value={value.join(', ')}
+        onChange={(e) => handleTypographyChange(fontType, e.target.value)}
+        placeholder="Font family names, comma-separated"
+        className="font-mono"
+      />
+      <div className="text-sm text-muted-foreground">
+        Preview: <span style={{ fontFamily: value.join(', ') }}>The quick brown fox jumps over the lazy dog</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -198,11 +237,42 @@ export const TokenManagement = () => {
 
             <TabsContent value="typography" className="space-y-4 mt-4">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle>Typography Tokens</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleReset}
+                      disabled={!isDirty}
+                    >
+                      <Undo className="mr-2 h-4 w-4" />
+                      Reset
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSave}
+                      disabled={!isDirty}
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Changes
+                    </Button>
+                  </div>
                 </CardHeader>
-                <CardContent>
-                  {/* Typography token management UI will be implemented in next step */}
+                <CardContent className="space-y-4">
+                  {isDirty && (
+                    <Alert>
+                      <Paintbrush className="h-4 w-4" />
+                      <AlertDescription>
+                        You have unsaved changes. Don't forget to save!
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  <div className="space-y-6">
+                    {Object.entries(typographyTokens.fonts).map(([fontType, value]) => 
+                      renderTypographyInput(fontType, value)
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
