@@ -119,6 +119,6 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-pink)] to-[var(--theme-colors-cyber-cyan)];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-plasma)] to-[var(--theme-colors-cyber-tesla)];
   }
 }
