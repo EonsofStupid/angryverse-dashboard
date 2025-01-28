@@ -8,10 +8,33 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Paintbrush, Save, Undo } from "lucide-react";
 
+const defaultCyberColors = {
+  dark: "#1a1b26",
+  pink: {
+    DEFAULT: "#ff007f",
+    hover: "#ff1a8c"
+  },
+  cyan: {
+    DEFAULT: "#00fff5",
+    hover: "#1affff"
+  },
+  purple: "#7928ca",
+  green: {
+    DEFAULT: "#4ade80",
+    hover: "#22c55e"
+  },
+  yellow: {
+    DEFAULT: "#fde047",
+    hover: "#facc15"
+  }
+};
+
 export const TokenManagement = () => {
   const { currentTheme, setCurrentTheme } = useTheme();
   const [activeCategory, setActiveCategory] = useState("colors");
-  const [colorTokens, setColorTokens] = useState(currentTheme?.configuration?.colors?.cyber || {});
+  const [colorTokens, setColorTokens] = useState(
+    currentTheme?.configuration?.colors?.cyber || defaultCyberColors
+  );
   const [isDirty, setIsDirty] = useState(false);
 
   const handleColorChange = (key: string, subKey: string | null, value: string) => {
@@ -52,7 +75,7 @@ export const TokenManagement = () => {
   };
 
   const handleReset = () => {
-    setColorTokens(currentTheme?.configuration?.colors?.cyber || {});
+    setColorTokens(currentTheme?.configuration?.colors?.cyber || defaultCyberColors);
     setIsDirty(false);
   };
 
