@@ -38,7 +38,7 @@ export const VisualDatabase = () => {
       {/* Matrix Rain Effect - Primary */}
       <AnimatedLines 
         direction="vertical"
-        color="#00ff00"
+        color="var(--theme-colors-cyber-matrix)"
         speed={40}
         spacing={20}
         opacity={0.15}
@@ -47,7 +47,7 @@ export const VisualDatabase = () => {
       {/* Matrix Rain Effect - Secondary */}
       <AnimatedLines 
         direction="vertical"
-        color="#1affff"
+        color="var(--theme-colors-cyber-tesla)"
         speed={20}
         spacing={25}
         opacity={0.1}
@@ -56,7 +56,7 @@ export const VisualDatabase = () => {
       {/* Crossing Lines */}
       <AnimatedLines 
         direction="horizontal"
-        color="var(--theme-colors-cyber-cyan)"
+        color="var(--theme-colors-cyber-electric)"
         speed={10}
         spacing={35}
         opacity={0.08}
@@ -64,7 +64,7 @@ export const VisualDatabase = () => {
       
       {/* Base Cyber Background */}
       <CyberBackground 
-        color="var(--theme-colors-cyber-purple)"
+        color="var(--theme-colors-cyber-plasma)"
         opacity={0.15}
       />
       
@@ -130,7 +130,7 @@ export const VisualDatabase = () => {
                   y1={`${fromNode.id * 15}%`}
                   x2={`${toNode.id * 20}%`}
                   y2={`${toNode.id * 15}%`}
-                  stroke="var(--theme-colors-cyber-cyan)"
+                  stroke="var(--theme-colors-cyber-tesla)"
                   strokeWidth="2"
                   strokeDasharray="5,5"
                   initial={{ pathLength: 0 }}
