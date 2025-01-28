@@ -2,10 +2,98 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTheme } from "@/hooks/useTheme";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Paintbrush, Save, Undo } from "lucide-react";
 
 export const TokenManagement = () => {
-  const { currentTheme } = useTheme();
+  const { currentTheme, setCurrentTheme } = useTheme();
   const [activeCategory, setActiveCategory] = useState("colors");
+  const [colorTokens, setColorTokens] = useState(currentTheme?.configuration?.colors?.cyber || {});
+  const [isDirty, setIsDirty] = useState(false);
+
+  const handleColorChange = (key: string, subKey: string | null, value: string) => {
+    setIsDirty(true);
+    setColorTokens(prev => {
+      if (subKey) {
+        return {
+          ...prev,
+          [key]: {
+            ...(prev[key] as object),
+            [subKey]: value
+          }
+        };
+      }
+      return {
+        ...prev,
+        [key]: value
+      };
+    });
+  };
+
+  const handleSave = () => {
+    if (!currentTheme) return;
+    
+    const updatedTheme = {
+      ...currentTheme,
+      configuration: {
+        ...currentTheme.configuration,
+        colors: {
+          ...currentTheme.configuration.colors,
+          cyber: colorTokens
+        }
+      }
+    };
+    
+    setCurrentTheme(updatedTheme);
+    setIsDirty(false);
+  };
+
+  const handleReset = () => {
+    setColorTokens(currentTheme?.configuration?.colors?.cyber || {});
+    setIsDirty(false);
+  };
+
+  const renderColorInput = (key: string, value: any, parentKey?: string) => {
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <div key={key} className="space-y-4 border rounded-lg p-4">
+          <h4 className="font-medium text-lg capitalize">{key}</h4>
+          {Object.entries(value).map(([subKey, subValue]) => 
+            renderColorInput(subKey, subValue, key)
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div key={key} className="grid gap-2">
+        <Label className="capitalize">
+          {parentKey ? `${parentKey} - ${key}` : key}
+        </Label>
+        <div className="flex gap-2">
+          <Input
+            type="color"
+            value={value}
+            className="w-16 h-10 p-1"
+            onChange={(e) => handleColorChange(parentKey || key, parentKey ? key : null, e.target.value)}
+          />
+          <Input
+            type="text"
+            value={value}
+            className="flex-1"
+            onChange={(e) => handleColorChange(parentKey || key, parentKey ? key : null, e.target.value)}
+          />
+          <div 
+            className="w-10 h-10 rounded border"
+            style={{ backgroundColor: value }}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -25,11 +113,42 @@ export const TokenManagement = () => {
 
             <TabsContent value="colors" className="space-y-4 mt-4">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle>Color Tokens</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleReset}
+                      disabled={!isDirty}
+                    >
+                      <Undo className="mr-2 h-4 w-4" />
+                      Reset
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSave}
+                      disabled={!isDirty}
+                    >
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Changes
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Color token management UI will be implemented in next step */}
+                  {isDirty && (
+                    <Alert>
+                      <Paintbrush className="h-4 w-4" />
+                      <AlertDescription>
+                        You have unsaved changes. Don't forget to save!
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  <div className="space-y-6">
+                    {Object.entries(colorTokens).map(([key, value]) => 
+                      renderColorInput(key, value)
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
