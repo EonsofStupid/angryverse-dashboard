@@ -4,15 +4,15 @@
 
 @layer base {
   :root {
-    /* Core theme colors */
-    --theme-colors-cyber-void: #0A0A0F;
-    --theme-colors-cyber-midnight: #1F1147;
+    /* Core cyberpunk colors */
     --theme-colors-cyber-matrix: #39FF14;
     --theme-colors-cyber-tesla: #00FFFF;
     --theme-colors-cyber-plasma: #FF10F0;
     --theme-colors-cyber-electric: #9B30FF;
     --theme-colors-cyber-warning: #FFD300;
     --theme-colors-cyber-radiation: #7FFF00;
+    --theme-colors-cyber-void: #0A0A0F;
+    --theme-colors-cyber-midnight: #1F1147;
 
     /* Semantic mappings */
     --background: var(--theme-colors-cyber-void);
