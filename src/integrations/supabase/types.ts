@@ -1274,6 +1274,7 @@ export type Database = {
           description: string | null
           effects_config: Json | null
           effects_details: Json | null
+          glass_effects: Json | null
           gray_palette: Json | null
           id: string
           interaction_tokens: Json | null
@@ -1291,6 +1292,7 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
+          glass_effects?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
@@ -1308,6 +1310,7 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
+          glass_effects?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
@@ -1435,6 +1438,7 @@ export type Database = {
           description: string | null
           effects_config: Json | null
           effects_details: Json | null
+          glass_effects_config: Json | null
           gray_palette: Json | null
           id: string
           interaction_tokens: Json | null
@@ -1453,6 +1457,7 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
+          glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
@@ -1471,6 +1476,7 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
+          glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
