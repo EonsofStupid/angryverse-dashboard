@@ -13,6 +13,7 @@ import { ThemeManagement } from "@/components/admin/ThemeManagement";
 import { PortalContent } from "@/components/portal/PortalContent";
 import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
 import { Documentation } from "@/components/admin/documentation/Documentation";
+import { PermissionManagement } from "@/components/admin/permissions/PermissionManagement";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="comments">Comments</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
+              <TabsTrigger value="permissions">Permissions</TabsTrigger>
               <TabsTrigger value="database">Database</TabsTrigger>
               <TabsTrigger value="themes">Themes</TabsTrigger>
               <TabsTrigger value="documentation">Documentation</TabsTrigger>
@@ -106,6 +108,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="users">
               <UserManagement />
+            </TabsContent>
+
+            <TabsContent value="permissions">
+              <PermissionManagement />
             </TabsContent>
 
             <TabsContent value="database">
