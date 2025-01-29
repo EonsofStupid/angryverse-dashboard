@@ -4,6 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
+
+type UserRole = Database['public']['Enums']['user_role'];
 
 export const UserRoles = () => {
   const { data: users, isLoading } = useQuery({
@@ -30,7 +33,7 @@ export const UserRoles = () => {
     }
   });
 
-  const handleRoleChange = async (userId: string, newRole: string) => {
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
     try {
       const { error } = await supabase
         .from('user_roles')
@@ -73,7 +76,7 @@ export const UserRoles = () => {
               <TableCell>
                 <Select
                   defaultValue={user.user_roles?.[0]?.role || 'user'}
-                  onValueChange={(value) => handleRoleChange(user.id, value)}
+                  onValueChange={(value: UserRole) => handleRoleChange(user.id, value)}
                 >
                   <SelectTrigger className="w-32">
                     <SelectValue />

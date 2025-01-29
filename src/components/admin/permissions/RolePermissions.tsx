@@ -4,6 +4,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
+
+type Permission = Database['public']['Enums']['permission'];
+type UserRole = Database['public']['Enums']['user_role'];
 
 export const RolePermissions = () => {
   const { data: permissions, isLoading } = useQuery({
@@ -24,12 +28,15 @@ export const RolePermissions = () => {
     }
   });
 
-  const handlePermissionToggle = async (permission: string, role: string, enabled: boolean) => {
+  const handlePermissionToggle = async (permission: Permission, role: UserRole, enabled: boolean) => {
     try {
       if (enabled) {
         const { error } = await supabase
           .from('role_permissions')
-          .insert({ permission, role });
+          .insert({ 
+            permission: permission as Permission,
+            role: role as UserRole 
+          });
 
         if (error) throw error;
       } else {
