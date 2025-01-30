@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, LogOut, Database, LayoutDashboard } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface UserProfileProps {
   user: any;
-  isAdmin: boolean;
-  userRole: string | null;
   onSignOut: () => Promise<void>;
   onSettingsClick: () => void;
   onClose: () => void;
@@ -17,45 +15,21 @@ interface UserProfileProps {
 
 export const UserProfile = ({ 
   user, 
-  isAdmin,
-  userRole, 
   onSignOut, 
   onSettingsClick,
   onClose 
 }: UserProfileProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { userRole, isAdmin } = useAuthStore();
 
-  const handleAdminNavigation = async (route: string) => {
-    console.log('Admin Navigation: Attempting to navigate to', route);
-    
-    try {
-      // Log the admin access attempt
-      await supabase.from('auth_security_logs').insert({
-        user_id: user.id,
-        event_type: 'admin_navigation_attempt',
-        metadata: {
-          route,
-          timestamp: new Date().toISOString()
-        }
-      });
-
-      navigate(route);
-      onClose();
-      
-      toast({
-        title: "Accessing Admin Area",
-        description: "Please wait while we verify your permissions...",
-      });
-      
-    } catch (error) {
-      console.error('Admin Navigation: Error logging navigation attempt:', error);
-      toast({
-        title: "Navigation Error",
-        description: "There was an error accessing the admin area. Please try again.",
-        variant: "destructive"
-      });
-    }
+  const handleAdminNavigation = (route: string) => {
+    navigate(route);
+    onClose();
+    toast({
+      title: "Accessing Admin Area",
+      description: "Please wait while we verify your permissions...",
+    });
   };
 
   return (
@@ -96,7 +70,6 @@ export const UserProfile = ({
             className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
             onClick={() => handleAdminNavigation("/admin/portal")}
           >
-            <LayoutDashboard className="h-5 w-5" />
             Portal
           </Button>
           <Button
@@ -104,7 +77,6 @@ export const UserProfile = ({
             className="justify-start gap-2 hover:bg-primary/10 hover:text-primary"
             onClick={() => handleAdminNavigation("/admin")}
           >
-            <Database className="h-5 w-5" />
             Admin Dashboard
           </Button>
         </>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User, Session, AuthError } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthState {
@@ -9,6 +9,7 @@ interface AuthState {
   error: Error | null;
   initialized: boolean;
   isAdmin: boolean;
+  userRole: string | null;
   
   setUser: (user: User | null) => void;
   setSession: (session: Session | null) => void;
@@ -25,6 +26,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   error: null,
   initialized: false,
   isAdmin: false,
+  userRole: null,
 
   setUser: (user) => {
     console.log('Auth Store: Setting user', { userId: user?.id });
@@ -56,7 +58,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null, 
         session: null, 
         error: null,
-        isAdmin: false 
+        isAdmin: false,
+        userRole: null
       });
       console.log('Auth Store: Successfully signed out');
     } catch (error) {
@@ -77,7 +80,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.log('Auth Store: Initializing...');
       set({ isLoading: true });
       
-      // Get initial session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
 
@@ -87,7 +89,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           email: session.user.email 
         });
 
-        // Check admin role
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('role')
@@ -105,6 +106,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           session,
           user: session.user,
           isAdmin,
+          userRole: roleData?.role || null,
           error: null
         });
       } else {
@@ -113,11 +115,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           session: null,
           user: null,
           isAdmin: false,
+          userRole: null,
           error: null
         });
       }
 
-      // Setup auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           console.log('Auth Store: Auth state changed:', event, session?.user?.id);
@@ -133,6 +135,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               user: session.user,
               session,
               isAdmin: roleData?.role === 'admin',
+              userRole: roleData?.role || null,
               error: null,
               isLoading: false
             });
@@ -141,6 +144,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               user: null,
               session: null,
               isAdmin: false,
+              userRole: null,
               error: null,
               isLoading: false
             });
@@ -148,7 +152,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       );
 
-      // Cleanup subscription on unmount
       window.addEventListener('beforeunload', () => {
         subscription.unsubscribe();
       });
@@ -163,6 +166,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null,
         session: null,
         isAdmin: false,
+        userRole: null,
         isLoading: false,
         initialized: true
       });
