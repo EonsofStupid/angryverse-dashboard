@@ -18,7 +18,7 @@ export const UserMenuTrigger = ({ onClick, colors }: UserMenuTriggerProps) => {
         "transition-colors duration-200"
       )}
       style={{
-        background: `linear-gradient(45deg, ${colors.join(', ')})`,
+        background: `linear-gradient(45deg, ${colors.join(", ")})`,
       }}
     >
       <span className="sr-only">Open user menu</span>

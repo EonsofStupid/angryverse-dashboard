@@ -1,41 +1,30 @@
-import { useState } from 'react';
+import { FormEvent, useState } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export const AuthForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { signIn, isLoading } = useAuthStore();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+    const error = await signIn(email, password);
+    if (error) {
+      toast({
+        title: "Authentication error",
+        description: error.message || "Failed to sign in",
+        variant: "destructive",
       });
-
-      if (error) throw error;
-
+    } else {
       toast({
         title: "Successfully signed in",
         description: "Welcome back!",
       });
-    } catch (error) {
-      console.error('Auth error:', error);
-      toast({
-        title: "Authentication error",
-        description: error instanceof Error ? error.message : "Failed to sign in",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 

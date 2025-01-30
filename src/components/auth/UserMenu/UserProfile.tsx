@@ -4,20 +4,21 @@ import { Settings, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import type { User } from "@supabase/supabase-js";
 import { useAuthStore } from "@/store/useAuthStore";
 
 interface UserProfileProps {
-  user: any;
+  user: User;
   onSignOut: () => Promise<void>;
   onSettingsClick: () => void;
   onClose: () => void;
 }
 
-export const UserProfile = ({ 
-  user, 
-  onSignOut, 
+export const UserProfile = ({
+  user,
+  onSignOut,
   onSettingsClick,
-  onClose 
+  onClose,
 }: UserProfileProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -33,13 +34,15 @@ export const UserProfile = ({
   };
 
   return (
-    <div className={cn(
-      "flex flex-col gap-4 p-4",
-      "bg-background/80 backdrop-blur-md",
-      "border border-primary/10",
-      "rounded-lg shadow-xl",
-      "animate-in fade-in-0 slide-in-from-top-5",
-    )}>
+    <div
+      className={cn(
+        "flex flex-col gap-4 p-4",
+        "bg-background/80 backdrop-blur-md",
+        "border border-primary/10",
+        "rounded-lg shadow-xl",
+        "animate-in fade-in-0 slide-in-from-top-5"
+      )}
+    >
       <div className="flex items-center gap-2 p-2">
         <Avatar>
           <AvatarFallback>
@@ -49,7 +52,9 @@ export const UserProfile = ({
         <div className="flex flex-col">
           <span className="font-medium text-primary">{user.email}</span>
           <span className="text-sm text-primary/60">
-            {userRole ? userRole.charAt(0).toUpperCase() + userRole.slice(1) : 'Loading...'}
+            {userRole
+              ? userRole.charAt(0).toUpperCase() + userRole.slice(1)
+              : "Loading..."}
           </span>
         </div>
       </div>
