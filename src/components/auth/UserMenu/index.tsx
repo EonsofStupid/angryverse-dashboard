@@ -31,7 +31,7 @@ const getRandomColors = () => {
 
 export const UserMenu = () => {
   const [open, setOpen] = useState(false);
-  const { theme } = useThemeStore(); // Use if you're theming based on user preference
+  const { theme } = useThemeStore();
   const { user, initialize, isLoading, signOut } = useAuthStore();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -39,7 +39,10 @@ export const UserMenu = () => {
 
   useEffect(() => {
     console.log("UserMenu mounted, initializing auth...");
-    void initialize(); // Fire & forget or handle promise
+    // Properly handle the Promise returned by initialize
+    initialize().catch((error) => {
+      console.error("Failed to initialize auth:", error);
+    });
   }, [initialize]);
 
   const handleSignOut = async () => {
