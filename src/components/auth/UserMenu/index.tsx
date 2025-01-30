@@ -11,8 +11,6 @@ import { UserMenuTrigger } from "./UserMenuTrigger";
 import { UserProfile } from "./UserProfile";
 import { AuthForm } from "./AuthForm";
 
-// For demonstration, we define theme colors here.
-// Could also be stored in a separate file or store.
 const THEME_COLORS = [
   "rgba(139, 92, 246, 0.8)",  // Vivid Purple
   "rgba(217, 70, 239, 0.8)",  // Magenta Pink
@@ -39,7 +37,6 @@ export const UserMenu = () => {
 
   useEffect(() => {
     console.log("UserMenu mounted, initializing auth...");
-    // Properly handle the Promise returned by initialize
     initialize().catch((error) => {
       console.error("Failed to initialize auth:", error);
     });
@@ -48,20 +45,20 @@ export const UserMenu = () => {
   const handleSignOut = async () => {
     console.log("Initiating sign out");
     setOpen(false);
-    const errorMessage = await signOut();
-
-    if (errorMessage) {
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } else {
+    
+    try {
+      await signOut();
       console.log("Sign out successful, navigating to home");
       navigate("/");
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to sign out",
+        variant: "destructive",
       });
     }
   };
