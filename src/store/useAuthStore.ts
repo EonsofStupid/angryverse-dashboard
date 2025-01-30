@@ -15,10 +15,7 @@ interface AuthState {
   setSession: (session: Session | null) => void;
   setError: (error: Error | null) => void;
   setIsLoading: (isLoading: boolean) => void;
-
-  // This signIn method is optional, but recommended to keep everything in one place.
   signIn: (email: string, password: string) => Promise<Error | null>;
-
   signOut: () => Promise<void>;
   initialize: () => Promise<void>;
 }
@@ -48,7 +45,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading });
   },
 
-  // 1) Single store signIn
   signIn: async (email, password) => {
     try {
       set({ isLoading: true, error: null });
@@ -58,7 +54,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { user } = data;
       if (!user) throw new Error("No user returned from signInWithPassword.");
 
-      // If you store roles in a table:
+      // Get user role from user_roles table
       const { data: roleData } = await supabase
         .from("user_roles")
         .select("role")
@@ -66,10 +62,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .single();
 
       const role = roleData?.role || null;
+      
+      // Check if user is admin or super_admin
+      const isAdmin = role === "admin" || role === "super_admin";
+      
       set({
         user,
         session: (await supabase.auth.getSession()).data.session,
-        isAdmin: role === "admin",
+        isAdmin,
         userRole: role,
         isLoading: false,
         error: null,
@@ -107,12 +107,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({ isLoading: true });
 
-      // Check existing session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
 
       if (session) {
-        // If you store roles in DB:
+        // Get user role from user_roles table
         const { data: roleData, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
@@ -120,10 +119,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           .single();
 
         const role = !roleError && roleData?.role ? roleData.role : null;
+        
+        // Check if user is admin or super_admin
+        const isAdmin = role === "admin" || role === "super_admin";
+        
         set({
           session,
           user: session.user,
-          isAdmin: role === "admin",
+          isAdmin,
           userRole: role,
           error: null,
         });
@@ -147,10 +150,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             .single();
 
           const role = roleData?.role || null;
+          const isAdmin = role === "admin" || role === "super_admin";
+          
           set({
             user: session.user,
             session,
-            isAdmin: role === "admin",
+            isAdmin,
             userRole: role,
             error: null,
             isLoading: false,
