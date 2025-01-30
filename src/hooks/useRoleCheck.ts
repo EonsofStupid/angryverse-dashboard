@@ -56,7 +56,11 @@ export const useRoleCheck = (user: User | null, requiredRole: string) => {
           return;
         }
 
-        const roleMatches = data?.role === requiredRole;
+        // Modified logic to handle both admin and super_admin roles
+        const roleMatches = requiredRole === 'admin' 
+          ? (data?.role === 'admin' || data?.role === 'super_admin')
+          : data?.role === requiredRole;
+
         console.log('Role Check: Role verification result', { 
           userRole: data?.role,
           requiredRole,
