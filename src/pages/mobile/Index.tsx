@@ -1,6 +1,6 @@
-import { MobileNavbar } from "@/components/mobile/navigation/Navbar";
-import { MobileHero } from "@/components/mobile/hero/Hero";
-import { MobileFeatures } from "@/components/mobile/features/Features";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { Features } from "@/components/Features";
 import { MobileVisualDatabase } from "@/components/mobile/visual-database/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { Footer } from "@/components/Footer";
@@ -21,9 +21,9 @@ const MobileIndex = () => {
       <MotionEffects />
       
       <div className="relative z-10">
-        <MobileNavbar />
+        <Navbar />
         <ScrollProgress />
-        <MobileHero />
+        <Hero />
         
         <BackgroundContainer className="relative">
           <AnimatedLines 
@@ -35,11 +35,11 @@ const MobileIndex = () => {
           />
           
           <AnimatedLines 
-            direction="horizontal"
-            color="var(--theme-colors-cyber-cyan)"
+            direction="vertical"
+            color="var(--theme-colors-cyber-tesla)"
             speed={2}
-            spacing={30}
-            opacity={0.08}
+            spacing={25}
+            opacity={0.1}
           />
           
           <CyberBackground 
@@ -63,7 +63,7 @@ const MobileIndex = () => {
           </section>
         </BackgroundContainer>
         
-        <MobileFeatures />
+        <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
         <Footer />
       </div>

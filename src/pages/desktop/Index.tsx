@@ -1,6 +1,6 @@
-import { DesktopNavbar } from "@/components/desktop/navigation/Navbar";
-import { DesktopHero } from "@/components/desktop/hero/Hero";
-import { DesktopFeatures } from "@/components/desktop/features/Features";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { Features } from "@/components/Features";
 import { DesktopVisualDatabase } from "@/components/desktop/visual-database/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { Footer } from "@/components/Footer";
@@ -21,9 +21,9 @@ const DesktopIndex = () => {
       <MotionEffects />
       
       <div className="relative z-10">
-        <DesktopNavbar />
+        <Navbar />
         <ScrollProgress />
-        <DesktopHero />
+        <Hero />
         
         <BackgroundContainer className="relative">
           <AnimatedLines 
@@ -63,7 +63,7 @@ const DesktopIndex = () => {
           </section>
         </BackgroundContainer>
         
-        <DesktopFeatures />
+        <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
         <Footer />
       </div>

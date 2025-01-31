@@ -1,7 +1,9 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
-import { VisualDatabase } from "@/components/VisualDatabase";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileVisualDatabase } from "@/components/mobile/visual-database/VisualDatabase";
+import { DesktopVisualDatabase } from "@/components/desktop/visual-database/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { Footer } from "@/components/Footer";
 import { useTheme } from "@/hooks/useTheme";
@@ -15,6 +17,8 @@ import { GlitchOverlay } from "@/components/backgrounds/GlitchOverlay";
 
 const Index = () => {
   const { currentTheme, isLoading, error } = useTheme();
+  const isMobile = useIsMobile();
+  const VisualDatabase = isMobile ? MobileVisualDatabase : DesktopVisualDatabase;
 
   return (
     <div className="min-h-screen bg-transparent text-white">
@@ -26,7 +30,6 @@ const Index = () => {
         <Hero />
         
         <BackgroundContainer className="relative">
-          {/* Matrix Rain Effect - Primary */}
           <AnimatedLines 
             direction="vertical"
             color="var(--theme-colors-cyber-matrix, #00ff00)"
@@ -35,7 +38,6 @@ const Index = () => {
             opacity={0.12}
           />
           
-          {/* Crossing Lines - Accent */}
           <AnimatedLines 
             direction="horizontal"
             color="var(--theme-colors-cyber-cyan)"
@@ -44,13 +46,11 @@ const Index = () => {
             opacity={0.08}
           />
           
-          {/* Base Cyber Background */}
           <CyberBackground 
             color="var(--theme-colors-cyber-purple)"
             opacity={0.2}
           />
           
-          {/* Dynamic Glitch Effect */}
           <GlitchOverlay 
             intensity={0.25}
             frequency={1.8}
