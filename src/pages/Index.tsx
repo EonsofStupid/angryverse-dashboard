@@ -1,9 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { MobileVisualDatabase } from "@/components/mobile/visual-database/VisualDatabase";
-import { DesktopVisualDatabase } from "@/components/desktop/visual-database/VisualDatabase";
+import { VisualDatabase } from "@/components/VisualDatabase";
 import { ThemeDebugger } from "@/components/theme/ThemeDebugger";
 import { Footer } from "@/components/Footer";
 import { useTheme } from "@/hooks/useTheme";
@@ -17,8 +15,6 @@ import { GlitchOverlay } from "@/components/backgrounds/GlitchOverlay";
 
 const Index = () => {
   const { currentTheme, isLoading, error } = useTheme();
-  const isMobile = useIsMobile();
-  const VisualDatabase = isMobile ? MobileVisualDatabase : DesktopVisualDatabase;
 
   return (
     <div className="min-h-screen bg-transparent text-white">
@@ -28,34 +24,10 @@ const Index = () => {
         <Navbar />
         <ScrollProgress />
         <Hero />
-        
         <BackgroundContainer className="relative">
-          <AnimatedLines 
-            direction="vertical"
-            color="var(--theme-colors-cyber-matrix, #00ff00)"
-            speed={3}
-            spacing={20}
-            opacity={0.12}
-          />
-          
-          <AnimatedLines 
-            direction="horizontal"
-            color="var(--theme-colors-cyber-cyan)"
-            speed={2}
-            spacing={30}
-            opacity={0.08}
-          />
-          
-          <CyberBackground 
-            color="var(--theme-colors-cyber-purple)"
-            opacity={0.2}
-          />
-          
-          <GlitchOverlay 
-            intensity={0.25}
-            frequency={1.8}
-            color="var(--theme-colors-cyber-pink)"
-          />
+          <CyberBackground color="var(--theme-colors-cyber-purple)" opacity={0.95} />
+          <AnimatedLines color="var(--theme-colors-cyber-purple)" opacity={0.1} />
+          <GlitchOverlay color="var(--theme-colors-cyber-purple)" />
           
           <section className="py-20 px-4">
             <div className="container mx-auto">
@@ -66,7 +38,6 @@ const Index = () => {
             </div>
           </section>
         </BackgroundContainer>
-        
         <Features />
         {process.env.NODE_ENV === 'development' && <ThemeDebugger />}
         <Footer />

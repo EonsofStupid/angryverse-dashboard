@@ -4,36 +4,25 @@
 
 @layer base {
   :root {
-    /* Core cyberpunk colors */
-    --theme-colors-cyber-matrix: #39FF14;
-    --theme-colors-cyber-tesla: #00FFFF;
-    --theme-colors-cyber-plasma: #FF10F0;
-    --theme-colors-cyber-electric: #9B30FF;
-    --theme-colors-cyber-warning: #FFD300;
-    --theme-colors-cyber-radiation: #7FFF00;
-    --theme-colors-cyber-void: #0A0A0F;
-    --theme-colors-cyber-midnight: #1F1147;
-
-    /* Semantic mappings */
-    --background: var(--theme-colors-cyber-void);
+    --background: var(--theme-colors-cyber-dark);
     --foreground: hsl(220 28% 95%);
-    --card: var(--theme-colors-cyber-midnight);
+    --card: var(--theme-colors-cyber-dark);
     --card-foreground: hsl(220 28% 95%);
-    --popover: var(--theme-colors-cyber-void);
+    --popover: var(--theme-colors-cyber-dark);
     --popover-foreground: hsl(220 28% 95%);
-    --primary: var(--theme-colors-cyber-plasma);
+    --primary: var(--theme-colors-cyber-pink);
     --primary-foreground: hsl(220 28% 95%);
-    --secondary: var(--theme-colors-cyber-tesla);
+    --secondary: var(--theme-colors-cyber-cyan);
     --secondary-foreground: hsl(220 28% 95%);
-    --muted: var(--theme-colors-cyber-midnight);
-    --muted-foreground: var(--theme-colors-cyber-tesla);
-    --accent: var(--theme-colors-cyber-electric);
+    --muted: hsl(217.2 32.6% 17.5%);
+    --muted-foreground: hsl(215 20.2% 65.1%);
+    --accent: var(--theme-colors-cyber-purple);
     --accent-foreground: hsl(220 28% 95%);
-    --destructive: var(--theme-colors-cyber-warning);
+    --destructive: hsl(0 62.8% 30.6%);
     --destructive-foreground: hsl(210 40% 98%);
-    --border: var(--theme-colors-cyber-tesla);
-    --input: var(--theme-colors-cyber-midnight);
-    --ring: var(--theme-colors-cyber-plasma);
+    --border: hsl(217.2 32.6% 17.5%);
+    --input: hsl(217.2 32.6% 17.5%);
+    --ring: var(--theme-colors-cyber-pink);
     --radius: 0.5rem;
   }
 
@@ -103,22 +92,5 @@
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
-  }
-
-  @keyframes shine {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-  }
-
-  .hover-scale-112 {
-    @apply transition-transform duration-300;
-  }
-
-  .hover-scale-112:hover {
-    transform: scale(1.12);
-  }
-
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--theme-colors-cyber-pink)] to-[var(--theme-colors-cyber-cyan)];
   }
 }

@@ -1,0 +1,41 @@
+:root {
+  /* Lift Effect */
+  --lift-amount: var(--theme-lift-amount, -10px);
+  --lift-scale: var(--theme-lift-scale, 1.05);
+  --lift-shadow: var(--theme-lift-shadow, 0 10px 20px rgba(0,0,0,0.2));
+  
+  /* Scale Effect */
+  --scale-amount: var(--theme-scale-amount, 1.05);
+  --scale-duration: var(--animation-fast, 200ms);
+  --scale-ease: var(--animation-curve-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
+  
+  /* Glow Effect */
+  --hover-glow-strength: var(--theme-glow-strength, 10px);
+  --hover-glow-color: var(--theme-primary, currentColor);
+  --hover-glow-opacity: var(--theme-glow-opacity, 0.5);
+}
+
+.hover-lift {
+  transition: all var(--animation-normal) var(--animation-curve-ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(var(--lift-amount)) scale(var(--lift-scale));
+  box-shadow: var(--lift-shadow);
+}
+
+.hover-scale {
+  transition: transform var(--scale-duration) var(--scale-ease);
+}
+
+.hover-scale:hover {
+  transform: scale(var(--scale-amount));
+}
+
+.hover-glow {
+  transition: filter var(--animation-normal) var(--animation-curve-ease-out);
+}
+
+.hover-glow:hover {
+  filter: drop-shadow(0 0 var(--hover-glow-strength) var(--hover-glow-color));
+}

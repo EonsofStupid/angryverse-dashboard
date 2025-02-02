@@ -9,27 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      admin_user_details: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       analytics_post_views: {
         Row: {
           id: string
@@ -67,6 +46,20 @@ export type Database = {
             foreignKeyName: "analytics_post_views_viewer_id_fkey"
             columns: ["viewer_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_post_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_post_views_viewer_id_fkey"
+            columns: ["viewer_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -95,6 +88,20 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "analytics_search_terms_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_search_terms_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "analytics_search_terms_user_id_fkey"
             columns: ["user_id"]
@@ -250,6 +257,20 @@ export type Database = {
             foreignKeyName: "comments_author_id_fkey"
             columns: ["author_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -295,6 +316,20 @@ export type Database = {
           parent_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "content_categories_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_categories_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "content_categories_created_by_fkey"
             columns: ["created_by"]
@@ -350,6 +385,20 @@ export type Database = {
             foreignKeyName: "content_mapping_rules_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_mapping_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_mapping_rules_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -375,6 +424,20 @@ export type Database = {
           name?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "content_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "content_tags_created_by_fkey"
             columns: ["created_by"]
@@ -621,6 +684,20 @@ export type Database = {
             foreignKeyName: "post_revisions_author_id_fkey"
             columns: ["author_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_revisions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_revisions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -677,6 +754,20 @@ export type Database = {
           view_count?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "posts_author_id_fkey"
             columns: ["author_id"]
@@ -798,31 +889,24 @@ export type Database = {
             foreignKeyName: "publishing_workflows_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publishing_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publishing_workflows_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
-      }
-      role_permissions: {
-        Row: {
-          created_at: string | null
-          id: string
-          permission: Database["public"]["Enums"]["permission"]
-          role: Database["public"]["Enums"]["user_role"]
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          permission: Database["public"]["Enums"]["permission"]
-          role: Database["public"]["Enums"]["user_role"]
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          permission?: Database["public"]["Enums"]["permission"]
-          role?: Database["public"]["Enums"]["user_role"]
-        }
-        Relationships: []
       }
       site_settings: {
         Row: {
@@ -853,6 +937,20 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "site_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "site_settings_updated_by_fkey"
             columns: ["updated_by"]
@@ -894,6 +992,20 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "social_connection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_connection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "social_connection_templates_created_by_fkey"
             columns: ["created_by"]
@@ -969,6 +1081,20 @@ export type Database = {
             foreignKeyName: "social_connections_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1019,6 +1145,20 @@ export type Database = {
             foreignKeyName: "social_draft_posts_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_draft_posts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_draft_posts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1060,6 +1200,20 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "social_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "social_posts_user_id_fkey"
             columns: ["user_id"]
@@ -1120,7 +1274,6 @@ export type Database = {
           description: string | null
           effects_config: Json | null
           effects_details: Json | null
-          glass_effects: Json | null
           gray_palette: Json | null
           id: string
           interaction_tokens: Json | null
@@ -1138,7 +1291,6 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
-          glass_effects?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
@@ -1156,7 +1308,6 @@ export type Database = {
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
-          glass_effects?: Json | null
           gray_palette?: Json | null
           id?: string
           interaction_tokens?: Json | null
@@ -1277,70 +1428,49 @@ export type Database = {
       themes: {
         Row: {
           advanced_effects: Json | null
-          animation_effects: Json | null
           configuration: Json
           created_at: string | null
           created_by: string | null
-          cybernetic_tokens: Json | null
           description: string | null
           effects_config: Json | null
           effects_details: Json | null
-          glass_effects_config: Json | null
           gray_palette: Json | null
           id: string
-          interaction_effects: Json | null
           interaction_tokens: Json | null
           is_default: boolean | null
-          motion_effects: Json | null
           name: string
-          neural_tokens: Json | null
-          special_effects: Json | null
           status: Database["public"]["Enums"]["theme_status"] | null
           updated_at: string | null
         }
         Insert: {
           advanced_effects?: Json | null
-          animation_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
-          cybernetic_tokens?: Json | null
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
-          glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
-          interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
-          motion_effects?: Json | null
           name: string
-          neural_tokens?: Json | null
-          special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
         Update: {
           advanced_effects?: Json | null
-          animation_effects?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
-          cybernetic_tokens?: Json | null
           description?: string | null
           effects_config?: Json | null
           effects_details?: Json | null
-          glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
-          interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
-          motion_effects?: Json | null
           name?: string
-          neural_tokens?: Json | null
-          special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
@@ -1379,6 +1509,20 @@ export type Database = {
             foreignKeyName: "user_activity_logs_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activity_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activity_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1411,6 +1555,20 @@ export type Database = {
             foreignKeyName: "user_roles_profile_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "admin_user_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_profile_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "admin_user_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_profile_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1418,7 +1576,34 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_user_details: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          display_name: string | null
+          email: string | null
+          id: string | null
+          last_active: string | null
+          location: string | null
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Relationships: []
+      }
+      admin_user_overview: {
+        Row: {
+          activity_count: number | null
+          avatar_url: string | null
+          display_name: string | null
+          id: string | null
+          last_active: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          user_status: string | null
+          username: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_expired_sessions: {
@@ -1433,12 +1618,6 @@ export type Database = {
           is_updatable: boolean
         }[]
       }
-      has_permission: {
-        Args: {
-          required_permission: Database["public"]["Enums"]["permission"]
-        }
-        Returns: boolean
-      }
       log_auth_event: {
         Args: {
           p_user_id: string
@@ -1452,24 +1631,9 @@ export type Database = {
     }
     Enums: {
       doc_category: "themes" | "rls" | "authorization"
-      permission:
-        | "create_post"
-        | "edit_post"
-        | "delete_post"
-        | "manage_users"
-        | "manage_roles"
-        | "manage_settings"
-        | "view_analytics"
-        | "manage_media"
-        | "manage_comments"
-        | "manage_categories"
-        | "view_users"
-        | "manage_content"
-        | "publish_content"
-        | "manage_themes"
       theme_status: "active" | "inactive" | "draft"
       theme_validation_severity: "error" | "warning" | "info"
-      user_role: "user" | "admin" | "gamer" | "super_admin"
+      user_role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never

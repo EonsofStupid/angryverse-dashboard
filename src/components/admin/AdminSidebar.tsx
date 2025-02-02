@@ -1,8 +1,7 @@
 import { 
   LayoutDashboard, Users, Settings, 
   ChevronRight, Menu, FileText,
-  Image, Tags, MessageSquare, Palette,
-  Lock
+  Image, Tags, MessageSquare, Palette
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAdminStore } from "@/store/useAdminStore";
@@ -24,7 +23,6 @@ export const AdminSidebar = () => {
     { icon: Tags, label: 'Categories', path: '/admin/categories' },
     { icon: MessageSquare, label: 'Comments', path: '/admin/comments' },
     { icon: Users, label: 'Users', path: '/admin/users' },
-    { icon: Lock, label: 'Permissions', path: '/admin/permissions' },
     { icon: Palette, label: 'Themes', path: '/admin/themes' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
   ];
