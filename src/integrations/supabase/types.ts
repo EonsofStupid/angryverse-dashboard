@@ -1069,6 +1069,66 @@ export type Database = {
           },
         ]
       }
+      theme_ab_tests: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          metrics: Json | null
+          name: string
+          start_date: string | null
+          status: string | null
+          theme_a_id: string
+          theme_b_id: string
+          traffic_split: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          name: string
+          start_date?: string | null
+          status?: string | null
+          theme_a_id: string
+          theme_b_id: string
+          traffic_split?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          name?: string
+          start_date?: string | null
+          status?: string | null
+          theme_a_id?: string
+          theme_b_id?: string
+          traffic_split?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_ab_tests_theme_a_id_fkey"
+            columns: ["theme_a_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "theme_ab_tests_theme_b_id_fkey"
+            columns: ["theme_b_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       theme_backups: {
         Row: {
           advanced_effects: Json | null
@@ -1103,6 +1163,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "theme_backups_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theme_performance_logs: {
+        Row: {
+          created_at: string | null
+          cumulative_layout_shift: number | null
+          first_contentful_paint: number | null
+          first_paint: number | null
+          id: string
+          interactive_time: number | null
+          largest_contentful_paint: number | null
+          load_time: number | null
+          page_path: string
+          theme_id: string
+          total_blocking_time: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          cumulative_layout_shift?: number | null
+          first_contentful_paint?: number | null
+          first_paint?: number | null
+          id?: string
+          interactive_time?: number | null
+          largest_contentful_paint?: number | null
+          load_time?: number | null
+          page_path: string
+          theme_id: string
+          total_blocking_time?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          cumulative_layout_shift?: number | null
+          first_contentful_paint?: number | null
+          first_paint?: number | null
+          id?: string
+          interactive_time?: number | null
+          largest_contentful_paint?: number | null
+          load_time?: number | null
+          page_path?: string
+          theme_id?: string
+          total_blocking_time?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theme_performance_logs_theme_id_fkey"
             columns: ["theme_id"]
             isOneToOne: false
             referencedRelation: "themes"
@@ -1278,6 +1388,7 @@ export type Database = {
         Row: {
           advanced_effects: Json | null
           animation_effects: Json | null
+          component_overrides: Json | null
           configuration: Json
           created_at: string | null
           created_by: string | null
@@ -1288,12 +1399,15 @@ export type Database = {
           glass_effects_config: Json | null
           gray_palette: Json | null
           id: string
+          inheritance_parent_id: string | null
           interaction_effects: Json | null
           interaction_tokens: Json | null
           is_default: boolean | null
           motion_effects: Json | null
           name: string
           neural_tokens: Json | null
+          performance_metrics: Json | null
+          schedule_activation: string | null
           special_effects: Json | null
           status: Database["public"]["Enums"]["theme_status"] | null
           updated_at: string | null
@@ -1301,6 +1415,7 @@ export type Database = {
         Insert: {
           advanced_effects?: Json | null
           animation_effects?: Json | null
+          component_overrides?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
@@ -1311,12 +1426,15 @@ export type Database = {
           glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
+          inheritance_parent_id?: string | null
           interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
           motion_effects?: Json | null
           name: string
           neural_tokens?: Json | null
+          performance_metrics?: Json | null
+          schedule_activation?: string | null
           special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
@@ -1324,6 +1442,7 @@ export type Database = {
         Update: {
           advanced_effects?: Json | null
           animation_effects?: Json | null
+          component_overrides?: Json | null
           configuration?: Json
           created_at?: string | null
           created_by?: string | null
@@ -1334,17 +1453,28 @@ export type Database = {
           glass_effects_config?: Json | null
           gray_palette?: Json | null
           id?: string
+          inheritance_parent_id?: string | null
           interaction_effects?: Json | null
           interaction_tokens?: Json | null
           is_default?: boolean | null
           motion_effects?: Json | null
           name?: string
           neural_tokens?: Json | null
+          performance_metrics?: Json | null
+          schedule_activation?: string | null
           special_effects?: Json | null
           status?: Database["public"]["Enums"]["theme_status"] | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "themes_inheritance_parent_id_fkey"
+            columns: ["inheritance_parent_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_activity_logs: {
         Row: {
