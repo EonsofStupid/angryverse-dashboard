@@ -1,4 +1,4 @@
-import { PlatformConfig } from "./types";
+import { PlatformConfig } from "@/types/social";
 
 export const platformConfigs: PlatformConfig[] = [
   {

@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { WizardConfig } from "./types";
+import { WizardConfig } from "@/types/social";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ExternalLink } from "lucide-react";
 

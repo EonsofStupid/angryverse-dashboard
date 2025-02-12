@@ -39,3 +39,42 @@ export interface SocialPost {
   updated_at: string;
   platform_posts?: PlatformPost[];
 }
+
+// Add these types from social_portal/social/platforms/types.ts
+export interface VideoMetrics {
+  [key: string]: number | undefined;
+  views?: number;
+  likes?: number;
+  comments?: number;
+  shares?: number;
+  followers?: number;
+  subscribers?: number;
+}
+
+export interface VideoContent {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  publishedAt: string;
+  metrics: VideoMetrics;
+  platformId: string;
+  url: string;
+}
+
+export interface PlatformConfig {
+  id: string;
+  platform: string;
+  displayName: string;
+  icon: string;
+  color: string;
+  supportsVideo: boolean;
+}
+
+// Add from wizard/types.ts
+export interface WizardConfig {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+  connectionLabel: string;
+}
