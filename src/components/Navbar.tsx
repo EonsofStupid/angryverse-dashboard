@@ -1,4 +1,8 @@
+import { Search, Bell, Menu } from "lucide-react";
+import { Button } from "./ui/button";
 import { UserMenu } from "@/components/auth/UserMenu";
+import { useAuthStore } from "@/store/useAuthStore";
+import { Link } from "react-router-dom";
 import { DesktopNav } from "./navigation/desktop/DesktopNav";
 import { MobileNav } from "./navigation/mobile/MobileNav";
 import { MobileMenu } from "./navigation/mobile/MobileMenu";
@@ -8,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, useTransform, useScroll } from "framer-motion";
-import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 
 export const Navbar = () => {

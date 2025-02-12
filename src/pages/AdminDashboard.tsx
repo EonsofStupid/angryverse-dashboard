@@ -10,6 +10,7 @@ import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
+import { PortalContent } from "@/components/admin/social_portal/Social_PortalContent";
 import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
 import { Documentation } from "@/components/admin/documentation/Documentation";
 import { PermissionManagement } from "@/components/admin/permissions/PermissionManagement";
@@ -17,7 +18,6 @@ import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
-import { PortalContent } from "@/components/admin/social_portal/Social_PortalContent";
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
