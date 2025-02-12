@@ -10,7 +10,7 @@ import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
-import { PortalContent } from "@/components/portal/PortalContent";
+import { Social_Portal } from "@/components/portal/Social_Portal";
 import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
 import { Documentation } from "@/components/admin/documentation/Documentation";
 import { PermissionManagement } from "@/components/admin/permissions/PermissionManagement";
@@ -131,11 +131,11 @@ const AdminDashboard = () => {
             </TabsContent>
 
             <TabsContent value="portal">
-              <PortalContent />
+              <Social_Portal />
             </TabsContent>
           </Tabs>
         ) : (
-          <PortalContent />
+          <Social_Portal />
         )}
       </AdminLayout>
     </div>
