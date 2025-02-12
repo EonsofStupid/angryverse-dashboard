@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
+import { Social_Portal } from "@/components/admin/social_portal/Social_Portal";
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
