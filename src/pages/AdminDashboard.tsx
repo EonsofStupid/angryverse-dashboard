@@ -10,7 +10,6 @@ import { MediaLibrary } from "@/components/admin/content/MediaLibrary";
 import { CategoriesManagement } from "@/components/admin/content/CategoriesManagement";
 import { CommentsManagement } from "@/components/admin/content/CommentsManagement";
 import { ThemeManagement } from "@/components/admin/ThemeManagement";
-import { PortalContent } from "@/components/admin/social_portal/Social_PortalContent";
 import { DatabaseManagement } from "@/components/admin/database/DatabaseManagement";
 import { Documentation } from "@/components/admin/documentation/Documentation";
 import { PermissionManagement } from "@/components/admin/permissions/PermissionManagement";
@@ -18,7 +17,7 @@ import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { Loader2 } from "lucide-react";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
-import { Social_Portal } from "@/components/admin/social_portal/Social_Portal";
+import { Social_Portal } from "@/components/admin/social_portal/Social_PortalContent";
 
 const AdminDashboard = () => {
   const { user } = useAuthStore();
@@ -56,7 +55,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  const isPortalRoute = location.pathname.includes('/portal');
+  const isPortalRoute = location.pathname.includes('/social-portal');
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,7 +83,7 @@ const AdminDashboard = () => {
               <TabsTrigger value="themes">Themes</TabsTrigger>
               <TabsTrigger value="documentation">Documentation</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
-              <TabsTrigger value="portal">Portal</TabsTrigger>
+              <TabsTrigger value="social-portal">Social Portal</TabsTrigger>
             </TabsList>
             
             <TabsContent value="dashboard">
@@ -131,7 +130,7 @@ const AdminDashboard = () => {
               <Settings />
             </TabsContent>
 
-            <TabsContent value="portal">
+            <TabsContent value="social-portal">
               <Social_Portal />
             </TabsContent>
           </Tabs>

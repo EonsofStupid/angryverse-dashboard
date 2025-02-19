@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { MobileNavLink } from "./MobileNavLink";
 import { useRoleCheck } from "@/hooks/useRoleCheck";
 import { useAuthStore } from "@/store/useAuthStore";
+import { LayoutDashboard } from "lucide-react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -40,8 +41,11 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               <MobileNavLink to="/admin" onClick={onClose}>
                 Admin
               </MobileNavLink>
-              <MobileNavLink to="/admin/portal" onClick={onClose}>
-                Portal
+              <MobileNavLink
+                href="/admin/portal"
+                icon={<LayoutDashboard className="h-4 w-4" />}
+              >
+                Social Portal
               </MobileNavLink>
             </>
           )}
